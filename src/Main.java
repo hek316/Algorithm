@@ -11,13 +11,28 @@ public class Main {
 
         int a = Integer.parseInt(s[0]);
         int b = Integer.parseInt(s[1]);
-        int c = Integer.parseInt(s[2]);
+        int lcd = 0;
+        int max = 0;
+
+        if (a > b) {
+            max = a;
+        } else {
+            max = b;
+        }
+
+        for (int i=max; i > 0 ; i--) {
+            if (a%i == 0 && b%i == 0){
+                lcd = i;
+                break;
+            }
+
+        }
+
 
         StringBuilder sb = new StringBuilder();
-        sb.append((a+b)%c).append("\n");
-        sb.append((a%c+b%c)%c).append("\n");
-        sb.append((a*b)%c).append("\n");
-        sb.append(((a%c)*(b%c))%c).append("\n");
+        sb.append(lcd).append("\n");
+        sb.append(a*b/lcd).append("\n");
+
 
         System.out.println(sb);
     }
