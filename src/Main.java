@@ -1,26 +1,24 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String word = br.readLine();
-        String[] st = new String[word.length()];
-        for(int i= 0; i < word.length(); i++) {
-            st[i]  = word.substring(i);
-        }
 
-        Arrays.sort(st);
+        String input = br.readLine();
+        String[] s = input.split(" ");
+
+        int a = Integer.parseInt(s[0]);
+        int b = Integer.parseInt(s[1]);
+        int c = Integer.parseInt(s[2]);
 
         StringBuilder sb = new StringBuilder();
+        sb.append((a+b)%c).append("\n");
+        sb.append((a%c+b%c)%c).append("\n");
+        sb.append((a*b)%c).append("\n");
+        sb.append(((a%c)*(b%c))%c).append("\n");
 
-
-
-        for(int i= 0; i < word.length(); i++) {
-            sb.append(st[i]).append("\n");
-        }
         System.out.println(sb);
     }
 }
