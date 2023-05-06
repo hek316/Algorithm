@@ -7,7 +7,6 @@ public class Main {
                 BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
                 String word = br.readLine();
                 String[] st = new String[word.length()];
-                String[] ans = new String[word.length()];
                 for(int i= 0; i < word.length(); i++) {
                     st[i]  = word.substring(i);
                 }
