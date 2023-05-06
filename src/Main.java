@@ -13,7 +13,7 @@ public class Main {
 
                 for(int i= 0; i < word.length(); i++) {
                   for (int j= i +1; j < word.length(); j++) {
-                      int k = 0;
+                       int k = 0;
                       while(k < st[i].length() && k < st[j].length()) {
                           char a = st[i].charAt(k); char b = st[j].charAt(k);
                           if ( a> b) {
