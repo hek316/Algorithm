@@ -6,19 +6,23 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        String input = br.readLine();
-        String[] s = input.split(" ");
+        int n = Integer.parseInt(br.readLine());
+        String[] s = br.readLine().split(" ");
+        int num = 0;
+        for (int i=0; i < n; i++) {
+            int i1 = Integer.parseInt(s[i]);
+            boolean isNaturalNumber = false;
+            for(int j=2; j < i1; j++){
+                if(i1%j == 0){
+                    isNaturalNumber = true;
+                    break;
+                }
+            }
+            if (i1 != 1 && !isNaturalNumber) {
+                num++;
+            }
+        }
 
-        int a = Integer.parseInt(s[0]);
-        int b = Integer.parseInt(s[1]);
-        int c = Integer.parseInt(s[2]);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append((a+b)%c).append("\n");
-        sb.append((a%c+b%c)%c).append("\n");
-        sb.append((a*b)%c).append("\n");
-        sb.append(((a%c)*(b%c))%c).append("\n");
-
-        System.out.println(sb);
+        System.out.println(num);
     }
 }
