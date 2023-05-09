@@ -3,26 +3,38 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
+
+    public static boolean[] eratos(int n2){
+        boolean[] isCompositeNumber = new boolean[n2+1];
+        for (int i = 2; i <= n2; i++) {
+            if (isCompositeNumber[i]) {
+                continue;
+            }
+            for (int j = 2; j*i <= n2; j++) {
+                isCompositeNumber[i*j] = true;
+            }
+        }
+        return isCompositeNumber;
+
+    }
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int n = Integer.parseInt(br.readLine());
         String[] s = br.readLine().split(" ");
-        int num = 0;
-        for (int i=0; i < n; i++) {
-            int i1 = Integer.parseInt(s[i]);
-            boolean isNaturalNumber = false;
-            for(int j=2; j < i1; j++){
-                if(i1%j == 0){
-                    isNaturalNumber = true;
-                    break;
-                }
+        int n1 = Integer.parseInt(s[0]);
+        int n2 = Integer.parseInt(s[1]);
+        boolean[] isCompositeNumber = eratos(n2);
+        StringBuilder sb = new StringBuilder();
+        if (n1 == 1) {
+            n1++;
+        }
+        for (int i = n1; i <= n2; i++) {
+            if(!isCompositeNumber[i]){
+                sb.append(i).append("\n");
             }
-            if (i1 != 1 && !isNaturalNumber) {
-                num++;
-            }
+
         }
 
-        System.out.println(num);
+        System.out.println(sb);
     }
 }
