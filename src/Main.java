@@ -8,11 +8,15 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
 
-        int result = 1; ;
+        int cnt = 0;
         for (int i = n; i > 0; i--) {
-            result*=i;
+            int k = i;
+            while (k%5==0) {
+                cnt++;
+                k/=5;
+            }
         }
-        System.out.println(result);
+        System.out.println(cnt);
 
     }
 }
