@@ -4,30 +4,47 @@ import java.io.InputStreamReader;
 
 public class Main {
 
-    public static StringBuilder eratos(int n1, int n2){
-        boolean[] isCompositeNumber = new boolean[n2+1];
-        StringBuilder sb = new StringBuilder();
-        for (int i = 2; i <= n2; i++) {
-            if (isCompositeNumber[i]) {
-                continue;
-            }
-            for (int j = 2; j*i <= n2; j++) {
-                isCompositeNumber[i*j] = true;
-            }
-            if(i>= n1 && i <= n2){
-                sb.append(i).append("\n");
-            }
-        }
-        return sb;
-
-    }
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        String[] s = br.readLine().split(" ");
-        int n1 = Integer.parseInt(s[0]);
-        int n2 = Integer.parseInt(s[1]);
-        StringBuilder sb = eratos(n1, n2);
+        StringBuilder sb = new StringBuilder();
+        int[] prime = new int[1000000+1];
+
+        boolean[] isComposition = new boolean[1000000+1];
+        for(int i=2; i<= 1000000; i++){
+            if (isComposition[i] == true) {
+                continue;
+            }
+            for(int j=2; i*j<= 1000000; j++){
+                isComposition[i*j] = true;
+            }
+        }
+        int j =0;
+        for(int i=2; i<= 1000000; i++){
+
+            if (isComposition[i] == false) {
+                prime[j++] = i;
+            }
+
+        }
+
+        while (true){
+            int n1 = Integer.parseInt(br.readLine());
+            if (n1 == 0){ break;}
+
+            sb.append(n1).append(" = ");
+            for (int i = 0; i< n1 ;i++) {
+                int n2;
+                n2 = n1 - prime[i];
+                if(isComposition[n2] == false){
+                    sb.append(prime[i]).append(" + ").append(n2).append("\n");
+                    break;
+                }
+
+            }
+        }
+
         System.out.println(sb);
+
     }
 }
