@@ -6,31 +6,13 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
 
-        StringBuilder sb = new StringBuilder();
-        boolean[] isComposition = new boolean[1000000+1];
-        for(int i=2; i<= 1000000; i++){
-            if (isComposition[i]) {
-                continue;
-            }
-            for(int j=2; i*j<= 1000000; j++){
-                isComposition[i*j] = true;
-            }
+        int result = 1; ;
+        for (int i = n; i > 0; i--) {
+            result*=i;
         }
-
-        while (true){
-            int n1 = Integer.parseInt(br.readLine());
-            if (n1 == 0){ break;}
-            for (int i = 2; i< n1 ;i++) {
-                if(!isComposition[i] &&  !isComposition[n1 - i]){
-                    sb.append(n1).append(" = ").append(i).append(" + ").append(n1 - i).append("\n");
-                    break;
-                }
-
-            }
-        }
-
-        System.out.println(sb);
+        System.out.println(result);
 
     }
 }
