@@ -1,44 +1,51 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class Main {
-    long countMultiple(int n1, int divNum){
-        long cnt = 0;
-        /*
-         while ( m != 0) {
-            cnt = cnt + m ;
-            i*=mutiple;
-            m= n1/i;
+
+    static long  GCD(int n1, int n2){
+        int min = n1;
+        if (n2 < n1) {
+            min = n2;
         }
-        초기 풀이시 나누는 값을 곱하는 형식으로 풀었는데 해당 식은 overFlow 가 발생한다
-        int 의 범위 :
-        –2,147,483,648 ~ 2,147,483,647
-         */
-        while ( n1/divNum != 0) {
-            cnt += n1/divNum;
-            n1/=divNum;
+        long gcd = 1;
+        for (int i = min; i > 0; i--) {
+            if (n1%i ==0 && n2%i ==0) {
+                gcd = i;
+                break;
+            }
+
         }
-        return cnt;
+        return gcd;
     }
-
-
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String st = br.readLine();
-        String[] a = st.split(" ");
-        int n1 = Integer.parseInt(a[0]);
-        int n2 = Integer.parseInt(a[1]);
-        Main main = new Main();
+         /*
+          합이 int 의 값의 범위를 초과할 수 있으므로 long  형으로 선언
+          */
 
-        final int DIV2 = 2;
-        final int DIV5 = 5;
-        long cnt2 = main.countMultiple(n1,DIV2) - main.countMultiple(n2, DIV2)  - main.countMultiple((n1 -n2), DIV2);
-        long cnt5 = main.countMultiple(n1,DIV5) - main.countMultiple(n2, DIV5)  - main.countMultiple((n1 -n2), DIV5);
-        if (cnt2 < cnt5) {
-            System.out.println(cnt2);
-        } else {
-            System.out.println(cnt5);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n1 = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
+        while (n1--> 0){
+            String st = br.readLine();
+            String[] s = st.split(" ");
+            int cnt =Integer.parseInt(s[0]);
+            int[] num = new int[cnt];
+            for (int i=0; i < cnt; i++) {
+                num[i] = Integer.parseInt(s[i+1]);
+            }
+
+            long sum = 0;
+            for (int i=0; i < num.length; i++) {
+                for (int j=i +1; j < num.length; j++) {
+                    sum +=GCD(num[i], num[j]);
+                }
+            }
+            sb.append(sum).append("\n");
         }
+        System.out.println(sb);
+
     }
 }
