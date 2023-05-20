@@ -1,38 +1,33 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import java.util.StringTokenizer;
-
 public class Main {
 
-    public static int getGCD(int n1 , int n2) {
-        if (n2 == 0){
-            return n1;
-        }
-        if (n1 > n2) {
-            return getGCD(n2 ,n1%n2);
-        }else {
-            return getGCD(n1 ,n2%n1);
-        }
-    }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String s1 = br.readLine();
-        StringTokenizer st = new StringTokenizer(s1);
-        int n = Integer.parseInt(st.nextToken());
-        int mark = Integer.parseInt(st.nextToken());
-
-        String s2 = br.readLine();
-        StringTokenizer st2 = new StringTokenizer(s2);
-
-        int gcd =Math.abs(Integer.parseInt(st2.nextToken()) - mark);
-        for (int i=1; i < n; i++) {
-            gcd = getGCD(Math.abs(Integer.parseInt(st2.nextToken()) - mark), gcd);
+        char[] charArray = br.readLine().toCharArray();
+        int j= 0;
+        StringBuilder sb = new StringBuilder();
+        if(charArray.length%3 == 2){
+            int n1 = (charArray[0]-'0') * 2;
+            int n2 = (charArray[1]-'0') * 1;
+            j= 2;
+            sb.append(n1 +n2);
+        } else if (charArray.length%3 == 1) {
+            int n1 = (charArray[0]-'0') * 1;
+            j= 1;
+            sb.append(n1);
         }
 
-        System.out.println(gcd);
+        for (int i=j; i < charArray.length; i+=3) {
+            int n1 = (charArray[i]-'0') * 4;
+            int n2 = (charArray[i+1]-'0') * 2;
+            int n3 = (charArray[i+2]-'0') * 1;
+            sb.append(n1+ n2+ n3);
+        }
 
+
+        System.out.println(sb);
     }
 }
