@@ -3,31 +3,36 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 public class Main {
 
+    public static int makeOne(int n, int[] d){
+
+        if (n==1){
+            return 0;
+        }
+        if (d[n] > 0){
+            return d[n];
+        }
+
+        d[n] =  makeOne(n-1, d) +1;
+
+        if (n%2 ==0) {
+            int tmp = makeOne(n/2, d)+1;
+            d[n]  = d[n] < tmp ? d[n]: tmp;
+        }
+
+
+        if (n%3 ==0) {
+            int tmp = makeOne(n/3, d)+1;
+            d[n]  = d[n] < tmp ? d[n]: tmp;
+        }
+
+        return d[n];
+    }
+
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        char[] charArray = br.readLine().toCharArray();
-        int j= 0;
-        StringBuilder sb = new StringBuilder();
-        if(charArray.length%3 == 2){
-            int n1 = (charArray[0]-'0') * 2;
-            int n2 = (charArray[1]-'0') * 1;
-            j= 2;
-            sb.append(n1 +n2);
-        } else if (charArray.length%3 == 1) {
-            int n1 = (charArray[0]-'0') * 1;
-            j= 1;
-            sb.append(n1);
-        }
-
-        for (int i=j; i < charArray.length; i+=3) {
-            int n1 = (charArray[i]-'0') * 4;
-            int n2 = (charArray[i+1]-'0') * 2;
-            int n3 = (charArray[i+2]-'0') * 1;
-            sb.append(n1+ n2+ n3);
-        }
-
-
-        System.out.println(sb);
+        int n = Integer.parseInt(br.readLine());
+        int[] d = new int[n+1];
+        System.out.println(makeOne(n, d));
     }
 }
