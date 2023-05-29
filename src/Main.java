@@ -3,18 +3,15 @@ import java.io.*;
 public class Main {
 
     public int plus123(int[] d,int n){
-        if (d[n] > 0) {
+        if(d[n] > 0){
             return d[n];
         }
-        if (n == 1 || n == 2 || n == 3) {
-            d[1] = 1;
-            d[2] = 2;
-            d[3] = 4;
-            return d[n];
+        d[1] = 1;
+        d[2] = 2;
+        d[3] = 4;
+        for(int i=4; i<=n; i++){
+            d[i] = d[i-1] + d[i-2] + d[i-3];
         }
-
-        d[n] =  plus123(d,n-1) + plus123(d,n-2) +  plus123(d,n-3);
-
         return d[n];
     }
     public static void main(String[] args) throws Exception {
