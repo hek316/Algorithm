@@ -3,18 +3,12 @@ import java.io.*;
 public class Main {
 
     public int solve2Ntile(int[] d,int n){
-        if (d[n] > 0) {
-            return d[n];
+        d[1] = 1;
+        d[2] = 3;
+        for (int i = 3; i<=n; i++) {
+            d[i] = (d[i-1] + d[i-2]*2)%10007;
         }
 
-        if (n == 1) {
-            d[n] = 1;
-            return d[n];
-        } else if (n == 2) {
-            d[n] = 3;
-            return d[n];
-        }
-        d[n] = (solve2Ntile(d,n-1) + solve2Ntile(d,n-2)*2)%10007;
         return d[n];
     }
     public static void main(String[] args) throws Exception {
