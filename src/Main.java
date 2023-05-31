@@ -13,7 +13,7 @@ public class Main {
             if(ans[2] > 0){
                 return ans[2];
             }else {
-                ans[2] =  arr[1]*2 > arr[2] ? arr[1]*2 : arr[2];
+                ans[2] = arr[1]*2 > arr[2] ? arr[1]*2 : arr[2];
                 return ans[2];
             }
         }
