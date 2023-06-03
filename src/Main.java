@@ -7,34 +7,21 @@ public class Main {
 
     public int f(int[] arr, int n1, int[] ans){
 
-        if (n1 == 1) {
-            return arr[1];
-        }else if (n1 == 2){
-            if(ans[2] > 0){
-                return ans[2];
-            }else {
-                ans[2] = arr[1]*2 > arr[2] ? arr[1]*2 : arr[2];
-                return ans[2];
-            }
-        }
-        if(ans[n1] >0){
-            return ans[n1];
-        }
+        ans[1] =  arr[1];
+        ans[2] =  arr[1]*2 < arr[2] ? arr[1]*2 : arr[2];
 
-        for(int i=n1; i>1; i--){
+        for(int i=3; i<=n1; i++){
+            ans[i] = arr[i];
             int tmp = i/2;
             if(i%2!=0){
                 tmp++;
             }
-            int max = arr[i];
-
-            for (int j = i-1; j >= tmp; j--) {
-                int tmp2 = f(arr, j,  ans) + f(arr, i-j,  ans);
-                if (max < tmp2) {
-                    max = tmp2;
+            for (int j=(i-1); j>=tmp; j--){
+                int tmp2 = ans[j] + ans[i-j];
+                if (tmp2 < ans[i]) {
+                    ans[i] = tmp2;
                 }
             }
-            ans[i] = max;
         }
         return ans[n1];
     }
