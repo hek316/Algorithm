@@ -1,48 +1,33 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-
 public class Main {
 
-    public int f(int[] arr, int n1, int[] ans){
-
-        ans[1] =  arr[1];
-        ans[2] =  arr[1]*2 < arr[2] ? arr[1]*2 : arr[2];
-
-        for(int i=3; i<=n1; i++){
-            ans[i] = arr[i];
-            int tmp = i/2;
-            if(i%2!=0){
-                tmp++;
-            }
-            for (int j=(i-1); j>=tmp; j--){
-                int tmp2 = ans[j] + ans[i-j];
-                if (tmp2 < ans[i]) {
-                    ans[i] = tmp2;
-                }
-            }
-        }
-        return ans[n1];
-    }
-
-
     public static void main(String[] args) throws IOException {
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n1 = Integer.parseInt(br.readLine());
-        int[] arr = new int[n1+2];
-        int[] ans = new int[n1+2];
 
-        String s = br.readLine();
-        Main main = new Main();
+        long[][] f = new long[100001][4];
+        StringBuilder sb = new StringBuilder();
+        int n = Integer.parseInt(br.readLine());
+        int mod = 1000000009;
 
-        StringTokenizer st = new StringTokenizer(s);
+        f[1][1] = 1;
+        f[2][2] = 1;
+        f[3][1] = 1;
+        f[3][2] = 1;
+        f[3][3] = 1;
 
-        for(int i=1; i<=n1; i++){
-            arr[i] = Integer.parseInt(st.nextToken());
+        for(int i=4; i<=100000; i++){
+            f[i][1]=(f[i-1][2] + f[i-1][3])% mod;
+            f[i][2]=(f[i-2][3] + f[i-2][1])% mod;
+            f[i][3]=(f[i-3][1] + f[i-3][2])% mod;
         }
 
-        System.out.println(main.f(arr,n1, ans));
+        for(int i=0; i<n; i++){
+            int k = Integer.parseInt(br.readLine());
+            sb.append((f[k][1]+f[k][2] + f[k][3])%mod).append("\n");
+        }
+        System.out.println(sb);
+
     }
 }
