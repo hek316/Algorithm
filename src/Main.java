@@ -8,16 +8,35 @@ public class Main {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        long[] arr = new long[n+2];
 
-        arr[1] = 1;
-        arr[2] = 1;
+        String[] s = br.readLine().split(" ");
+        int[] ar = new int[n];
+        // 자신보다 왼쪽에 있는 작은수 담기
+        int[] cntAr = new int[n];
 
-        for (int i=3; i<=n; i++) {
-            arr[i] = arr[i-2] + arr[i-1];
+        for(int i=0; i < n; i++){
+            ar[i] =Integer.parseInt(s[i]);
         }
 
-        System.out.println(arr[n]);
+        cntAr[0] =1;
+
+        for (int i=1; i<n; i++) {
+            for (int j=i-1; j>=0; j--) {
+                if(ar[j] < ar[i] && cntAr[i] <= cntAr[j] +1){
+                    cntAr[i] = cntAr[j] +1;
+                }
+            }
+            if(cntAr[i] == 0){
+                cntAr[i] = 1;
+            }
+        }
+        int max = 0;
+        for(int i=0; i < n; i++){
+            if(max < cntAr[i]){
+                max = cntAr[i];
+            }
+        }
+        System.out.println(max);
 
     }
 }
