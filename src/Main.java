@@ -1,33 +1,22 @@
 import java.io.*;
-import java.util.StringTokenizer;
 
 
 public class Main{
     public static void main(String[] args)throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        String input = br.readLine();
-        StringTokenizer st = new StringTokenizer(input);
-        int[] arr = new int[n];
-        int[] ans = new int[n];
-        for(int i=0; i<n; i++){
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
+        int[] num = new int[n+1];
 
-        ans[0] = arr[0];
-        int max = ans[0];;
-
-        for(int i=1; i< n; i++){
-            if(ans[i-1] < 0){
-                ans[i] = arr[i];
-            }else{
-                ans[i] = ans[i-1] + arr[i];
-            }
-            if(max < ans[i]){
-                max = ans[i];
+        // 최소값을 구하는 문제이므로 최댓값 담아주기
+        for(int j=1; j<= n; j++){
+            num[j] = j;
+            for(int i=1; i*i<= j; i++){
+                if((num[j - (i * i)] + 1) < num[j]){
+                    num[j] = num[j-i*i] +1 ;
+                }
             }
         }
-        System.out.println(max);
+        System.out.println(num[n]);
 
     }
 }
