@@ -1,22 +1,28 @@
 import java.io.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 
 public class Main{
     public static void main(String[] args)throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        int[] num = new int[n+1];
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int k = Integer.parseInt(st.nextToken());
+        int mod = 1000000000;
 
-        // 최소값을 구하는 문제이므로 최댓값 담아주기
-        for(int j=1; j<= n; j++){
-            num[j] = j;
-            for(int i=1; i*i<= j; i++){
-                if((num[j - (i * i)] + 1) < num[j]){
-                    num[j] = num[j-i*i] +1 ;
+        long[][] arr = new long[n+1][k+1];
+        for(int i = 0; i <=n; i++){
+            arr[i][1] = 1;
+        }
+        for(int i = 2; i <= k; i++){
+            for(int j = 0;  j <= n; j++) {
+                for(int l = 0;  l <= j; l++) {
+                    arr[j][i] += arr[l][i - 1]%mod;
                 }
             }
         }
-        System.out.println(num[n]);
 
+        System.out.println(arr[n][k]%mod);
     }
 }
