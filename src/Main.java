@@ -1,31 +1,35 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static int read() throws Exception {
 
-        int n = Integer.parseInt(br.readLine());
-        int[] k =  new int[n];
-        int max  = 0;
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i=0; i<n; i++) {
-            k[i] = Integer.parseInt(br.readLine());
-            max = Math.max(max, k[i]);
-        }
-        long[] arr = new long[max+1];
-        arr[1] = 1;
-        arr[2] = 2;
-        arr[3] = 4;
-        for (int j=4; j<= max; j++) {
-            arr[j] = (arr[j-1] + arr[j-2] + arr[j-3])%1000000009;
-        }
-        for (int i=0; i<n; i++) sb.append(arr[k[i]]).append("\n");
-        System.out.println(sb);
+        int c, N = System.in.read() - 48;
+        while ((c = System.in.read()) > 32) N = 10 * N + c - 48;
+        return N;
 
     }
+
+    public static void main(String[] args) throws Exception {
+
+        int  n = read();
+
+        int r = read();
+        int g = read();
+        int b = read();
+
+
+        for (int i = 2; i <= n; i++) {
+            int r1 = Math.min(g, b);
+            int g1 = Math.min(r, b);
+            int b1 =  Math.min(r, g);
+
+            r =  r1 + read();
+            g =  g1 + read();
+            b =  b1 + read();
+
+        }
+
+        int min = Math.min(r, Math.min(g, b));
+        System.out.println(min);
+    }
+
 }
