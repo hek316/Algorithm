@@ -3,24 +3,29 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        int n =readInt();
-        int[][] cnt = new int[3][n];
-        for(int i=0; i<n; i++){
-            cnt[1][i] = readInt();
-        }
+        int n = readInt();
+        int[][] arr = new int[n][n];
 
-
-        int max = 0;
+        arr[0][0] = readInt();
 
         for(int i=1; i<n; i++){
-            max = Math.max(Math.max(cnt[0][i-1],cnt[1][i-1]),cnt[2][i-1]);
-            cnt[0][i] = max ;
-            int tmp = cnt[1][i];
-            cnt[1][i] = cnt[0][i-1] + tmp ;
-            cnt[2][i] = cnt[1][i-1] + tmp ;
+            for(int j=0; j<=i; j++){
+                if (j == 0){
+                    arr[i][j] = arr[i-1][j] + readInt();
+                } else if (j==i){
+                    arr[i][j] = arr[i-1][j-1] + readInt();
+                } else {
+                    arr[i][j] = Math.max(arr[i-1][j-1],arr[i-1][j]) +  readInt();
+                }
+            }
         }
 
-        max = Math.max(Math.max(cnt[0][n-1],cnt[1][n-1]),cnt[2][n-1]);
+        int max = arr[n-1][0];
+        for(int i=1; i<n; i++){
+            if (arr[n-1][i] > max){
+                max = arr[n-1][i] ;
+            }
+        }
         System.out.println(max);
     }
 
@@ -37,4 +42,5 @@ public class Main {
                 sum = (sum*10)+input-'0';
         }
     }
+
 }
