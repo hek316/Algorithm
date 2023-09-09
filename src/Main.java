@@ -2,45 +2,49 @@ import java.io.IOException;
 
 public class Main {
 
+    static int nextInt() throws IOException {
+        int sum = 0;
+
+        boolean isNegative = false;
+        while(true) {
+            int a = System.in.read();
+            if(a == ' ' || a == '\n') {
+                return isNegative ? sum * (-1) : sum;
+            } else if(a == '-') {
+                isNegative = true;
+            } else if(a >= '0' && a <= '9') {
+                sum = sum * 10 + a - '0';
+            }
+        }
+
+    }
+
     public static void main(String[] args) throws Exception {
-        int n = readInt();
-        int[][] arr = new int[n][n];
 
-        arr[0][0] = readInt();
+        int n = nextInt();
 
-        for(int i=1; i<n; i++){
-            for(int j=0; j<=i; j++){
-                if (j == 0){
-                    arr[i][j] = arr[i-1][j] + readInt();
-                } else if (j==i){
-                    arr[i][j] = arr[i-1][j-1] + readInt();
-                } else {
-                    arr[i][j] = Math.max(arr[i-1][j-1],arr[i-1][j]) +  readInt();
+        int[] arr = new int[n];
+        int[] result = new int[n];
+
+        for (int i=0; i<n; i++) {
+            arr[i] = nextInt();
+        }
+
+        result[0] = arr[0];
+        int maxIdx = 0;
+        for (int i=1; i<n; i++) {
+            result[i] = arr[i];
+            for(int j=i-1; j>=0; j--){
+                if( arr[j] < arr[i] && result[i] < result[j] + arr[i]){
+                    result[i] = result[j] + arr[i];
+
+                    if (result[maxIdx] < result[i]) {
+                        maxIdx = i;
+                    }
                 }
             }
         }
-
-        int max = arr[n-1][0];
-        for(int i=1; i<n; i++){
-            if (arr[n-1][i] > max){
-                max = arr[n-1][i] ;
-            }
-        }
-        System.out.println(max);
-    }
-
-    static int readInt() throws IOException {
-        int sum = 0;
-        boolean isNegative = false;
-        while(true){
-            int input = System.in.read();
-            if(input=='\n' || input==' ')
-                return isNegative ? sum*-1 : sum;
-            else if(input=='-')
-                isNegative = true;
-            else
-                sum = (sum*10)+input-'0';
-        }
+        System.out.println(result[maxIdx]);
     }
 
 }
