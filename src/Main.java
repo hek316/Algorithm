@@ -24,27 +24,24 @@ public class Main {
         int n = nextInt();
 
         int[] arr = new int[n];
-        int[] result = new int[n];
+        int[] cnt = new int[n];
 
         for (int i=0; i<n; i++) {
             arr[i] = nextInt();
         }
 
-        result[0] = arr[0];
-        int maxIdx = 0;
+        int max = 1;
+        cnt[0] = 1;
         for (int i=1; i<n; i++) {
-            result[i] = arr[i];
-            for(int j=i-1; j>=0; j--){
-                if( arr[j] < arr[i] && result[i] < result[j] + arr[i]){
-                    result[i] = result[j] + arr[i];
-
-                    if (result[maxIdx] < result[i]) {
-                        maxIdx = i;
-                    }
+            for(int j=0; j<i; j++){
+                if( arr[j] > arr[i]){
+                    cnt[i] = Math.max(cnt[j], cnt[i]);
                 }
             }
+            cnt[i]++;
+            max = Math.max(max, cnt[i]);
         }
-        System.out.println(result[maxIdx]);
+        System.out.println(max);
     }
 
 }
