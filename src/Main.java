@@ -1,73 +1,52 @@
-import java.io.IOException;
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class Main {
 
-    static int nextInt() throws IOException {
-        int sum = 0;
 
-        boolean isNegative = false;
-        while(true) {
-            int a = System.in.read();
-            if(a == ' ' || a == '\n') {
-                return isNegative ? sum * (-1) : sum;
-            } else if(a == '-') {
-                isNegative = true;
-            } else if(a >= '0' && a <= '9') {
-                sum = sum * 10 + a - '0';
-            }
-        }
-
-    }
 
     public static void main(String[] args) throws Exception {
-
-        int n = nextInt();
-
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
         int[] arr = new int[n];
-        int[] b = new int[n];
+        int[] increase = new int[n];
+        int[] decrease = new int[n];
 
-        for (int i=0; i<n; i++) {
-            arr[i] = nextInt();
+
+        String[] input = br.readLine().split(" ");
+        for(int i=0; i<n; i++){
+            arr[i] = Integer.parseInt(input[i]);
         }
-        b[0] =  arr[0];
-        int len = 0;
 
-        for (int i=1; i<n; i++) {
-            len = binarySearch( arr[i], len, b);
-
+        for(int i=0; i<n; i++){
+            for(int j=0; j<i; j++){
+                if(arr[j]<arr[i] && increase[j] > increase[i]){
+                    increase[i] = increase[j];
+                }
+            }
+            increase[i] +=1;
         }
-        System.out.println(len + 1);
-    }
 
-
-
-    public static int binarySearch(int target, int len, int[] b){
-        int start =0;
-
-        if(b[len] > target ){
-            len = len +1;
-            b[len] = target;
-            return  len;
+        for(int i=n-1; i>=0; i--){
+            for(int j=i; j<n; j++){
+                if(arr[j]<arr[i] && decrease[j] > decrease[i]){
+                    decrease[i] = decrease[j];
+                }
+            }
+            decrease[i] +=1;
         }
-        int end = len;
-        int mid = 0;
+        int max = 0;
+        int tmp = 0;
 
-        while (start < end) {
-            mid = (start + end)/2;
-            if (target == b[mid]) {
-                break;
-            } else if (target > b[mid]) {
-                end = mid;
-            } else {
-                start = mid+1;
-                mid++;
+        for(int i=0; i<n; i++){
+            tmp = increase[i] + decrease[i];
+            if(max < tmp){
+                max = tmp;
             }
         }
-        if ( target > b[mid]) {
-            b[mid] = target;
-        }
-        return  len;
+        max--;
+        System.out.println(max);
+
     }
 
 }
