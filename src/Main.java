@@ -1,52 +1,48 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 
 
+    public static void main(String[] args) throws IOException {
 
-    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
         int[] arr = new int[n];
-        int[] increase = new int[n];
-        int[] decrease = new int[n];
+        int[][] dp = new int[2][n];
+
+        String s = br.readLine();
+        StringTokenizer st = new StringTokenizer(s);
 
 
-        String[] input = br.readLine().split(" ");
-        for(int i=0; i<n; i++){
-            arr[i] = Integer.parseInt(input[i]);
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        for(int i=0; i<n; i++){
-            for(int j=0; j<i; j++){
-                if(arr[j]<arr[i] && increase[j] > increase[i]){
-                    increase[i] = increase[j];
-                }
+        dp[0][0] = arr[0];
+        dp[1][0] = arr[0];
+        int max= dp[0][0];
+        for (int i = 1; i < n; i++) {
+            if (dp[0][i-1] > 0) {
+                dp[0][i] = dp[0][i-1]+ arr[i];
+            }else {
+                dp[0][i] =arr[i];
             }
-            increase[i] +=1;
+
+            max = Math.max(max,dp[0][i]);
+        }
+        for (int i = 1; i < n; i++) {
+            if (arr[i] < 0) {
+                dp[1][i] = Math.max(dp[0][i-1], dp[1][i-1]+ arr[i]);
+            }else {
+                dp[1][i] =dp[1][i-1] + arr[i];
+            }
+            max = Math.max(max,dp[1][i]);
         }
 
-        for(int i=n-1; i>=0; i--){
-            for(int j=i; j<n; j++){
-                if(arr[j]<arr[i] && decrease[j] > decrease[i]){
-                    decrease[i] = decrease[j];
-                }
-            }
-            decrease[i] +=1;
-        }
-        int max = 0;
-        int tmp = 0;
-
-        for(int i=0; i<n; i++){
-            tmp = increase[i] + decrease[i];
-            if(max < tmp){
-                max = tmp;
-            }
-        }
-        max--;
         System.out.println(max);
-
     }
 
 }
