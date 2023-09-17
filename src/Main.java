@@ -11,7 +11,8 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
         int[] arr = new int[n];
-        int[][] dp = new int[2][n];
+        int[] d = new int[n];
+        int[] dr = new int[n];
 
         String s = br.readLine();
         StringTokenizer st = new StringTokenizer(s);
@@ -21,25 +22,36 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        dp[0][0] = arr[0];
-        dp[1][0] = arr[0];
-        int max= dp[0][0];
-        for (int i = 1; i < n; i++) {
-            if (dp[0][i-1] > 0) {
-                dp[0][i] = dp[0][i-1]+ arr[i];
-            }else {
-                dp[0][i] =arr[i];
+
+        int max= arr[0];
+
+        for (int i = 0; i < n; i++) {
+            d[i] =arr[i];
+            if (i == 0) {
+                continue;
+            }
+            if (d[i-1] > 0) {
+                d[i] =d[i-1]+ arr[i];
             }
 
-            max = Math.max(max,dp[0][i]);
+            max = Math.max(max,d[i]);
         }
-        for (int i = 1; i < n; i++) {
-            if (arr[i] < 0) {
-                dp[1][i] = Math.max(dp[0][i-1], dp[1][i-1]+ arr[i]);
-            }else {
-                dp[1][i] =dp[1][i-1] + arr[i];
+        for (int i = n-1; i > 0; i--) {
+            dr[i] =arr[i];
+            if (i == n-1) {
+                continue;
             }
-            max = Math.max(max,dp[1][i]);
+            if (dr[i+1] > 0) {
+                dr[i] =dr[i+1]+ arr[i];
+            }
+        }
+
+        int tmp = 0;
+        for (int i = 1; i < n-1; i++) {
+            if (arr[i] < 0) {
+                tmp = d[i-1]+ dr[i+1];
+            }
+            max = Math.max(max, tmp);
         }
 
         System.out.println(max);
