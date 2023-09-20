@@ -1,60 +1,49 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
 public class Main {
-
 
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        int[] arr = new int[n];
-        int[] d = new int[n];
-        int[] dr = new int[n];
+        int[][] rgb = new int[n][3];
+        int[][] dp = new int[n][3];
 
-        String s = br.readLine();
-        StringTokenizer st = new StringTokenizer(s);
-
-
+        String[] s ;
         for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
-
-
-        int max= arr[0];
-
-        for (int i = 0; i < n; i++) {
-            d[i] =arr[i];
-            if (i == 0) {
-                continue;
-            }
-            if (d[i-1] > 0) {
-                d[i] =d[i-1]+ arr[i];
-            }
-
-            max = Math.max(max,d[i]);
-        }
-        for (int i = n-1; i > 0; i--) {
-            dr[i] =arr[i];
-            if (i == n-1) {
-                continue;
-            }
-            if (dr[i+1] > 0) {
-                dr[i] =dr[i+1]+ arr[i];
+            s = br.readLine().split(" ");
+            for(int j = 0; j < 3; j++){
+                rgb[i][j] = Integer.parseInt(s[j]);
             }
         }
 
-        int tmp = 0;
-        for (int i = 1; i < n-1; i++) {
-            if (arr[i] < 0) {
-                tmp = d[i-1]+ dr[i+1];
+        int min = Integer.MAX_VALUE;
+        for(int k=0; k<3; k++){
+            for(int j=0; j<3; j++){
+                if(k==j){
+                    dp[1][j] = 2001;
+                }else {
+                    dp[1][j] = rgb[0][k]+ rgb[1][j];
+                }
             }
-            max = Math.max(max, tmp);
+            for (int i = 2; i < n; i++) {
+                dp[i][0] = Math.min(dp[i - 1][1], dp[i - 1][2]) + rgb[i][0];
+                dp[i][1] = Math.min(dp[i - 1][0], dp[i - 1][2]) + rgb[i][1];
+                dp[i][2] = Math.min(dp[i - 1][0], dp[i - 1][1]) + rgb[i][2];
+            }
+            if (k==0) {
+                min = Math.min(dp[n-1][2],min);
+                min = Math.min(dp[n-1][1],min);
+            }else if (k==1) {
+                min = Math.min(dp[n-1][0],min);
+                min = Math.min(dp[n-1][2],min);
+            }else if (k==2) {
+                min = Math.min(dp[n-1][1],min);
+                min = Math.min(dp[n-1][0], min);
+            }
         }
-
-        System.out.println(max);
+        System.out.println(min);
     }
-
 }
