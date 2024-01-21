@@ -18,32 +18,23 @@ public class Main {
         int m = Integer.parseInt(st.nextToken());
 
         int cnt = 1;
-        int a = 0;
-        int b = 0;
-        int c = 0;
+        int a = 1;
+        int b = 1;
+        int c = 1;
 
 
-        while (true) {
+        while (a != e || b != s || c != m) {
             a++;
             b++;
             c++;
-            if (a > E) {
-                a = 1;
-            }
-            if (b > S) {
-                b = 1;
-            }
-            if (c > M) {
-                c = 1;
-            }
+            a = Math.max(a%(E+1),1);
+            b = Math.max(b%(S+1),1);
+            c = Math.max(c%(M+1),1);
 
-            if (a == e &&  b == s && c == m) {
-                System.out.println(cnt);
-                break;
-            } else  {
-                cnt++;
-            }
+            cnt++;
         }
+
+        System.out.println(cnt);
 
     }
 }
