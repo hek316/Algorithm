@@ -12,26 +12,38 @@ public class Main {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int[] arr = new int[3];
-        arr[0] = Integer.parseInt(st.nextToken());
-        arr[1] = Integer.parseInt(st.nextToken());
-        arr[2] = Integer.parseInt(st.nextToken());
 
-        int answer = 1;
-        int e , s , m ;
+        int e  = Integer.parseInt(st.nextToken());
+        int s = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+
+        int cnt = 1;
+        int a = 0;
+        int b = 0;
+        int c = 0;
+
+
         while (true) {
-            e = answer%E;
-            s = answer%S;
-            m = answer%M;
-            if (e == 0) e = E;
-            if (s == 0) s = S;
-            if (m == 0) m = M;
-            if (e == arr[0] &&  s == arr[1] && m == arr[2]) {
+            a++;
+            b++;
+            c++;
+            if (a > E) {
+                a = 1;
+            }
+            if (b > S) {
+                b = 1;
+            }
+            if (c > M) {
+                c = 1;
+            }
+
+            if (a == e &&  b == s && c == m) {
+                System.out.println(cnt);
                 break;
-            }else {
-                answer++;
+            } else  {
+                cnt++;
             }
         }
-        System.out.println(answer);
+
     }
 }
