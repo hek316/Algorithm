@@ -4,37 +4,69 @@ import java.util.StringTokenizer;
 
 public class Main {
 
+    private static int[] broken;
+
     public static void main(String[] args) throws Exception {
 
-        int E = 15;
-        int S = 28;
-        int M = 19;
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        int k = Integer.parseInt(br.readLine());
+        int n = Integer.parseInt(br.readLine());
+        int min = Math.abs(k-100);
+        if(n == 0){
+            System.out.println(Math.min(Integer.toString(k).length(), min));
+        }else {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            broken = new int[n];
+            for(int i=0; i<n; i++){
+                broken[i] = Integer.parseInt(st.nextToken());
+            }
+            int tmp = k;
 
-        int e  = Integer.parseInt(st.nextToken());
-        int s = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+            while(tmp <= 1000000){
+                int len =isPossible(tmp);
+                if(len != 0){
+                    min = Math.min(min,len + Math.abs(tmp-k));
+                    break;
+                }else {
+                    tmp++;
+                }
+            }
 
-        int cnt = 1;
-        int a = 1;
-        int b = 1;
-        int c = 1;
+            int tmp2 = k;
+            while(tmp2 >= 0){
+                int len =isPossible(tmp2);
+                if(len != 0){
+                    min = Math.min(min,len + Math.abs(tmp2-k));
+                    break;
+                }else {
+                    tmp2--;
+                }
+            }
 
-
-        while (a != e || b != s || c != m) {
-            a++;
-            b++;
-            c++;
-            a = Math.max(a%(E+1),1);
-            b = Math.max(b%(S+1),1);
-            c = Math.max(c%(M+1),1);
-
-            cnt++;
+            System.out.println(min);
         }
-
-        System.out.println(cnt);
-
     }
+
+    private static int isPossible(int k){
+        if(k == 0){
+            for(int i=0; i <broken.length; i++){
+                if(broken[i] == k){
+                    return 0;
+                }
+            }
+            return 1;
+        }
+        int len = 0;
+        while (k > 0){
+            for(int i=0; i <broken.length; i++){
+                if(broken[i] == k % 10){
+                    return 0;
+                }
+            }
+            len++;
+            k /= 10;
+        }
+        return len;
+    }
+
 }
