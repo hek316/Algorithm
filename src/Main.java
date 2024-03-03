@@ -1,25 +1,43 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
+
+    private static int N;
+    private static int M;
+    private static char[] arr;
+    private static boolean[] visit;
+    private static StringBuilder sb = new StringBuilder();
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         String s = br.readLine();
-        int n = Integer.parseInt(s);
-        long sum = 0;
+        N = s.charAt(0) - '0';
+        M = s.charAt(2) - '0';
+        arr = new char[2*M];
+        visit = new boolean[N+1];
 
-        int len = 1;
-        for(int start=1, end=1; start<=n; len++){
-            end=start*10-1;
-            if(end > n){
-                end = n;
-            }
-            sum+= (end-start +1)*len;
-            start=start*10;
+        dfs(0);
+        System.out.println(sb);
+    }
 
+    public static void dfs( int dept){
+        if(dept == M){
+            arr[2 * M - 1] = '\n';
+            sb.append(arr);
+            return;
         }
 
-        System.out.println(sum);
+        for(int i=1; i<=N; i++){
+            if(false == visit[i]){
+                arr[2*dept] =(char)(i + '0');
+                arr[2*dept+1] = ' ';
+                visit[i] = true;
+                dfs(dept+1);
+                visit[i] = false;
+            }
+        }
     }
 }
