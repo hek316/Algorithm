@@ -7,7 +7,7 @@ public class Main {
 
     private static int N;
     private static int M;
-    private static char[] arr;
+    private static int[] arr;
     private static boolean[] visit;
     private static StringBuilder sb = new StringBuilder();
     public static void main(String[] args) throws IOException {
@@ -16,24 +16,24 @@ public class Main {
         String s = br.readLine();
         N = s.charAt(0) - '0';
         M = s.charAt(2) - '0';
-        arr = new char[2*M];
-        visit = new boolean[N+1];
+        arr = new int[N];
+        visit = new boolean[N];
 
         dfs(0);
         System.out.println(sb);
     }
 
     public static void dfs( int dept){
-        if(dept == M){
-            arr[2 * M - 1] = '\n';
-            sb.append(arr);
-            return;
+        if(M == dept){
+            for(int i=0; i<M; i++){
+                sb.append(arr[i]).append(" ");
+            }
+            sb.append("\n");
         }
 
-        for(int i=1; i<=N; i++){
+        for(int i=0; i<N; i++){
             if(false == visit[i]){
-                arr[2*dept] =(char)(i + '0');
-                arr[2*dept+1] = ' ';
+                arr[dept] = i+1;
                 visit[i] = true;
                 dfs(dept+1);
                 visit[i] = false;
