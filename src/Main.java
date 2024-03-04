@@ -8,7 +8,6 @@ public class Main {
     private static int N;
     private static int M;
     private static int[] arr;
-    private static boolean[] visit;
     private static StringBuilder sb = new StringBuilder();
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,7 +16,6 @@ public class Main {
         N = s.charAt(0) - '0';
         M = s.charAt(2) - '0';
         arr = new int[N];
-        visit = new boolean[N];
 
         dfs(0);
         System.out.println(sb);
@@ -29,15 +27,15 @@ public class Main {
                 sb.append(arr[i]).append(" ");
             }
             sb.append("\n");
+            return;
         }
-
-        for(int i=0; i<N; i++){
-            if(false == visit[i]){
-                arr[dept] = i+1;
-                visit[i] = true;
-                dfs(dept+1);
-                visit[i] = false;
-            }
+        int preIndex = dept-1;
+        if(preIndex < 0){
+            preIndex = 0;
+        }
+        for(int i=arr[preIndex]; i<N; i++){
+            arr[dept] = i+1;
+            dfs(dept+1);
         }
     }
 }
