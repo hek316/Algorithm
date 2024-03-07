@@ -7,7 +7,7 @@ public class Main {
 
     private static int N;
     private static int M;
-    private static int[] arr;
+    private static char[] arr;
     private static StringBuilder sb = new StringBuilder();
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,23 +15,27 @@ public class Main {
         String s = br.readLine();
         N = s.charAt(0) - '0';
         M = s.charAt(2) - '0';
-        arr = new int[M];
+        arr = new char[2*M];
 
-        dfs(0,0);
+        dfs(0, 1);
         System.out.println(sb);
     }
 
-    public static void dfs(int start, int dept){
+    public static void dfs(int dept, int value){
         if(M == dept){
-            for(int i=0; i<M; i++){
-                sb.append(arr[i]).append(" ");
-            }
-            sb.append("\n");
+            arr[2*M-1] = '\n';
+            sb.append(arr);
             return;
         }
-        for(int i=start; i<N; i++){
-            arr[dept] = i+1;
-            dfs(i+1 ,dept+1);
-        }
+        if(value > N) return;
+        arr[2*dept] = (char)(value +'0');
+        arr[2*dept+1]= ' ';
+        // 선택한 경우
+        dfs(dept+1, value+1);
+
+        // 선택안한 경우
+        dfs(dept, value+1);
+
+
     }
 }
