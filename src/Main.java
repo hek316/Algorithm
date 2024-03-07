@@ -17,20 +17,22 @@ public class Main {
         M = s.charAt(2) - '0';
         arr = new char[2*M];
 
-        dfs(0);
+        dfs(0, 1);
         System.out.println(sb);
     }
 
-    public static void dfs(int dept){
+    public static void dfs(int dept, int value){
         if(M == dept){
             arr[2*M-1] = '\n';
             sb.append(arr);
             return;
         }
-        for(int i=0; i<N; i++){
-            arr[2*dept] = (char)(i+1 +'0');
+
+        for(int i=value; i<=N; i++){
+            arr[2*dept] = (char)(i +'0');
             arr[2*dept+1]= ' ';
-            dfs(dept+1);
+            dfs(dept+1, i);
         }
+
     }
 }
