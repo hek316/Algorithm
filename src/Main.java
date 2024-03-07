@@ -15,13 +15,13 @@ public class Main {
         String s = br.readLine();
         N = s.charAt(0) - '0';
         M = s.charAt(2) - '0';
-        arr = new int[N];
+        arr = new int[M];
 
-        dfs(0);
+        dfs(0,0);
         System.out.println(sb);
     }
 
-    public static void dfs( int dept){
+    public static void dfs(int start, int dept){
         if(M == dept){
             for(int i=0; i<M; i++){
                 sb.append(arr[i]).append(" ");
@@ -29,13 +29,9 @@ public class Main {
             sb.append("\n");
             return;
         }
-        int preIndex = dept-1;
-        if(preIndex < 0){
-            preIndex = 0;
-        }
-        for(int i=arr[preIndex]; i<N; i++){
+        for(int i=start; i<N; i++){
             arr[dept] = i+1;
-            dfs(dept+1);
+            dfs(i+1 ,dept+1);
         }
     }
 }
