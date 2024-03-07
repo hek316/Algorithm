@@ -17,25 +17,20 @@ public class Main {
         M = s.charAt(2) - '0';
         arr = new char[2*M];
 
-        dfs(0, 1);
+        dfs(0);
         System.out.println(sb);
     }
 
-    public static void dfs(int dept, int value){
+    public static void dfs(int dept){
         if(M == dept){
             arr[2*M-1] = '\n';
             sb.append(arr);
             return;
         }
-        if(value > N) return;
-        arr[2*dept] = (char)(value +'0');
-        arr[2*dept+1]= ' ';
-        // 선택한 경우
-        dfs(dept+1, value+1);
-
-        // 선택안한 경우
-        dfs(dept, value+1);
-
-
+        for(int i=0; i<N; i++){
+            arr[2*dept] = (char)(i+1 +'0');
+            arr[2*dept+1]= ' ';
+            dfs(dept+1);
+        }
     }
 }
