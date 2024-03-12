@@ -1,38 +1,46 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    private static int N;
-    private static int M;
-    private static char[] arr;
-    private static StringBuilder sb = new StringBuilder();
-    public static void main(String[] args) throws IOException {
+    static boolean[] check;
+    static StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s =br.readLine().split(" ");
+        int n = Integer.parseInt(s[0]);
+        int m = Integer.parseInt(s[1]);
 
-        String s = br.readLine();
-        N = s.charAt(0) - '0';
-        M = s.charAt(2) - '0';
-        arr = new char[2*M];
-
-        dfs(0, 1);
+        int[] arr = new int[n];
+        int[] result = new int[n];
+        check = new boolean[n];
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for(int i=0; i<arr.length; i++){
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+        Arrays.sort(arr);
+        dfs(m, arr, result, 0);
         System.out.println(sb);
     }
 
-    public static void dfs(int dept, int value){
-        if(M == dept){
-            arr[2*M-1] = '\n';
-            sb.append(arr);
+    static private void dfs(int m, int[] arr, int[] result, int idx){
+        if( m <= idx ){
+            for(int i=0; i<m; i++){
+                sb.append(result[i]).append(" ");
+            }
+            sb.append("\n");
             return;
         }
-
-        for(int i=value; i<=N; i++){
-            arr[2*dept] = (char)(i +'0');
-            arr[2*dept+1]= ' ';
-            dfs(dept+1, i);
+        for(int i= 0; i< arr.length; i++){
+            if(check[i]){
+                continue;
+            }
+            result[idx] = arr[i];
+            check[i]  = true;
+            dfs(m, arr, result, idx+1);
+            check[i]  = false;
         }
-
     }
 }
