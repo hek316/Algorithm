@@ -34,7 +34,7 @@ public class Main {
             sb.append("\n");
             return;
         }
-        for(int i= 0; i< arr.length; i++){
+        for(int i= start; i< arr.length; i++){
             result[idx] = arr[i];
             dfs(m,idx+1, i);
         }
