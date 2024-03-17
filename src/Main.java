@@ -24,11 +24,11 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
         Arrays.sort(arr);
-        dfs(m, 0, 0);
+        dfs(m, 0);
         System.out.println(sb);
     }
 
-    static private void dfs(int m, int idx, int start){
+    static private void dfs(int m, int idx){
         if( m == idx ){
             for(int i=0; i<m; i++){
                 sb.append(result[i]).append(" ");
@@ -37,13 +37,13 @@ public class Main {
             return;
         }
         int last = 0;
-        for(int i= start; i< arr.length; i++){
+        for(int i= 0; i< arr.length; i++){
             if(last == arr[i]){
                 continue;
             }
             result[idx] = arr[i];
             last = result[idx] ;
-            dfs(m,idx+1, i+1);
+            dfs(m,idx+1);
 
         }
     }
