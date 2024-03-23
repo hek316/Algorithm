@@ -23,8 +23,8 @@ public class Main {
 
     static private String nextArr(int[] arr, int n){
         int idx = n-1;
-        // 마지막 순열일 경우 내림차순
-        while(idx>=1 && arr[idx-1] > arr[idx] ){
+        // 첫번째 순열일 경우 오름차순
+        while(idx>=1 && arr[idx-1] < arr[idx] ){
             idx--;
         }
         StringBuilder sb = new StringBuilder();
@@ -35,7 +35,7 @@ public class Main {
 
         int j = idx-1;
         for(int i = n-1; i>= idx; i--){
-            if(arr[j] < arr[i]){
+            if(arr[j] > arr[i]){
                 swap(i, j, arr);
                 break;
             }
