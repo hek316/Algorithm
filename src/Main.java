@@ -1,64 +1,40 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
 public class Main {
 
     static int[] arr;
 
+    static boolean[] visit;
+
+    static StringBuilder sb = new StringBuilder();
+
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        StringTokenizer st = new StringTokenizer(br.readLine());
         br.close();
 
         arr = new int[n];
-        for(int i=0; i<arr.length; i++){
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
-
-        String s  = nextArr(arr, n);
-        System.out.println(s);
+        visit = new boolean[n+1];
+        nextArr(0, n);
+        System.out.println(sb);
     }
 
-    static private String nextArr(int[] arr, int n){
-        int idx = n-1;
-        // 첫번째 순열일 경우 오름차순
-        while(idx>=1 && arr[idx-1] < arr[idx] ){
-            idx--;
+    static private void nextArr(int idx, int n){
+        if(idx == n){
+            for(int i=0; i<n; i++){
+                sb.append(arr[i]).append(" ");
+            }
+            sb.append("\n");
+            return;
         }
-        StringBuilder sb = new StringBuilder();
-        if(idx == 0){
-            sb.append("-1");
-            return sb.toString();
-        }
-
-        int j = idx-1;
-        for(int i = n-1; i>= idx; i--){
-            if(arr[j] > arr[i]){
-                swap(i, j, arr);
-                break;
+        for(int i = 1; i <= n; i++){
+            if(visit[i] == false){
+                arr[idx] = i;
+                visit[i] = true;
+                nextArr(idx+1, n);
+                visit[i] = false;
             }
         }
-
-        j = n-1;
-        while(idx < j){
-            swap(idx, j, arr);
-            idx++;
-            j--;
-        }
-
-
-        for(int i=0; i<= arr.length-1; i++){
-            sb.append(arr[i]).append(" ");
-        }
-        return sb.toString();
     }
-
-    private static void swap(int i, int j, int[] arr){
-        int tmp =arr[i];
-        arr[i] = arr[j];
-        arr[j] = tmp;
-    }
-
 }
