@@ -5,46 +5,73 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static StringBuilder sb = new StringBuilder();
     static int[] arr;
     static boolean[] visit;
     static int[] result;
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String[] s =br.readLine().split(" ");
-        int n = Integer.parseInt(s[0]);
-        int m = Integer.parseInt(s[1]);
+        int n = Integer.parseInt(br.readLine());
 
         arr = new int[n];
         result = new int[n];
-        visit = new boolean[n];
+        visit = new boolean[n+1];
 
         StringTokenizer st = new StringTokenizer(br.readLine());
         for(int i=0; i<arr.length; i++){
             arr[i] = Integer.parseInt(st.nextToken());
         }
-        Arrays.sort(arr);
-        dfs(m, 0, 0);
-        System.out.println(sb);
+        for(int i=0; i<=n; i++){
+            visit[i] = true;
+        }
+
+        String s  = nextArr(arr, n);
+        System.out.println(s);
     }
 
-    static private void dfs(int m, int idx, int start){
-        if( m == idx ){
-            for(int i=0; i<m; i++){
-                sb.append(result[i]).append(" ");
+    static private String nextArr(int[] arr, int n){
+        int result = -1;
+        int tmp = arr[n-1];
+        visit[arr[n-1]] = false;
+        for(int i=n-2; i>=0; i--){
+            visit[arr[i]] = false;
+            if(tmp < arr[i]){
+                tmp = arr[i];
+            }else {
+                if(arr[i] !=n){
+                    int k = arr[i] +1;
+                    while(k <= n){
+                        if(visit[k] == false){
+                            arr[i] = k;
+                            visit[k] = true;
+                            break;
+                        }
+                        k++;
+                    }
+                }
+                result = i;
+                break;
             }
-            sb.append("\n");
-            return;
         }
-        int last = 0;
-        for(int i= start; i< arr.length; i++){
-            if(last == arr[i]){
-                continue;
+        if(result != -1){
+            for(int i=result+1; i<=n-1; i++){
+                for(int j=1; j<=n; j++){
+                    if(visit[j] == false){
+                        arr[i] = j;
+                        visit[j] = true;
+                        i++;
+                    }
+                }
             }
-            result[idx] = arr[i];
-            last = result[idx] ;
-            dfs(m,idx+1, i);
+        }
+        StringBuilder sb = new StringBuilder();
+        if(result != -1){
+            for(int i=0; i<= arr.length-1; i++){
+                sb.append(arr[i]).append(" ");
+            }
+        } else {
+            sb.append("-1");
+        }
 
-        }
+        return sb.toString();
     }
 }
