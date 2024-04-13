@@ -1,68 +1,43 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
 
 public class Main {
-    static StringBuilder sb = new StringBuilder();
-
-    static int L ;
-    static int C ;
-
-    static char[] ARR;
+    static int N;
+    static int MAX;
+    static int[] days;
+    static int[] cost;
 
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String input = br.readLine();
-        String[] s1 = input.split(" ");
+        N = Integer.parseInt(br.readLine());
+        days = new int[N+1];
+        cost = new int[N+1];
 
-        L = Integer.parseInt(s1[0]);
-        C = Integer.parseInt(s1[1]);
-
-        ARR = new char[C];
-        char[] result = new char[L];
-
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        for(int i=0; i<C; i++){
-            ARR[i] = st.nextToken().charAt(0);
+        for(int i=1; i<= N; i++){
+            String[] s1 = br.readLine().split(" ");
+            days[i] =  Integer.parseInt(s1[0]);
+            cost[i] =  Integer.parseInt(s1[1]);
         }
-        Arrays.sort(ARR);
-        goPassword(0, result, L, C, 0);
-
-        System.out.println(sb);
+        go( 1, 0);
+        System.out.println(MAX);
 
     }
 
-    public static void goPassword(int idx, char[] result, int L, int C, int start){
-        if(idx >= L){
-            int vowelsCnt = containsVowels(result);
-            int consonantCount = L - vowelsCnt;
-            if(vowelsCnt >= 1 && consonantCount >= 2 ){
-                for(char c : result){
-                    sb.append(c);
-                }
-                sb.append("\n");
-                return;
-            }else {
-                return;
-            }
+    public static void go(int day, int sum){
+        if(day >= N+1){
+            MAX = Math.max(sum, MAX);
+            return;
         }
 
-        for(int i=start; i<C; i++){
-            result[idx] = ARR[i];
-            goPassword(idx+1, result, L, C, i+1);
+        // 선택안한 경우
+        go(day+1, sum);
+        // 불가능한 경우
+        if(day+days[day] > N+1){
+            return;
         }
-    }
-
-    public static int containsVowels(char[] array) {
-        int cnt = 0;
-        for (char c : array) {
-            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
-                cnt++;
-            }
-        }
-        return cnt;
+        // 선택한 경우
+        go(day+days[day],sum + cost[day]);
     }
 
 }
