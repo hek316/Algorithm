@@ -1,43 +1,76 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
     static int N;
-    static int MAX;
-    static int[] days;
-    static int[] cost;
+    static int MIN;
+    static int[][] arr;
+
+    static int[] result;
+
+    static int[] result2;
 
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        days = new int[N+1];
-        cost = new int[N+1];
+        arr = new int[N][N];
+        result = new int[N];
+        result2 = new int[N];
+        MIN = Integer.MAX_VALUE;
 
-        for(int i=1; i<= N; i++){
-            String[] s1 = br.readLine().split(" ");
-            days[i] =  Integer.parseInt(s1[0]);
-            cost[i] =  Integer.parseInt(s1[1]);
+        for(int i=0; i< N; i++){
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for(int j=0; j<N; j++){
+                arr[i][j] = Integer.parseInt(st.nextToken());
+            }
         }
-        go( 1, 0);
-        System.out.println(MAX);
+
+        go(0,0);
+        System.out.println(MIN);
 
     }
 
-    public static void go(int day, int sum){
-        if(day >= N+1){
-            MAX = Math.max(sum, MAX);
+    public static void go(int idx, int start){
+        if(idx == N/2){
+
+            boolean[] resultTmp = new boolean[N];
+            for(int i=0; i<N/2; i++){
+                resultTmp[result[i]] = true;
+            }
+            int j =0;
+            for(int i=0; i<N; i++){
+                if(resultTmp[i] == false){
+                    result2[j] = i;
+                    j++;
+                }
+            }
+            int sum1 = solveLevel1(result, 0);
+            int sum2 = solveLevel1(result2, 0);
+            int tmp = Math.abs(sum2- sum1);
+            MIN = Math.min(MIN, tmp);
             return;
         }
 
-        // 선택안한 경우
-        go(day+1, sum);
-        // 불가능한 경우
-        if(day+days[day] > N+1){
-            return;
+        for(int i=start; i<N; i++){
+            result[idx] = i;
+            if(idx != 0){
+                int j = result[idx-1];
+            }
+            go(idx+1,  i+1);
         }
-        // 선택한 경우
-        go(day+days[day],sum + cost[day]);
+    }
+
+    public static int solveLevel1(int[] result2, int sum){
+
+        for(int i=0; i<N/2; i++){
+            for(int j=i+1; j<N/2; j++){
+                sum= sum + arr[result2[i]][result2[j]] + arr[result2[j]][result2[i]] ;
+            }
+        }
+        return sum;
     }
 
 }
