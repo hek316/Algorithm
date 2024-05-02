@@ -27,8 +27,9 @@ public class Main {
                 arr[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-
-        go(0,0);
+        // 0번째팀을 가진 경우만 비교해보아도 모든 경우의 수 파악가능
+        result[0] = 0;
+        go(1,1);
         System.out.println(MIN);
 
     }
@@ -56,9 +57,7 @@ public class Main {
 
         for(int i=start; i<N; i++){
             result[idx] = i;
-            if(idx != 0){
-                int j = result[idx-1];
-            }
+
             go(idx+1,  i+1);
         }
     }
