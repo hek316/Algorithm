@@ -1,73 +1,91 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.StringTokenizer;
 
 public class Main {
     static int N;
-    static int MIN;
-    static int[][] arr;
+    static char[] arr;
+
     static int[] result;
-    static int[] result2;
+
+    static boolean[] isvisit;
+
+    static StringBuilder sb = new StringBuilder();
 
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        arr = new int[N][N];
-        result = new int[N];
-        result2 = new int[N];
-        MIN = Integer.MAX_VALUE;
+        arr = new char[N];
+        isvisit = new boolean[10];
+        result = new int[N+1];
 
-        for(int i=0; i< N; i++){
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            for(int j=0; j<N; j++){
-                arr[i][j] = Integer.parseInt(st.nextToken());
-            }
+        String s = br.readLine();
+        for(int i =0; i<N; i++){
+            arr[i] = s.charAt(2*i);
         }
-        // 0번째팀을 가진 경우만 비교해보아도 모든 경우의 수 파악가능
-        result[0] = 0;
-        go(1,1);
-        System.out.println(MIN);
 
+        solveMax(arr, isvisit, 0, result);
+        Arrays.fill(isvisit, false);
+        solve(arr, isvisit, 0, result);
+        System.out.println(sb);
     }
 
-    public static void go(int idx, int start){
-        if(idx == N-1){
-            return;
+    public static boolean solve(char[] arr, boolean[] isvisit, int idx, int[] result){
+        if(idx ==  N+1){
+            for(int i : result){
+                sb.append(i);
+            }
+            sb.append("\n");
+            return true;
         }
 
-        boolean[] resultTmp = new boolean[N];
-        for(int i=0; i<idx; i++){
-            resultTmp[result[i]] = true;
-        }
-        int j =0;
-        for(int i=0; i<N; i++){
-            if(resultTmp[i] == false){
-                result2[j] = i;
-                j++;
+        for(int i=0; i<10; i++){
+            if(isvisit[i] == true) continue;
+            if(idx == 0 || isVaild(result[idx-1], i, arr[idx-1])){
+                result[idx] = i;
+                isvisit[i] = true;
+                if(solve(arr, isvisit, idx+1, result)){
+                    return true;
+                }
+                isvisit[i] = false;
             }
         }
-        int sum1 = solveLevel1(result, 0, idx);
-        int sum2 = solveLevel1(result2, 0, N-idx);
-        int tmp = Math.abs(sum2- sum1);
-        MIN = Math.min(MIN, tmp);
-
-        for(int i=start; i<N; i++){
-            result[idx] = i;
-            go(idx+1,  i+1);
-        }
-
+        return false;
     }
 
-    public static int solveLevel1(int[] result, int sum, int cnt){
+    public static boolean solveMax(char[] arr, boolean[] isvisit, int idx, int[] result){
+        if(idx ==  N+1){
+            for(int i : result){
+                sb.append(i);
+            }
+            sb.append("\n");
+            return true;
+        }
 
-        for(int i=0; i<cnt; i++){
-            for(int j=i+1; j<cnt; j++){
-                sum= sum + arr[result[i]][result[j]] + arr[result[j]][result[i]] ;
+        for(int i=9; i>=0; i--){
+            if(isvisit[i] == true) continue;
+            if(idx == 0 || isVaild(result[idx-1], i, arr[idx-1])){
+                result[idx] = i;
+                isvisit[i] = true;
+                if(solveMax(arr, isvisit, idx+1, result)){
+                    return true;
+                }
+                isvisit[i] = false;
             }
         }
-        return sum;
+        return false;
     }
-
+    public static boolean isVaild(int preNum, int num, char inequality ){
+        if(inequality == '<'){
+            if(preNum < num){
+                return true;
+            }
+        }else{
+            if(preNum > num){
+                return true;
+            }
+        }
+        return false;
+    }
 }
