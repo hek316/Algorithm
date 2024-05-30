@@ -4,67 +4,65 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-    static ArrayList<Integer>[] a ;
 
-    static boolean[] c;
+    static int[] grp;
+
+    static ArrayList<Integer>[] arr;
 
     static StringBuilder sb = new StringBuilder();
 
-    public static void dfs(int x){
-        if(c[x]){
-            return;
-        }
-        c[x] = true;
-        sb.append(x).append(" ");
-        for(int y : a[x]){
-            if(c[y] == false){
-                dfs(y);
+    static boolean dfs(int node, int c){
+        grp[node] = c;
+        for(int i : arr[node]){
+            int current = grp[i];
+            if (grp[node] == current) {
+                return false;
             }
-        }
-    }
-
-    public static void bfs(int start){
-        Queue<Integer> q = new LinkedList<Integer>();
-        q.add(start);
-        c[start] = true;
-        while (q.isEmpty() == false){
-            int x = q.remove();
-            sb.append(x).append(" ");
-            for(int i : a[x]){
-                if(c[i] == false){
-                    c[i] = true;
-                    q.add(i);
+            if(current == 0){
+                if(dfs(i,  3 - grp[node]) == false) {
+                    return false;
                 }
             }
         }
+        return true;
     }
-
-
     public static void main(String args[]) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        int start = Integer.parseInt(st.nextToken());
-        a = (ArrayList<Integer>[]) new ArrayList[n+1];
-        for(int i=0; i<=n; i++){
-            a[i] = new ArrayList<Integer>();
-        }
-        for(int i=0; i<m; i++){
+        int k = Integer.parseInt(br.readLine());
+
+        StringTokenizer st ;
+        // 정점의 갯수 V , 간선의 갯수 E
+        for(int i=0; i<k; i++){
             st = new StringTokenizer(br.readLine());
-            int from = Integer.parseInt(st.nextToken());
-            int to= Integer.parseInt(st.nextToken());
-            a[from].add(to);
-            a[to].add(from);
+            int V = Integer.parseInt(st.nextToken());
+            int E = Integer.parseInt(st.nextToken());
+            arr = new ArrayList[V+1];
+            for(int j=0; j<=V; j++){
+                arr[j] = new ArrayList<Integer>();
+            }
+            for(int j=0; j<E; j++){
+                st = new StringTokenizer(br.readLine());
+                int u1 = Integer.parseInt(st.nextToken());
+                int v1 = Integer.parseInt(st.nextToken());
+                arr[u1].add(v1);
+                arr[v1].add(u1);
+            }
+
+            grp = new int[V+1];
+            boolean result = true;
+            for(int m=1; m<=V; m++){
+                // 방문안한경우만 호출
+                if(grp[m] == 0){
+                    result = dfs(m,1);
+                    if(result == false){
+                        break;
+                    }
+                }
+            }
+
+            sb.append(result ? "YES" : "NO").append("\n");
         }
-        for(int i=1; i<=n; i++){
-            Collections.sort(a[i]);
-        }
-        c = new boolean[n+1];
-        dfs(start);
-        sb.append("\n");
-        c = new boolean[n+1];
-        bfs(start);
+        br.close();
         System.out.println(sb);
 
     }
