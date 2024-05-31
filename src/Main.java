@@ -5,65 +5,72 @@ import java.util.*;
 
 public class Main {
 
-    static int[] grp;
+    static int[][] arr;
+    static boolean[][] visited;
+    static int N;
 
-    static ArrayList<Integer>[] arr;
+    static int sum = 0;
 
-    static StringBuilder sb = new StringBuilder();
+    static int[] dx = {-1,0,0,1};
+    static int[] dy = {0,-1,1,0};
 
-    static boolean dfs(int node, int c){
-        grp[node] = c;
-        for(int i : arr[node]){
-            int current = grp[i];
-            if (grp[node] == current) {
-                return false;
-            }
-            if(current == 0){
-                if(dfs(i,  3 - grp[node]) == false) {
-                    return false;
+    static void dfs(int i, int j){
+        if(visited[i][j]) return;
+        visited[i][j] = true;
+        if (arr[i][j] == 1){
+            sum++;
+            for(int k=0; k<4; k++){
+                int nx = i+dx[k], ny = j+dy[k];
+                if(nx>= 0 && ny >= 0 && nx < N&& ny< N){
+                    dfs(nx, ny);
                 }
+
             }
         }
-        return true;
     }
+
     public static void main(String args[]) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int k = Integer.parseInt(br.readLine());
+        N = Integer.parseInt(br.readLine());
 
-        StringTokenizer st ;
-        // 정점의 갯수 V , 간선의 갯수 E
-        for(int i=0; i<k; i++){
-            st = new StringTokenizer(br.readLine());
-            int V = Integer.parseInt(st.nextToken());
-            int E = Integer.parseInt(st.nextToken());
-            arr = new ArrayList[V+1];
-            for(int j=0; j<=V; j++){
-                arr[j] = new ArrayList<Integer>();
-            }
-            for(int j=0; j<E; j++){
-                st = new StringTokenizer(br.readLine());
-                int u1 = Integer.parseInt(st.nextToken());
-                int v1 = Integer.parseInt(st.nextToken());
-                arr[u1].add(v1);
-                arr[v1].add(u1);
-            }
+        arr = new int[N][N];
+        visited = new boolean[N][N];
 
-            grp = new int[V+1];
-            boolean result = true;
-            for(int m=1; m<=V; m++){
-                // 방문안한경우만 호출
-                if(grp[m] == 0){
-                    result = dfs(m,1);
-                    if(result == false){
-                        break;
-                    }
+
+
+        for(int i=0; i<N; i++){
+            String s = br.readLine();
+            for(int j=0; j<N; j++){
+                int tmp = s.charAt(j) - '0';
+                arr[i][j] = tmp;
+                if(tmp == 0){
+                    visited[i][j] = true;
+                }
+
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        List<Integer> results = new ArrayList<>();
+        for(int i=0; i<N; i++){
+            for(int j=0; j<N; j++){
+                if(visited[i][j] == false){
+                    sum = 0;
+                    dfs(i, j);
+                    results.add(sum);
                 }
             }
-
-            sb.append(result ? "YES" : "NO").append("\n");
         }
+        Collections.sort(results);
+        sb.append(results.size()).append("\n");
+        for(int i=0; i<results.size(); i++){
+            sb.append(results.get(i)).append("\n");
+        }
+
         br.close();
         System.out.println(sb);
+
 
     }
 }
