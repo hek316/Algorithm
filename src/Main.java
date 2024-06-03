@@ -3,72 +3,71 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+
+class Point{
+    int x;
+    int y;
+
+    public Point(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+}
 public class Main {
 
     static char[][] arr;
-    static boolean[][] visited;
-    static int cnt = 0;
 
-    static int[] dx = {-1,0,0,1,-1,-1,1, 1};
-    static int[] dy = {0,-1,1,0,-1, 1,1, -1};
+    static int[][] cnt;
+    static int[] dx = {-1,0,0,1};
+    static int[] dy = {0,-1,1,0};
 
-    static int w;
-    static int h;
+    static int N;
+    static int M;
 
-    static void dfs(int i, int j){
-        if(visited[i][j]) return;
-        visited[i][j] = true;
-        if (arr[i][j] == '1'){
-            for(int k=0; k<8; k++){
-                int nx = i+dx[k], ny = j+dy[k];
-                if(nx>= 0 && ny >= 0 && nx < h&& ny< w){
-                    dfs(nx, ny);
+    static void bfs(){
+
+        Queue<Point> queue = new LinkedList<>();
+        queue.add(new Point(0, 0));
+
+        while (!queue.isEmpty()){
+            Point t = queue.remove();
+            if(t.x == (N-1) && t.y == (M-1)) {
+                return;
+            }
+
+            if(cnt[t.x][t.y] != 0){
+                for(int k=0; k<4; k++){
+                    int nx = t.x+dx[k], ny = t.y+dy[k];
+                    if(nx>= 0 && ny >= 0 && nx < N && ny< M && arr[nx][ny] == '1' && cnt[nx][ny] == 0){
+                        queue.add(new Point(nx, ny));
+                        cnt[nx][ny] = cnt[t.x][t.y]+1;
+                    }
                 }
-
             }
         }
     }
 
     public static void main(String args[]) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        String s;
-        while (!(s = br.readLine()).equals("0 0")){
-            StringTokenizer st = new StringTokenizer(s);
-            w = Integer.parseInt(st.nextToken());
-            h = Integer.parseInt(st.nextToken());
-            if(w == 0 && h == 0) break;
+        arr = new char[N][M];
+        cnt = new int[N][M];
 
-            arr = new char[h][w];
-            visited = new boolean[h][w];
-
-            for(int i=0; i<h; i++){
-                String str = br.readLine();
-                for(int j=0; j<w; j++){
-                    char tmp = str.charAt(j*2);
-                    arr[i][j] = tmp;
-                    if(tmp == '0'){
-                        visited[i][j] = true;
-                    }
-                }
+        for(int i=0; i<N; i++){
+            String str = br.readLine();
+            for(int j=0; j<M; j++){
+                char tmp = str.charAt(j);
+                arr[i][j] = tmp;
             }
-            // 섬의 개수
-            cnt = 0;
-            for(int i=0; i<h; i++){
-                for(int j=0; j<w; j++){
-                    if(visited[i][j] == false){
-                        cnt++;
-                        dfs(i, j);
-                    }
-                }
-            }
-            sb.append(cnt).append("\n");
         }
+        cnt[0][0] = 1;
+        bfs();
 
         br.close();
-        System.out.println(sb);
-
+        System.out.println(cnt[N-1][M-1]);
 
     }
 }
