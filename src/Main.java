@@ -4,44 +4,35 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 
-class Point{
-    int x;
-    int y;
-
-    public Point(int x, int y){
-        this.x = x;
-        this.y = y;
-    }
-}
 public class Main {
 
-    static char[][] arr;
-
-    static int[][] cnt;
-    static int[] dx = {-1,0,0,1};
-    static int[] dy = {0,-1,1,0};
-
+    // 세로
     static int N;
+    // 가로
     static int M;
+    static int[][] arr;
+    static int[][] days;
 
-    static void bfs(){
 
-        Queue<Point> queue = new LinkedList<>();
-        queue.add(new Point(0, 0));
+    static int[] dx = {-1, +1, 0, 0};
+    static int[] dy = {0, 0, +1, -1};
 
-        while (!queue.isEmpty()){
-            Point t = queue.remove();
-            if(t.x == (N-1) && t.y == (M-1)) {
-                return;
-            }
+    static Queue<int[]> q = new LinkedList<>();
 
-            if(cnt[t.x][t.y] != 0){
-                for(int k=0; k<4; k++){
-                    int nx = t.x+dx[k], ny = t.y+dy[k];
-                    if(nx>= 0 && ny >= 0 && nx < N && ny< M && arr[nx][ny] == '1' && cnt[nx][ny] == 0){
-                        queue.add(new Point(nx, ny));
-                        cnt[nx][ny] = cnt[t.x][t.y]+1;
-                    }
+    static boolean all_ripen =true;
+
+
+    public static void bfs(){
+
+        while (!q.isEmpty()){
+            int[] r = q.poll();
+
+            for(int i=0; i<4; i++){
+                int x = r[0] + dx[i];
+                int y = r[1] + dy[i];
+                if(x>=0 && y>=0 && x < N && y < M && days[x][y] == 0 && arr[x][y] != 1){
+                    days[x][y] = days[r[0]][r[1]]+ 1;
+                    q.add(new int[]{x,y});
                 }
             }
         }
@@ -50,24 +41,48 @@ public class Main {
     public static void main(String args[]) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
 
-        arr = new char[N][M];
-        cnt = new int[N][M];
-
+        arr = new int[N][M];
+        days = new int[N][M];
         for(int i=0; i<N; i++){
-            String str = br.readLine();
+            st = new StringTokenizer(br.readLine());
             for(int j=0; j<M; j++){
-                char tmp = str.charAt(j);
-                arr[i][j] = tmp;
+                arr[i][j] = Integer.parseInt(st.nextToken());
+                if(arr[i][j] == 1){
+                    q.offer(new int[]{i,j});
+                } else if(arr[i][j] == -1){
+                    days[i][j] = -1;
+                } else if(arr[i][j] == 0){
+                    all_ripen = false;
+                }
             }
         }
-        cnt[0][0] = 1;
-        bfs();
 
+        if (all_ripen) {
+            System.out.println(0);
+            return;
+        }
+        bfs();
         br.close();
-        System.out.println(cnt[N-1][M-1]);
+
+
+
+        int day = 0;
+        for(int i=0; i<N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (days[i][j] == 0 && arr[i][j] == 0) {
+                    System.out.println(-1);
+                    return;
+                }
+
+                day = Math.max(day, days[i][j]);
+            }
+        }
+
+        System.out.println(day);
 
     }
+
 }
