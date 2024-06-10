@@ -3,70 +3,58 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+public class Main{
 
-public class Main {
+    static char[][] arr;
+    static int[][] cnts;
 
-    static int[][] arr;
-    static int[][] cnt;
+    static boolean[][] visited;
+    static int N;
+    static int M;
 
+    static int[] dx = {+1, 0, -1, 0};
+    static int[] dy = {0, +1, 0, -1};
 
-    static int[] dx = {+1, +2, +1, +2, -2, -1, -2, -1};
-    static int[] dy = {+2, +1, -2, -1, +1, +2, -1, -2};
-
-
-    public static void bfs(int[] start, int[] end, int l){
-        Queue<int[]> q = new LinkedList<>();
-        q.add(start);
-
-        while (!q.isEmpty()){
-            int[] r = q.poll();
-
-            for(int i=0; i<8; i++){
-                int x = r[0] + dx[i];
-                int y = r[1] + dy[i];
-                if(x>=0 && y>=0 && x < l && y < l && cnt[x][y] == 0){
-                    cnt[x][y] = cnt[r[0]][r[1]]+ 1;
-                    q.add(new int[]{x,y});
-                    if(x == end[0] && y == end[1]){
-                        return;
-                    }
+    public static boolean dfs(int i, int j, int cnt){
+        if(visited[i][j]){ return cnt - cnts[i][j] >= 4;}
+        cnts[i][j] = cnt;
+        visited[i][j] = true;
+        for(int m=0; m<4; m++){
+            int x = i + dx[m];
+            int y = j + dy[m];
+            if(x >= 0 && y >= 0 && x < N && y < M && arr[i][j] == arr[x][y]){
+                if(dfs(x,y,cnt+1)){
+                    return true;
                 }
             }
         }
+        return false;
     }
+    public static void main(String[] args) throws IOException {
 
-    public static void main(String args[]) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        StringBuilder sb = new StringBuilder();
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        // 테스트 케이스 갯수
-        int N = Integer.parseInt(st.nextToken());
-        for(int i=0; i<N; i++) {
-            // 체스판의 한 변의 길이
-            int l = Integer.parseInt(br.readLine());
-            arr = new int[l][l];
-            cnt = new int[l][l];
-            st = new StringTokenizer(br.readLine());
-            int[] start = new int[2];
-            start[0] = Integer.parseInt(st.nextToken());
-            start[1] = Integer.parseInt(st.nextToken());
-
-            st = new StringTokenizer(br.readLine());
-            int[] end = new int[2];
-            end[0] = Integer.parseInt(st.nextToken());
-            end[1] = Integer.parseInt(st.nextToken());
-            if(start[0] == end[0] && start[1] == end[1]){
-                sb.append("0\n");
-            } else {
-                bfs(start, end,l);
-                sb.append(cnt[end[0]][end[1]]).append("\n");
+        arr = new char[N][M];
+        cnts = new int[N][M];
+        visited = new boolean[N][M];
+        for(int i=0; i<N; i++){
+            String s = br.readLine();
+            for(int j=0; j<M; j++){
+                arr[i][j] = s.charAt(j);
             }
         }
 
-        br.close();
-        System.out.println(sb);
-
+        for(int i=0; i<N; i++){
+            for(int j=0; j<M; j++){
+                if(dfs(i,j,0)){
+                    System.out.println("Yes");
+                    return;
+                }
+            }
+        }
+        System.out.println("No");
     }
-
 }
