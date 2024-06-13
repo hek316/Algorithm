@@ -5,127 +5,92 @@ import java.util.*;
 
 public class Main{
 
-    static char[][] arr;
-    static boolean[][] visited;
     static int N;
-    static int M;
+    static int[] visited;
+    static int[] cnts;
 
-    static int[] dx = {+1, 0, -1, 0};
-    static int[] dy = {0, +1, 0, -1};
-    static boolean result;
+    static ArrayList<Integer>[] arr;
 
-    public static void dfs(int i, int j, int prei, int prej){
-        if(visited[i][j]){ return;}
-        visited[i][j] = true;
-        for(int m=0; m<4; m++){
-            int x = i + dx[m];
-            int y = j + dy[m];
-            if(x >= 0 && y >= 0 && x < N && y < M && arr[i][j] == arr[x][y]){
-                if(x == prei && y == prej){
-                    continue;
-                }
-                if(visited[x][y] == false){
-                    dfs(x,y, i, j);
-                } else if(visited[x][y] == true){
-                    result = true;
-                    return;
-                }
+    // 순환선 찾기
+    public static int dfs(int  idx, int pre){
+        // 2 : cycle
+        // 1 : visited and not included
+        // -2 : found cycle
+        if(visited[idx] == 1) {
+            return idx;
+        }
+        visited[idx] = 1;
+        for(int y : arr[idx]){
+            if(y == pre){
+                continue;
+            }
+            int res = dfs(y, idx);
+            if(res == -2) return -2;
+            if (res > 0) {
+                visited[idx] = 2;
+                if( res == idx ) return -2;
+                return res;
             }
         }
+        return -1;
     }
+    // 지선 거리구하기
+    public static void findDistance(int dist, int n, int pre){
+        for(int j=0; j< arr[n].size(); j++){
+            int t = arr[n].get(j);
+            if (t == pre) {
+                continue;
+            }
+            cnts[t] = dist;
+            findDistance(dist+1, t, n);
+        }
+    }
+
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+        arr = new ArrayList[N+1];
+        visited = new int[N+1];
+        cnts = new int[N+1];
 
-        arr = new char[N][M];
-        visited = new boolean[N][M];
-        for(int i=0; i<N; i++){
-            String s = br.readLine();
-            for(int j=0; j<M; j++){
-                arr[i][j] = s.charAt(j);
-            }
+        for(int i=0; i<=N; i++){
+            arr[i] = new ArrayList<Integer>();
         }
 
         for(int i=0; i<N; i++){
-            for(int j=0; j<M; j++){
-                if(visited[i][j] == false){
-                    dfs(i,j, i,j);
-                    if(result){
-                        System.out.println( "Yes");
-                        return;
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            arr[u].add(v);
+            arr[v].add(u);
+        }
+        dfs(1, -1);
+
+        // 순환선이 아닐때 -1 로 초기화
+        for(int i=0; i<=N; i++){
+            if(visited[i] != 2) {
+                cnts[i] = -1;
+            }
+        }
+
+        for(int i=1; i<=N; i++){
+            if(visited[i] == 2) {
+                for(int j=0; j< arr[i].size(); j++){
+                    int n = arr[i].get(j);
+                    if(cnts[n] == -1){
+                        cnts[n] = 1;
+                        findDistance(2, n, i);
                     }
                 }
             }
         }
-        System.out.println("No");
-
-    }
-}import java.io.BufferedReader;
-        import java.io.IOException;
-        import java.io.InputStreamReader;
-        import java.util.*;
-
-public class Main{
-
-    static char[][] arr;
-    static boolean[][] visited;
-    static int N;
-    static int M;
-
-    static int[] dx = {+1, 0, -1, 0};
-    static int[] dy = {0, +1, 0, -1};
-    static boolean result;
-
-    public static void dfs(int i, int j, int prei, int prej){
-        if(visited[i][j]){ return;}
-        visited[i][j] = true;
-        for(int m=0; m<4; m++){
-            int x = i + dx[m];
-            int y = j + dy[m];
-            if(x >= 0 && y >= 0 && x < N && y < M && arr[i][j] == arr[x][y]){
-                if(x == prei && y == prej){
-                    continue;
-                }
-                if(visited[x][y] == false){
-                    dfs(x,y, i, j);
-                } else if(visited[x][y] == true){
-                    result = true;
-                    return;
-                }
-            }
+        StringBuilder sb = new StringBuilder();
+        for(int i=1; i<=N; i++){
+            sb.append(cnts[i]).append(" ");
         }
-    }
-    public static void main(String[] args) throws IOException {
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-
-        arr = new char[N][M];
-        visited = new boolean[N][M];
-        for(int i=0; i<N; i++){
-            String s = br.readLine();
-            for(int j=0; j<M; j++){
-                arr[i][j] = s.charAt(j);
-            }
-        }
-
-        for(int i=0; i<N; i++){
-            for(int j=0; j<M; j++){
-                if(visited[i][j] == false){
-                    dfs(i,j, i,j);
-                    if(result){
-                        System.out.println( "Yes");
-                        return;
-                    }
-                }
-            }
-        }
-        System.out.println("No");
+        System.out.println(sb);
 
     }
 }
