@@ -5,92 +5,76 @@ import java.util.*;
 
 public class Main{
 
-    static int N;
-    static int[] visited;
-    static int[] cnts;
+    static boolean[] visited;
+    static int[] child;
+    static int[] parents;
 
-    static ArrayList<Integer>[] arr;
-
-    // 순환선 찾기
-    public static int dfs(int  idx, int pre){
-        // 2 : cycle
-        // 1 : visited and not included
-        // -2 : found cycle
-        if(visited[idx] == 1) {
-            return idx;
-        }
-        visited[idx] = 1;
-        for(int y : arr[idx]){
-            if(y == pre){
-                continue;
-            }
-            int res = dfs(y, idx);
-            if(res == -2) return -2;
-            if (res > 0) {
-                visited[idx] = 2;
-                if( res == idx ) return -2;
-                return res;
-            }
-        }
-        return -1;
-    }
-    // 지선 거리구하기
-    public static void findDistance(int dist, int n, int pre){
-        for(int j=0; j< arr[n].size(); j++){
-            int t = arr[n].get(j);
-            if (t == pre) {
-                continue;
-            }
-            cnts[t] = dist;
-            findDistance(dist+1, t, n);
-        }
-    }
+    static int[] result;
 
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        arr = new ArrayList[N+1];
-        visited = new int[N+1];
-        cnts = new int[N+1];
+        int N = Integer.parseInt(st.nextToken());
+        ArrayList<Integer>[] arr = new ArrayList[N+1];
+        visited = new boolean[N+1];
+        result = new int[N+1];
+        child  = new int[N+1];
+        parents = new int[N+1];
 
         for(int i=0; i<=N; i++){
             arr[i] = new ArrayList<Integer>();
         }
 
-        for(int i=0; i<N; i++){
+        for(int i=0; i<N-1; i++){
             st = new StringTokenizer(br.readLine());
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
             arr[u].add(v);
             arr[v].add(u);
         }
-        dfs(1, -1);
-
-        // 순환선이 아닐때 -1 로 초기화
-        for(int i=0; i<=N; i++){
-            if(visited[i] != 2) {
-                cnts[i] = -1;
-            }
+        st = new StringTokenizer(br.readLine());
+        for(int i=1; i<=N; i++){
+            result[i] = Integer.parseInt(st.nextToken());
         }
 
-        for(int i=1; i<=N; i++){
-            if(visited[i] == 2) {
-                for(int j=0; j< arr[i].size(); j++){
-                    int n = arr[i].get(j);
-                    if(cnts[n] == -1){
-                        cnts[n] = 1;
-                        findDistance(2, n, i);
-                    }
+        Queue<Integer> q = new LinkedList<Integer>();
+        q.add(1);
+        visited[1] = true;
+
+        while (!q.isEmpty()) {
+            int t = q.remove();
+            for(int y : arr[t]){
+                if(visited[y] == false){
+                    parents[y] = t;
+                    child[t] +=1;
+                    q.add(y);
+                    visited[y] = true;
                 }
             }
         }
-        StringBuilder sb = new StringBuilder();
-        for(int i=1; i<=N; i++){
-            sb.append(cnts[i]).append(" ");
-        }
-        System.out.println(sb);
 
+        Queue<Integer> queue = new LinkedList<Integer>();
+        queue.add(1);
+
+        for(int i=2; i<=N; i++){
+            int n = result[i];
+            int t = queue.peek();
+            int p = parents[n];
+            if(t != p) {
+                System.out.println("0");
+                return;
+            } else {
+                child[t] = child[t] -1;
+                if(child[t] == 0){
+                    queue.remove();
+                }
+            }
+
+            if(child[n] != 0){
+                queue.add(n);
+            }
+        }
+        System.out.println("1");
     }
 }
