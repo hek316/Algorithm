@@ -7,14 +7,18 @@ public class Main{
     static int MAX = 100001;
     static int[] dx = {-1 , +1};
     static int[] seconds = new int[MAX];
+    static int[] parents = new int[MAX];
     static boolean[] visited = new boolean[MAX];
     static int start;
     static int k;
 
 
     static Queue<Integer> queue = new LinkedList<>();
+
     // 시작점 < 목적지
     static boolean leftside = false;
+
+    static Stack<Integer> stack;
 
     public static void bfs(){
         int cnt = 0;
@@ -26,6 +30,7 @@ public class Main{
                 int next = t + dx[i];
                 if(next >=0 && next < MAX){
                     if(visited[next] == false){
+                        parents[next] = t;
                         visited[next] = true;
                         seconds[next] = cnt;
                         if(next == k){
@@ -43,6 +48,7 @@ public class Main{
             if(x2 < MAX){
                 if( visited[x2] == false){
                     seconds[x2] = cnt;
+                    parents[x2] = t;
                     if(x2 == k){
                         return;
                     }
@@ -58,24 +64,43 @@ public class Main{
         }
     }
 
+    public static void dfs(int k){
+        stack.push(k);
+        if( k == start){
+            return;
+        }
+        dfs(parents[k]);
+    }
+
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         start = Integer.parseInt(st.nextToken());
         k = Integer.parseInt(st.nextToken());
+        stack = new Stack<Integer>();
+        StringBuilder sb = new StringBuilder();
+        if(start == k){
+            sb.append("0\n").append(start);
+            System.out.println(sb);
+            return;
+        }
+
         if (start < k){
             leftside = true;
         }
 
         queue.add(start);
         visited[start] = true;
-        if(start == k){
-            System.out.println("0");
-            return;
-        }
+
         bfs();
+        dfs(k);
+
+        while (!stack.isEmpty()){
+            sb.append(stack.pop()).append(" ");
+        }
         System.out.println(seconds[k]);
+        System.out.println(sb);
 
 
     }
