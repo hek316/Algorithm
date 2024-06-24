@@ -1,80 +1,40 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.io.*;
+import java.util.StringTokenizer;
 
 public class Main{
-    public static class HideAndSeek{
-        // 수빈이의 위치
-        int x;
-        int time;
-        public HideAndSeek(int x, int time){
-            this.x = x;
-            this.time = time;
-        }
-    }
     static int N;
-    static int goal;
-    static int MAX = 200001;
-    static int[] arr;
-    static boolean[] visited;
+    static int K;
+    static int MIN = Integer.MAX_VALUE;
 
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] arg) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N =  Integer.parseInt(st.nextToken());
-        goal = Integer.parseInt(st.nextToken());
-        if(N == goal){
-            System.out.println("0");
-            return;
-        }
-        arr = new int[MAX];
-        visited = new boolean[MAX];
-
-        Queue<HideAndSeek> queue = new LinkedList<HideAndSeek>();
-        queue.add(new HideAndSeek(N, 0));
-        while (!queue.isEmpty()){
-            // Teleportation
-            HideAndSeek h = queue.remove();
-            int next = 2*h.x;
-            if(next < MAX){
-                if(visited[next] == false){
-                    visited[next] = true;
-                    arr[next] = h.time;
-                    queue.add(new HideAndSeek(next, h.time));
-                } else if(visited[next] && h.time < arr[next]){
-                    arr[next] = h.time;
-                    queue.add(new HideAndSeek(next, h.time));
-                }
-            }
-
-            next = h.x + 1;
-            if(next < MAX){
-                if(visited[next] == false){
-                    visited[next] = true;
-                    arr[next] = h.time+1;
-                    queue.add(new HideAndSeek(next, h.time+1));
-                } else if(visited[next] && h.time+1 < arr[next]){
-                    arr[next] = h.time + 1;
-                    queue.add(new HideAndSeek(next, h.time+1));
-                }
-            }
-
-            next = h.x - 1;
-            if(next >= 0){
-                if(visited[next] == false){
-                    visited[next] = true;
-                    arr[next] = h.time+1;
-                    queue.add(new HideAndSeek(next, h.time+1));
-                } else if(visited[next] && h.time+1 < arr[next]){
-                    arr[next] = h.time + 1;
-                    queue.add(new HideAndSeek(next, h.time+1));
-                }
-            }
-        }
-
-        System.out.println(arr[goal]);
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+        dfs(K,0);
+        System.out.println(MIN);
 
     }
+    static void dfs(int k, int time) {
+        if(N >= k){
+            MIN = Math.min(MIN, time+ N-k);
+            return;
+        }
+
+        dfs(N, time + k - N);
+
+
+        if(N==0 && k <2){
+            MIN = Math.min(MIN, time+ k);
+            return;
+        }
+
+        if(k%2 == 0){
+            dfs(k/2, time);
+        } else{
+            dfs(k+1, time+1);
+            dfs(k-1, time+1);
+        }
+    }
+
 }
