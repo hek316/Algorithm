@@ -4,71 +4,77 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main{
-
-    public static class Emotion{
-        int screen;
-        int clipboard;
-        int cnt;
-        public Emotion(int screen, int clipboard, int cnt){
-            this.screen = screen;
-            this.clipboard = clipboard;
-            this.cnt = cnt;
+    public static class HideAndSeek{
+        // 수빈이의 위치
+        int x;
+        int time;
+        public HideAndSeek(int x, int time){
+            this.x = x;
+            this.time = time;
         }
     }
-
+    static int N;
     static int goal;
-    static int MAX = 1001;
-    static boolean[][] visit;
+    static int MAX = 200001;
+    static int[] arr;
+    static boolean[] visited;
 
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+        N =  Integer.parseInt(st.nextToken());
         goal = Integer.parseInt(st.nextToken());
-        visit = new boolean[MAX][MAX];
+        if(N == goal){
+            System.out.println("0");
+            return;
+        }
+        arr = new int[MAX];
+        visited = new boolean[MAX];
 
-        Queue<Emotion> queue = new LinkedList<Emotion>();
-
-        queue.add(new Emotion(1,0,0));
-        visit[1][0] = true;
-
+        Queue<HideAndSeek> queue = new LinkedList<HideAndSeek>();
+        queue.add(new HideAndSeek(N, 0));
         while (!queue.isEmpty()){
-            // s : 화면의 이모티콘 수
-            // c : 클립복드의 이모티콘 수
-            Emotion cur = queue.remove();
-            int screen = cur.screen;
-            // copy
-            if(screen < MAX && visit[screen][screen] == false){
-                visit[screen][screen] = true;
-                if (screen == goal) {
-                    System.out.println(cur.cnt + 1);
-                    return;
+            // Teleportation
+            HideAndSeek h = queue.remove();
+            int next = 2*h.x;
+            if(next < MAX){
+                if(visited[next] == false){
+                    visited[next] = true;
+                    arr[next] = h.time;
+                    queue.add(new HideAndSeek(next, h.time));
+                } else if(visited[next] && h.time < arr[next]){
+                    arr[next] = h.time;
+                    queue.add(new HideAndSeek(next, h.time));
                 }
-                queue.add(new Emotion(screen,screen,cur.cnt+ 1));
             }
 
-            screen = cur.screen + cur.clipboard;
-            // paste
-            if(screen < MAX && visit[screen][cur.clipboard] == false){
-                visit[screen][cur.clipboard] = true;
-                if (screen == goal) {
-                    System.out.println(cur.cnt + 1);
-                    return;
+            next = h.x + 1;
+            if(next < MAX){
+                if(visited[next] == false){
+                    visited[next] = true;
+                    arr[next] = h.time+1;
+                    queue.add(new HideAndSeek(next, h.time+1));
+                } else if(visited[next] && h.time+1 < arr[next]){
+                    arr[next] = h.time + 1;
+                    queue.add(new HideAndSeek(next, h.time+1));
                 }
-                queue.add(new Emotion(screen, cur.clipboard, cur.cnt + 1));
             }
 
-            screen = cur.screen - 1;
-            // minus
-            if(screen > 0 && visit[screen][cur.clipboard] == false){
-                visit[screen][cur.clipboard] = true;
-                if (screen == goal) {
-                    System.out.println(cur.cnt + 1);
-                    return;
+            next = h.x - 1;
+            if(next >= 0){
+                if(visited[next] == false){
+                    visited[next] = true;
+                    arr[next] = h.time+1;
+                    queue.add(new HideAndSeek(next, h.time+1));
+                } else if(visited[next] && h.time+1 < arr[next]){
+                    arr[next] = h.time + 1;
+                    queue.add(new HideAndSeek(next, h.time+1));
                 }
-                queue.add(new Emotion(screen, cur.clipboard, cur.cnt + 1));
             }
         }
+
+        System.out.println(arr[goal]);
 
     }
 }
