@@ -1,76 +1,67 @@
 import java.io.*;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
-
-
-class Point{
-    int x,y;
-    public Point(int x, int y){
-        this.x = x;
-        this.y = y;
+class Node{
+    int left, right;
+    Node(int left, int right){
+        this.left = left;
+        this.right = right;
     }
 }
+
 public class Main{
+
+    static StringBuilder sb = new StringBuilder();
+    static void preOrder(Node[] a, int x){
+        if( x == -1) return;
+        sb.append((char)(x+'A'));
+        preOrder(a, a[x].left);
+        preOrder(a, a[x].right);
+    }
+
+    static void inOrder(Node[] a, int x){
+        if( x == -1) return;
+        inOrder(a, a[x].left);
+        sb.append((char)(x+'A'));
+        inOrder(a, a[x].right);
+    }
+
+    static void postOrder(Node[] a, int x){
+        if( x == -1) return;
+        postOrder(a, a[x].left);
+        postOrder(a, a[x].right);
+        sb.append((char)(x+'A'));
+    }
 
 
     public static void main(String[] arg) throws IOException{
-
-        int[] dx = {1, 0, -1, 0};
-        int[] dy = {0, 1, 0, -1};
-
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int m = Integer.parseInt(st.nextToken());
-        int n = Integer.parseInt(st.nextToken());
-
-        char[][] arr = new char[n][m];
+        int n = Integer.parseInt(br.readLine());
+        Node[] node = new Node[26];
 
         for(int i=0; i<n; i++){
-            String s = br.readLine();
-            for(int j=0; j<m; j++){
-                arr[i][j] = s.charAt(j);
+            String str = br.readLine();
+            int idx = str.charAt(0) -'A';
+            char s = str.charAt(2);
+            int left = -1;
+            if(s != '.'){
+                left = s - 'A';
             }
+            s = str.charAt(4);
+            int right = -1;
+            if(s != '.'){
+                right = s - 'A';
+            }
+
+            node[idx] = new Node(left, right);
+
         }
 
-        int[][] d = new int[n][m];
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                d[i][j] = -1;
-            }
-        }
-
-        Queue<Point> q = new LinkedList<Point>();
-        Queue<Point> next_q = new LinkedList<Point>();
-        q.offer(new Point(0, 0));
-        d[0][0] = 0;
-        while(!q.isEmpty()){
-            Point p = q.remove();
-            for(int i=0; i<4; i++){
-                int x = p.x + dx[i];
-                int y = p.y + dy[i];
-                if(x >= 0 && y >= 0 && x < n && y < m){
-                    if(d[x][y] == -1){
-                        if(arr[x][y] == '0'){
-                            d[x][y] = d[p.x][p.y];
-                            q.offer(new Point(x, y));
-                        } else {
-                            d[x][y] = d[p.x][p.y]+1;
-                            next_q.add(new Point(x, y));
-                        }
-
-                    }
-                }
-            }
-            if(q.isEmpty()){
-                q = next_q;
-                next_q = new LinkedList<Point>();
-            }
-
-        }
-        System.out.println(d[n-1][m-1]);
-
+        preOrder(node, 0);
+        sb.append("\n");
+        inOrder(node, 0);
+        sb.append("\n");
+        postOrder(node, 0);
+        System.out.println(sb);
     }
+
+
 }
