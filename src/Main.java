@@ -1,6 +1,9 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 class Node{
-    int left, right;
+    int left, right, level, order;
     Node(int left, int right){
         this.left = left;
         this.right = right;
@@ -8,60 +11,72 @@ class Node{
 }
 
 public class Main{
-
-    static StringBuilder sb = new StringBuilder();
-    static void preOrder(Node[] a, int x){
-        if( x == -1) return;
-        sb.append((char)(x+'A'));
-        preOrder(a, a[x].left);
-        preOrder(a, a[x].right);
+    static int deptMax = 1;
+    static int order = 1;
+    static void inOrder(Node[] node, int x, int dept){
+        if(x == -1){
+            return;
+        }
+        node[x].level = dept;
+        deptMax = Math.max(deptMax, dept);
+        inOrder(node, node[x].left, dept+1);
+        node[x].order = order++;
+        inOrder(node, node[x].right, dept+1);
     }
 
-    static void inOrder(Node[] a, int x){
-        if( x == -1) return;
-        inOrder(a, a[x].left);
-        sb.append((char)(x+'A'));
-        inOrder(a, a[x].right);
-    }
-
-    static void postOrder(Node[] a, int x){
-        if( x == -1) return;
-        postOrder(a, a[x].left);
-        postOrder(a, a[x].right);
-        sb.append((char)(x+'A'));
-    }
-
-
-    public static void main(String[] arg) throws IOException{
+    public static void main(String[] arg) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
-        Node[] node = new Node[26];
+        Node[] node = new Node[n + 1];
+        StringTokenizer st;
 
-        for(int i=0; i<n; i++){
-            String str = br.readLine();
-            int idx = str.charAt(0) -'A';
-            char s = str.charAt(2);
-            int left = -1;
-            if(s != '.'){
-                left = s - 'A';
+        // root 노드 찾기
+        int[] prents = new int[n + 1];
+
+        for (int i = 1; i <= n; i++) {
+            st = new StringTokenizer(br.readLine());
+            int root = Integer.parseInt(st.nextToken());
+            int left = Integer.parseInt(st.nextToken());
+            int right = Integer.parseInt(st.nextToken());
+            node[root] = new Node(left, right);
+            if (left != -1) {
+                prents[left] = root;
             }
-            s = str.charAt(4);
-            int right = -1;
-            if(s != '.'){
-                right = s - 'A';
+            if (right != -1) {
+                prents[right] = root;
             }
-
-            node[idx] = new Node(left, right);
-
         }
 
-        preOrder(node, 0);
-        sb.append("\n");
-        inOrder(node, 0);
-        sb.append("\n");
-        postOrder(node, 0);
+        int rootNode = 1;
+        for (int i = 1; i <= n; i++) {
+            if (prents[i] == 0) {
+                rootNode = i;
+                break;
+            }
+        }
+
+        inOrder(node, rootNode, 1);
+        int ansL = 1;
+        int ansD = 1;
+        for (int i = 2; i <= deptMax; i++) {
+            int min = Integer.MAX_VALUE;
+            int max = 0;
+            for (int j = 1; j <= n; j++) {
+                if (i == node[j].level) {
+                    min = Math.min(min, node[j].order);
+                    max = Math.max(max, node[j].order);
+                }
+            }
+            int m = max - min + 1;
+            if (m > ansD) {
+                ansL = i;
+                ansD = m;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(ansL).append(" ").append(ansD);
+
         System.out.println(sb);
     }
-
-
 }
