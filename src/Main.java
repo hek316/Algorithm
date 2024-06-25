@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main{
@@ -23,20 +24,30 @@ public class Main{
             arr[v].add(u);
         }
         int[] parents = new int[n+1];
-        dfs(1, parents, -1);
+        for(int i=0; i<parents.length; i++){
+            parents[i] = -1;
+        }
+
+
+        Queue<Integer> queue = new LinkedList<Integer>();
+        for(int y: arr[1]){
+            queue.add(y);
+            parents[y] = 1;
+        }
+        while (!queue.isEmpty()){
+            int t = queue.remove();
+            for(int y: arr[t]){
+                if(parents[y] == -1){
+                    parents[y] = t;
+                    queue.add(y);
+                }
+            }
+        }
+
         StringBuilder sb = new StringBuilder();
         for(int i=2; i<=n; i++){
             sb.append(parents[i]).append("\n");
         }
         System.out.println(sb);
-    }
-    static void dfs(int root,int[] parents,int pre){
-        for(int y: arr[root]){
-            if(y== pre){
-                continue;
-            }
-            parents[y] = root;
-            dfs(y, parents, root);
-        }
     }
 }
