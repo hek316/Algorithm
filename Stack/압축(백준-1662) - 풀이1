@@ -1,0 +1,79 @@
+//최초 코드 - 더 효율적으로 구현할 필요가 있을듯
+문제
+압축되지 않은 문자열 S가 주어졌을 때, 이 문자열중 어떤 부분 문자열은 K(Q)와 같이 압축 할 수 있다. K는 한자리 정수이고, Q는 0자리 이상의 문자열이다. 이 Q라는 문자열이 K번 반복된다는 뜻이다. 압축된 문자열이 주어졌을 때, 이 문자열을 다시 압축을 푸는 프로그램을 작성하시오.
+
+입력
+첫째 줄에 압축된 문자열 S가 들어온다. S의 길이는 최대 50이다. 문자열은 (, ), 0-9사이의 숫자로만 들어온다.
+
+출력
+첫째 줄에 압축되지 않은 문자열의 길이를 출력한다. 이 값은 2,147,473,647 보다 작거나 같다.
+
+
+import java.io.*;
+import java.util.*;
+
+class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String s = br.readLine().trim();
+
+        Stack<Integer> stack1 = new Stack<>();
+        Stack<Integer> stack2 = new Stack<>();
+
+        for(int i = 0; i< s.length(); i++){
+            int n = s.charAt(i) - '0';
+            stack1.push(n);
+        }
+
+
+        int answer = 0;
+     // ( -8 , ) -7
+        int cnt = 0;
+        while(!stack1.isEmpty()){
+            if(stack1.peek() == -8){
+                stack2.push(cnt);
+                stack2.push(stack1.pop());
+
+            } else if(stack1.peek() ==  -7){
+                if(cnt != 0){
+                    stack2.push(cnt);
+                }
+                stack2.push(stack1.pop());
+                cnt = 0;
+
+            } else {
+                if( !stack2.isEmpty() && stack2.peek() ==-8){
+                    int m = stack1.pop();
+                    // ( 제거
+                    stack2.pop();
+                    int t = 0;
+                    while(stack2.peek() != -7){
+                        t+= stack2.pop();
+
+                    }
+                    int len = m * t;
+                    cnt = len;
+
+                    // ) 제거
+                    stack2.pop();
+                }else{
+                    stack1.pop();
+                    cnt++;
+                }
+            }
+
+        }
+        int t = cnt;
+        answer+= t;
+        while(!stack2.isEmpty()){
+            int c = stack2.pop();
+            if(c == -8 || c == -7){
+                continue;
+            }
+            int t2 = c;
+
+            answer += t2;
+        }
+        System.out.println(answer);
+    }
+}
