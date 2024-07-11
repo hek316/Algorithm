@@ -1,0 +1,34 @@
+// 재귀함수 이용
+import java.util.*;
+import java.io.*;
+
+class Main {
+    static int idx2 = 0;
+    public static void main(String[] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String s = br.readLine();
+        char[] c = s.toCharArray();
+        int answer = recursive(0, c);
+
+
+        System.out.println(answer);
+
+    }
+    static int recursive(int idx, char[] c){
+        int length = 0;
+        for(int i=idx; i<c.length; i++){
+            if(c[i] == '('){
+                length = length + (c[i-1]-'0')*recursive(i+1, c) -1;
+                i = idx2;
+            } else if (c[i] == ')'){
+                idx2 = i;
+                return length;
+            } else {
+                length++;
+            }
+
+        }
+        return length;
+
+    }
+}
