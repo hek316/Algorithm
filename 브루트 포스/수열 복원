@@ -1,0 +1,87 @@
+수열 복원
+시간 제한: 1 초
+양의 정수로 이루어진 수열 a 1,a 2 ,⋯,a n이 있습니다.
+
+1≤a i≤10 5
+ 
+이 수열에서 각 원소를 선택하거나 선택하지 않음으로써 총 2 n개의 부분 수열을 만들 수 있고, 만들어진 모든 부분 수열의 합인 2 n개의 정수가 주어졌을 때, 원래의 수열
+ a 1 ,a 2 ,⋯,a n
+ 을 구하는 프로그램을 작성하세요.
+
+
+지시사항
+입력
+첫째 줄에 정수 n이 주어집니다.
+1≤n≤15
+둘째 줄에 이 수열에서 만들 수 있는 모든 부분 수열의 합인 2 
+n
+ 개의 정수 s 
+1s 
+2
+ ,⋯,s 
+2 
+n
+ 이 주어집니다.
+0≤s 
+i
+​
+ ≤n×10 
+5
+ 
+출력
+첫째 줄에 원래 수열의 원소를 오름차순으로 출력합니다.
+입력 예시
+3
+1 4 7 3 0 6 5 2
+Copy
+출력 예시
+1 2 4
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int N;
+    static ArrayList<Integer> res = new ArrayList<>();
+    static ArrayList<Integer> now = new ArrayList<>();
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        ArrayList<Integer> arr = new ArrayList<>();
+        while(st.hasMoreTokens()){
+            arr.add(Integer.parseInt(st.nextToken()));
+        }
+        Collections.sort(arr);
+
+        for(int i=1; i<arr.size(); i++){
+            if(!now.contains(arr.get(i))){
+                int m = arr.get(i);
+                find(0, 0, m);
+                res.add(m);
+            }
+            now.remove(arr.get(i));
+
+        }
+        StringBuilder sb = new StringBuilder();
+        for(int i =0 ; i< res.size(); i++){
+            sb.append(res.get(i)).append(" ");
+        }
+         System.out.println(sb);
+
+    }
+
+    public static void find(int sum, int x, int m){
+         if(x == res.size()){
+             now.add(sum + m);
+             return;
+         }
+             
+        find(sum, x+1, m);
+        find(sum + res.get(x), x+1, m);
+         
+    }
+}
