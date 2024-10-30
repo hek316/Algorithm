@@ -1,3 +1,7 @@
+// 시간복잡도  4 (+-*/)의 10 승 = 2 의 20 승
+// 2의 50 승까지는 브루트포스(모든경우의 수) 가능
+
+// 브루트포스 재귀로 풀이
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;
