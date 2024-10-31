@@ -1,0 +1,50 @@
+// 세 수의 합은 같으므로 방문여부는 2차원 배열로도 나타낼 수 있다.
+// 3 차원 배열시 메모리 초과
+// 세 수의 합의 3의 배수여야 같은 수로 만들 수 있다.
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+class Main{
+    static int ans = 0;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+        int a = Integer.parseInt(s[0]);
+        int b = Integer.parseInt(s[1]);
+        int c = Integer.parseInt(s[2]);
+        boolean[][] visit = new boolean[1501][1501];
+
+
+        if(a == b && b == c){
+            System.out.println("1");
+            return;
+        }
+        visit[a][b] = true;
+        dfs(a, b, c, visit);
+        dfs(a, c, b, visit);
+        dfs(b, c, a, visit);
+
+
+        System.out.println(ans);
+    }
+    static void dfs(int a, int b, int c, boolean[][] visit){
+        if(a == b && b == c){
+            ans = 1;
+            return;
+        }
+        int na = Math.max(a,b);
+        int nb = Math.min(a,b);
+        a = na - nb;
+        b = nb*2;
+        if(visit[a][b]) return;
+        int sum = a + b + c;
+
+        if(sum % 3 == 0) {
+            visit[a][b] = true;
+            dfs(a, b, c, visit);
+            dfs(a, c, b, visit);
+            dfs(a, b, c, visit);
+        }
+
+    }
+}
