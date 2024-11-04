@@ -1,0 +1,67 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+class Main {
+    static int[][] arr;
+    static int[] dx = {+1, -1, 0, 0};
+    static int[] dy = {0, 0, +1, -1};
+    static boolean[][] visit;
+    static int n;
+    static int m;
+    static int MAX = 0;
+    static int elementMax = 0;
+    public static void main(String[] args) throws Exception {
+       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+         n = Integer.parseInt(s[0]);
+         m = Integer.parseInt(s[1]);
+
+        arr = new int[n][m];
+        visit = new boolean[n][m];
+
+        for (int i = 0; i <n; i++) {
+            s = br.readLine().split(" ");
+            for (int j = 0; j < m; j++) {
+                arr[i][j] = Integer.parseInt(s[j]);
+                elementMax = Math.max(elementMax, arr[i][j]);
+            }
+        }
+
+        for (int i = 0; i <n; i++) {
+            for (int j = 0; j < m; j++) {
+                visit[i][j] = true;
+                dfs(i, j, visit, arr[i][j], 1);
+                visit[i][j] = false;
+            }
+        }
+
+
+        System.out.println(MAX);
+    }
+
+    static public void dfs(int x, int y, boolean[][] visit, int sum, int cnt){
+        if(sum + elementMax * (4-cnt) < MAX) return;
+        if(cnt == 4 ){
+            MAX = Math.max(MAX, sum);
+            return;
+        }
+
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if(nx >=0 && ny >= 0 && nx < n && ny < m && visit[nx][ny] == false){
+                if(cnt == 2) {
+                    visit[nx][ny] = true;
+                    dfs(x, y, visit, sum+ arr[nx][ny], cnt +1 );
+                    visit[nx][ny] = false;
+                }
+                visit[nx][ny] = true;
+                dfs(nx, ny, visit, sum+ arr[nx][ny], cnt +1 );
+                visit[nx][ny] = false;
+            }
+        }
+
+    }
+}
+
+
