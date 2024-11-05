@@ -1,0 +1,44 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+class Main {
+    static int[] arr;
+    static int n;
+    static int k;
+    static int[] dp;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+        n = Integer.parseInt(s[0]);
+        k = Integer.parseInt(s[1]);
+        arr = new int[n];
+        dp = new int[100001];
+        Arrays.fill(dp, 100001);
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(br.readLine());
+            dp[arr[i]] = 1;
+        }
+        Arrays.sort(arr);
+
+        dp[0] = 0;
+        for (int i = 0; i < n; i++) {
+            int coin = arr[i];
+            for (int j = coin; j <= k; j++) {
+                dp[j] = Math.min(dp[j-coin] + 1, dp[j]);
+            }
+        }
+
+
+        if (dp[k] == 100001) {
+            System.out.println(-1);
+        } else {
+            System.out.println(dp[k]);
+        }
+
+    }
+
+
+}
+
+
