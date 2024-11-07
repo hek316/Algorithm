@@ -1,0 +1,97 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+
+class Main{
+
+    static int n;
+    static int m;
+    static int[][] arr;
+    static int MAX = 0;
+
+    static Queue<int[]> initQueue = new LinkedList<>();
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+        n = Integer.parseInt(s[0]);
+        m = Integer.parseInt(s[1]);
+
+        arr = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            s =  br.readLine().split(" ");
+            for (int j = 0; j <m; j++) {
+              arr[i][j] = Integer.parseInt(s[j]);
+              if(arr[i][j] == 2){
+                  // 바이러스인 경우
+                  initQueue.add(new int[]{i, j});
+              }
+            }
+        }
+
+        boolean[][] visit = new boolean[n][m];
+        combi(0, visit);
+        System.out.println(MAX);
+
+    }
+
+    // 벽 세우기
+    static void combi(int cnt, boolean[][] visit){
+        if(cnt == 3) {
+            int[][] board = spread();
+            int result = getCnt(board);
+            MAX = Math.max(MAX, result);
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if(arr[i][j] == 0 && visit[i][j] == false){
+                    // 벽을 세울 수 있는 빈칸인 경우
+                    arr[i][j] = 1;
+                    visit[i][j] = true;
+                    combi(cnt+1, visit);
+                    arr[i][j] = 0;
+                    visit[i][j] = false;
+                }
+            }
+        }
+    }
+
+    // bfs  바이러스 퍼뜨리기
+    static int[][] spread(){
+        int[] dx = {0,0, -1, +1};
+        int[] dy = {-1, +1, 0, 0};
+        int[][] borad = new int[n][m];
+        // 깊은 복사 실행
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                borad[i][j] = arr[i][j];
+            }
+        }
+        Queue<int[]> queue = new LinkedList<>(initQueue);
+        while (!queue.isEmpty()){
+            int[] t= queue.poll();
+            for (int i = 0; i < 4; i++) {
+                int nx = t[0] + dx[i];
+                int ny = t[1] + dy[i];
+                if(nx >=0 && ny >= 0 && nx < n && ny < m && borad[nx][ny] == 0){
+                    borad[nx][ny] = 2;
+                    queue.add(new int[]{nx, ny});
+                }
+            }
+        }
+        return borad;
+    }
+
+    // 안전 영역 갯수
+    static int getCnt(int[][] board){
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if(board[i][j] == 0) cnt++;
+            }
+        }
+        return cnt;
+    }
+}
