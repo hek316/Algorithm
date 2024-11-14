@@ -1,0 +1,137 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+
+class Node implements Comparable<Node>{
+    int num;
+    int appear;
+
+    public Node(int num, int appear) {
+        this.num = num;
+        this.appear = appear;
+    }
+
+    @Override
+    public int compareTo(Node o) {
+        if(o.appear == this.appear) {
+            return this.num - o.num;
+        }
+        return this.appear - o.appear;
+    }
+}
+
+class Main{
+
+    static int r;
+    static int c;
+    static int k;
+    static int[][] arr;
+    static int ans = -1;
+    static int MAXR = 2;
+    static int MAXC = 2;
+
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+        r = Integer.parseInt(s[0]) -1;
+        c = Integer.parseInt(s[1]) -1;
+        k = Integer.parseInt(s[2]);
+
+        arr = new int[101][101];
+        for (int i = 0; i < 3; i++) {
+            s = br.readLine().split(" ");
+            for (int j = 0; j < 3; j++) {
+                arr[i][j] = Integer.parseInt(s[j]);
+            }
+        }
+
+        for (int i = 0; i <= 100; i++) {
+            if(arr[r][c] == k) {
+              //  System.out.println("arr[r][c] = " + arr[r][c] + " r " + r +"  c " + c);
+                ans = i;
+                break;
+            }
+            if(MAXR >= MAXC) {
+            //    System.out.println("111 MAXR = " + MAXR + " MAXC = " + MAXC);
+                arr =  find();
+            } else {
+              //  System.out.println("222 MAXR = " + MAXR + " MAXC = " + MAXC);
+                arr = find1();
+            }
+
+//            for (int k = 0; k < 5; k++) {
+//                System.out.println(Arrays.toString(arr[k]));
+//            }
+//            System.out.println("*************");
+        }
+
+        System.out.println(ans);
+
+    }
+
+    public static int[][] find1(){
+        int[][] board = new int[101][101];
+        MAXR = 0;
+        // 열 정렬
+        for (int c = 0; c <= 100; c++) {
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (int r = 0; r <= 100; r++) {
+                if(arr[r][c] == 0) continue;
+                // 방문 횟수 점검
+                Integer t = map.getOrDefault(arr[r][c], 0);
+                map.put(arr[r][c], t+1);
+            }
+            ArrayList<Node> nodes = new ArrayList<>();
+            for (Integer key : map.keySet()) {
+                nodes.add(new Node(key, map.get(key)));
+            }
+            Collections.sort(nodes);
+            int t = 0;
+            // 최대 행 구하기
+
+            for (int i = 0; i < nodes.size(); i++) {
+                board[t++][c] = nodes.get(i).num;
+                board[t++][c] = nodes.get(i).appear;
+                MAXC = c;
+            }
+            MAXR = Math.max(MAXR, t-1);
+
+        }
+        return board;
+    }
+
+    public static int[][] find(){
+        int[][] board = new int[101][101];
+        MAXC = 0;
+        // 행 정렬
+        for (int r = 0; r <= 100; r++) {
+            HashMap<Integer, Integer> map = new HashMap<>();
+            for (int c = 0; c <= 100; c++) {
+                if(arr[r][c] == 0) continue;
+                // 방문 횟수 점검
+                Integer t = map.getOrDefault(arr[r][c], 0);
+                map.put(arr[r][c], t+1);
+            }
+            ArrayList<Node> nodes = new ArrayList<>();
+            for (Integer key : map.keySet()) {
+                nodes.add(new Node(key, map.get(key)));
+            }
+            Collections.sort(nodes);
+            int t = 0;
+
+            for (int i = 0; i < nodes.size(); i++) {
+                board[r][t++] = nodes.get(i).num;
+                board[r][t++] = nodes.get(i).appear;
+                MAXR = r;
+            }
+            // 최대 열 구하기
+            MAXC = Math.max(MAXC, t-1);
+
+        }
+        return board;
+    }
+}
