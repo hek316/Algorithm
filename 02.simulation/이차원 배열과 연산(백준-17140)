@@ -1,47 +1,43 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-
-class Node implements Comparable<Node>{
-    int num;
-    int appear;
-
-    public Node(int num, int appear) {
-        this.num = num;
-        this.appear = appear;
+import java.util.Map;
+ class Node implements Comparable<Node>{
+    int value;
+    int apper;
+    Node(int value, int apper){
+        this.value = value;
+        this.apper = apper;
     }
-
-    @Override
-    public int compareTo(Node o) {
-        if(o.appear == this.appear) {
-            return this.num - o.num;
+    public int compareTo(Node o){
+        int compare = Integer.compare(this.apper, o.apper);
+        if(compare == 0) {
+            return Integer.compare(this.value, o.value);
         }
-        return this.appear - o.appear;
+        return compare;
     }
 }
 
-class Main{
 
-    static int r;
-    static int c;
-    static int k;
-    static int[][] arr;
+public class Main {
+
+
+    static int MAX = 101;
+    static int[][] arr =  new int[MAX][MAX];
     static int ans = -1;
     static int MAXR = 2;
     static int MAXC = 2;
-
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String[] s = br.readLine().split(" ");
-        r = Integer.parseInt(s[0]) -1;
-        c = Integer.parseInt(s[1]) -1;
-        k = Integer.parseInt(s[2]);
 
-        arr = new int[101][101];
+        int r = Integer.parseInt(s[0])-1;
+        int c = Integer.parseInt(s[1])-1;
+        int k = Integer.parseInt(s[2]);
+
         for (int i = 0; i < 3; i++) {
             s = br.readLine().split(" ");
             for (int j = 0; j < 3; j++) {
@@ -49,89 +45,80 @@ class Main{
             }
         }
 
-        for (int i = 0; i <= 100; i++) {
+        for (int i = 0; i <= 100; i++){
             if(arr[r][c] == k) {
-              //  System.out.println("arr[r][c] = " + arr[r][c] + " r " + r +"  c " + c);
                 ans = i;
                 break;
             }
-            if(MAXR >= MAXC) {
-            //    System.out.println("111 MAXR = " + MAXR + " MAXC = " + MAXC);
-                arr =  find();
-            } else {
-              //  System.out.println("222 MAXR = " + MAXR + " MAXC = " + MAXC);
-                arr = find1();
-            }
 
-//            for (int k = 0; k < 5; k++) {
-//                System.out.println(Arrays.toString(arr[k]));
-//            }
-//            System.out.println("*************");
+            if(MAXR >= MAXC){
+                // R 연산
+                arr = solveR();
+            }else {
+                // C 연산
+                arr = solveC();
+            }
         }
 
-        System.out.println(ans);
+     System.out.println(ans);
 
     }
 
-    public static int[][] find1(){
-        int[][] board = new int[101][101];
-        MAXR = 0;
-        // 열 정렬
-        for (int c = 0; c <= 100; c++) {
+    public static int[][] solveR(){
+         int[][] board = new int[MAX][MAX];
+        MAXC = 0;
+        for (int i = 0; i <= 100; i++) {
             HashMap<Integer, Integer> map = new HashMap<>();
-            for (int r = 0; r <= 100; r++) {
-                if(arr[r][c] == 0) continue;
-                // 방문 횟수 점검
-                Integer t = map.getOrDefault(arr[r][c], 0);
-                map.put(arr[r][c], t+1);
+            for (int j = 0; j <= 100; j++) {
+                // 등장횟수 계산
+                int key = arr[i][j];
+                if(key == 0) continue;
+                map.put(key, map.getOrDefault(key, 0) + 1);
             }
-            ArrayList<Node> nodes = new ArrayList<>();
-            for (Integer key : map.keySet()) {
-                nodes.add(new Node(key, map.get(key)));
+            ArrayList<Node> list = new ArrayList<>();
+            for (Map.Entry<Integer, Integer> et : map.entrySet()) {
+                list.add(new Node(et.getKey(), et.getValue()));
             }
-            Collections.sort(nodes);
+            list.sort(null);
             int t = 0;
-            // 최대 행 구하기
-
-            for (int i = 0; i < nodes.size(); i++) {
-                board[t++][c] = nodes.get(i).num;
-                board[t++][c] = nodes.get(i).appear;
-                MAXC = c;
+            for (int j = 0; j < list.size(); j++) {
+                board[i][t++] = list.get(j).value;
+                board[i][t++] = list.get(j).apper;
+                MAXR = i;
             }
-            MAXR = Math.max(MAXR, t-1);
-
+            MAXC = Math.max(MAXC, t-1);
         }
+
         return board;
     }
 
-    public static int[][] find(){
-        int[][] board = new int[101][101];
-        MAXC = 0;
-        // 행 정렬
-        for (int r = 0; r <= 100; r++) {
+
+    public static int[][] solveC(){
+         int[][] board = new int[MAX][MAX];
+        MAXR = 0;
+        for (int j = 0; j <= 100; j++) {
             HashMap<Integer, Integer> map = new HashMap<>();
-            for (int c = 0; c <= 100; c++) {
-                if(arr[r][c] == 0) continue;
-                // 방문 횟수 점검
-                Integer t = map.getOrDefault(arr[r][c], 0);
-                map.put(arr[r][c], t+1);
+            for (int i = 0; i <= 100; i++) {
+                // 등장횟수 계산
+                int key = arr[i][j];
+                if(key == 0) continue;
+                map.put(key, map.getOrDefault(key, 0) + 1);
             }
-            ArrayList<Node> nodes = new ArrayList<>();
-            for (Integer key : map.keySet()) {
-                nodes.add(new Node(key, map.get(key)));
+            ArrayList<Node> list = new ArrayList<>();
+            for (Map.Entry<Integer, Integer> et : map.entrySet()) {
+                list.add(new Node(et.getKey(), et.getValue()));
             }
-            Collections.sort(nodes);
+            list.sort(null);
             int t = 0;
-
-            for (int i = 0; i < nodes.size(); i++) {
-                board[r][t++] = nodes.get(i).num;
-                board[r][t++] = nodes.get(i).appear;
-                MAXR = r;
+            for (int i = 0; i < list.size(); i++) {
+                board[t++][j] = list.get(i).value;
+                board[t++][j] = list.get(i).apper;
+                MAXC = j;
             }
-            // 최대 열 구하기
-            MAXC = Math.max(MAXC, t-1);
 
+            MAXR = Math.max(MAXR, t-1);
         }
+
         return board;
     }
 }
