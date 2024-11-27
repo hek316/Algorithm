@@ -1,0 +1,67 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
+class Main {
+
+    static  String s1;
+    static  String s2;
+    static int[][] dp;
+    static  StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        s1 = br.readLine();
+        s2 = br.readLine();
+
+        int n = s1.length();
+        int m = s2.length();
+
+        dp = new int[n+1][m+1];
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if(s1.charAt(i-1) == s2.charAt(j-1)){
+                    dp[i][j] = dp[i-1][j-1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i-1][j] , dp[i][j-1]);
+                }
+            }
+        }
+
+        sb.append(dp[n][m]).append("\n");
+        find(n, m);
+
+
+
+        System.out.println(sb);
+
+    }
+
+    static void find(int r, int c){
+
+        StringBuilder sb2 = new StringBuilder();
+        while (true) {
+            if(r == 0 || c == 0) {
+                sb.append(sb2.reverse());
+                return;
+            }
+            if(dp[r][c] == dp[r-1][c]){
+                r--;
+            } else if(dp[r][c] == dp[r][c-1]) {
+                c--;
+            }else {
+                // 같은 경우
+                sb2.append(s1.charAt(r-1));
+                r--;
+                c--;
+            }
+        }
+
+
+    }
+
+
+}
+
+
