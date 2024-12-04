@@ -1,51 +1,56 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
-class Main{
+public class Main {
+
     static int[] arr;
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
+
         arr = new int[n+1];
+        boolean[][] dp= new boolean[n+1][n+1];
+
         String[] s = br.readLine().split(" ");
         for(int i =0; i<n; i++){
             arr[i+1] = Integer.parseInt(s[i]);
         }
-        boolean[][] dp = new boolean[n+1][n+1];
-        for(int i=1; i<=n; i++){
-            dp[i][i] = true;
+
+        for (int i = 1; i <= n; i++) {
+            dp[i][i] = true; // 길이 1은 펠린드롬
         }
 
-        for (int i=1; i<=n-1; i++) {
-            dp[i][i+1] = check(i, i+1);
-        }
-
-
-        for (int k=2; k<=n; k++) {
-            for (int start=1; start+k<=n; start++) {
-                    int end = start+k;
-                    if (dp[start+1][end-1] && check(start, end)) {
-                        dp[start][end] = true;
-                    }
+        for (int i = 1; i <= n-1; i++) {
+            if(arr[i] == arr[i+1]){// 길이 2는 양끝 비교
+                dp[i][i+1] = true;
             }
         }
 
-        int k = Integer.parseInt(br.readLine());
-        StringBuilder sb = new StringBuilder();
-        for(int i=0; i<k; i++){
-            s = br.readLine().split(" ");
-            int a = Integer.parseInt(s[0]);
-            int b = Integer.parseInt(s[1]);
-            sb.append(dp[a][b]== true ? 1 : 0).append("\n");
+        for (int k = 2; k <= n; k++) {
+            for (int start = 1; start+k <= n; start++) { // 길이 3 이상
+                int end = start + k;
+                if( dp[start+1][end-1] && arr[start] == arr[end]){
+                    dp[start][end] = true;
+                }
+            }
         }
-        System.out.println(sb);
-    }
 
-    public static boolean check(int i, int j){
-        if(arr[i] == arr[j]) return true;
-        return false;
+        StringBuilder sb = new StringBuilder();
+
+        int n2 = Integer.parseInt(br.readLine());
+        for (int i = 0; i < n2; i++) {
+            String[] s1 = br.readLine().split(" ");
+            int a = Integer.parseInt(s1[0]);
+            int b = Integer.parseInt(s1[1]);
+            sb.append(dp[a][b] ? 1 : 0).append("\n");
+        }
+
+        System.out.println(sb);
+
     }
 
 }
+
