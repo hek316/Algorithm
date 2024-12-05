@@ -1,0 +1,51 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+class Main {
+
+
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] s = br.readLine().split(" ");
+        int a = Integer.parseInt(s[0]);
+        int b = Integer.parseInt(s[1]);
+        int c = Integer.parseInt(s[2]);
+        int x = Integer.parseInt(s[3]);
+        int y = Integer.parseInt(s[4]);
+
+        // 양념 후라이드 가격
+        int ab = a + b;
+        int minCnt = Math.min(x, y);
+        int sum = 0;
+
+        // 양념 1 + 후라이드 1 를 사는 경우 , 반반 두마리로 양념 1, 후라이드 1를 사는 경우
+        if(ab > 2*c){
+            sum = (minCnt*2)*c;
+        } else {
+            sum = minCnt*ab;
+        }
+
+        if(minCnt == x) {
+            // 후라이드를 더 사야하는 경우
+            y = y - minCnt;
+            sum += Math.min(y*b, (y*2)*c );
+        } else {
+            // 양념을 더 사야하는 경우
+            x = x - minCnt;
+            sum += Math.min(x*a, (x*2)*c );
+
+        }
+
+        System.out.println(sum);
+
+
+    }
+
+}
+
+
+
+
+
