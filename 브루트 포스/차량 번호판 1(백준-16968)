@@ -1,0 +1,51 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+class Main {
+
+
+    static String input = "";
+    static int cnt = 0;
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        input = br.readLine();
+        char[] ans = new char[4];
+        combi(0, ans);
+
+        System.out.println(cnt);
+
+
+    }
+
+    static void combi(int idx, char[] ans){
+        if(idx == input.length()) {
+            cnt++;
+            return;
+        }
+        char gubun = input.charAt(idx);
+        if(gubun == 'd') {
+            // 숫자
+            for (int i = 0; i <=9 ; i++) {
+                ans[idx] = (char)( i + '0');
+                if(idx != 0 && ans[idx-1] == ans[idx]) continue;
+                combi(idx+1, ans);
+            }
+        } else {
+            // 문자
+            for (char i = 'a'; i <= 'z' ; i++) {
+                ans[idx] = (char)(i);
+                if(idx != 0 && ans[idx-1] == ans[idx]) continue;
+                combi(idx+1, ans);
+            }
+        }
+    }
+
+
+}
+
+
+
+
+
