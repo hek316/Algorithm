@@ -1,0 +1,44 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+class Main {
+
+    static int n;
+
+    static int num;
+
+    static boolean[] visit;
+    static int[] arr = {1, 5, 10, 50};
+
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+
+        visit = new boolean[50*n + 1];
+        find(0, 0, 0);
+        System.out.println(num);
+
+    }
+
+    public static void find(int cnt, int sum, int idx){
+        if(cnt == n){
+            if(!visit[sum]){
+                num++;
+                visit[sum] = true;
+            }
+            return;
+        }
+
+        for (int i = idx; i < 4; i++) {
+            find(cnt+1 , sum + arr[i], i);
+        }
+
+    }
+
+}
+
+
+
+
+
