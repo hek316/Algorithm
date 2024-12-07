@@ -1,0 +1,152 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+
+class Horse {
+    int x, y, dir;
+
+    public Horse(int x, int y, int dir) {
+        this.x = x;
+        this.y = y;
+        this.dir = dir;
+    }
+}
+class Main {
+
+    static ArrayList<Integer>[][] arr;
+    static int[][] board;
+
+    static Horse[] horse;
+
+    static final int WHITE = 0 , RED = 1, BULE = 2;
+
+    static int[][] dr = {{0,0}, {0, +1}, {0, -1}, {-1, 0}, {+1, 0}};
+
+    static int n;
+    static int[] chagedir = {0, 2, 1, 4, 3};
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] s = br.readLine().split(" ");
+        n = Integer.parseInt(s[0]);
+        int k = Integer.parseInt(s[1]);
+
+        arr = new ArrayList[n][n];
+        board = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            s = br.readLine().split(" ");
+            for (int j = 0; j < n; j++) {
+                arr[i][j] = new ArrayList<Integer>();
+                board[i][j] = Integer.parseInt(s[j]);
+            }
+        }
+
+        horse = new Horse[k];
+        for (int i = 0; i < k; i++) {
+            s = br.readLine().split(" ");
+            int x = Integer.parseInt(s[0])-1;
+            int y = Integer.parseInt(s[1])-1;
+            int dir = Integer.parseInt(s[2]);
+            horse[i] = new Horse(x, y, dir);
+            arr[x][y].add(i);
+        }
+
+        int turn = 0;
+        while (true) {
+            turn++;
+            if(turn > 1000) {
+                System.out.println(-1);
+                return;
+            }
+
+            for (int i = 0; i < k; i++) {
+                Horse curHorse = horse[i];
+
+                int x = curHorse.x;
+                int y = curHorse.y;
+                int dir = curHorse.dir;
+
+                int nx = x + dr[dir][0];
+                int ny = y + dr[dir][1];
+
+               // System.out.println("nx " + nx + " ny " + ny);
+
+                if(!checkRange(nx, ny) || board[nx][ny] == BULE ){
+                    horse[i].dir = chagedir[dir];
+
+                    nx = x + dr[horse[i].dir][0];
+                    ny = y + dr[horse[i].dir][1];
+                    if(!checkRange(nx, ny) ||board[nx][ny] == BULE) {
+                        continue;
+                    }
+                }
+
+                if(board[nx][ny] == WHITE){
+                    // 흰색
+                    boolean check = false;
+                    int startIdx = -1;
+                    // 흰색 위에 올려진 말까지 같이 옮기기
+                    for (int j = 0; j < arr[x][y].size(); j++) {
+                        int hosrseNum = arr[x][y].get(j);
+
+                        if(check) {
+                            // 위에 올려진 말 이동
+                            arr[nx][ny].add(hosrseNum);
+                            horse[hosrseNum].x = nx;
+                            horse[hosrseNum].y = ny;
+                        }
+                        if(hosrseNum == i){
+                            check = true;
+                            startIdx = j;
+
+                            arr[nx][ny].add(hosrseNum);
+                            horse[hosrseNum].x = nx;
+                            horse[hosrseNum].y = ny;
+                        }
+                    }
+                    arr[x][y].subList(startIdx, arr[x][y].size()).clear();
+                } else if (board[nx][ny] == RED) {
+                    int startIdx = -1;
+                    // 빨간색 위에 올려진 말까지 같이 옮기기
+                    for (int j = arr[x][y].size()-1; j >= 0; j--) {
+                        int hosrseNum = arr[x][y].get(j);
+                        if(hosrseNum == i){
+                            startIdx = j;
+                            arr[nx][ny].add(hosrseNum);
+                            horse[hosrseNum].x = nx;
+                            horse[hosrseNum].y = ny;
+                            break;
+                        } else {
+                            arr[nx][ny].add(hosrseNum);
+                            horse[hosrseNum].x = nx;
+                            horse[hosrseNum].y = ny;
+                        }
+                    }
+                    arr[x][y].subList(startIdx, arr[x][y].size()).clear();
+                }
+
+                if(arr[nx][ny].size() >= 4){
+                    System.out.println(turn);
+                    return;
+                }
+
+            }
+        }
+
+
+    }
+
+    static boolean checkRange(int x , int y){
+        if(x >= 0 && y >= 0 && x < n && y < n) {
+            return true;
+        }
+        return false;
+    }
+
+
+}
+
+
