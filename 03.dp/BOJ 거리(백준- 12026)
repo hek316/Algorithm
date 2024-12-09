@@ -1,0 +1,73 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+class Main {
+
+    static int n;
+
+    static int[] arr;
+
+    static String s;
+
+    static boolean[] visit;
+
+    static final int B = 0;
+    static final int O = 1;
+    static final int J = 2;
+
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+
+        if(n == 1) {
+            System.out.println(0);
+            return;
+        }
+        s = br.readLine();
+        arr = new int[s.length()];
+        for (int i = 0; i < s.length(); i++) {
+            if(s.charAt(i) == 'B'){
+                arr[i] = B;
+            } else if(s.charAt(i) == 'O'){
+                arr[i] = O;
+            } else if(s.charAt(i) == 'J'){
+                arr[i] = J;
+            }
+
+        }
+
+        int[] dp = new int[s.length()];
+        visit = new boolean[s.length()];
+        visit[0] = true;
+
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+
+        for (int i = 0; i < n; i++) {
+            int pre = arr[i];
+            if(visit[i] == false) continue;
+            for (int j = i+1; j < n; j++) {
+                int next = arr[j];
+                if( (pre == J && next == B) || next == (pre +1) ) {
+                    visit[j] = true;
+                    dp[j] = Math.min ( dp[i] + (int)Math.pow(j-i,2), dp[j]);
+                }
+            }
+        }
+
+        if(visit[s.length()-1]){
+            System.out.println(dp[s.length()-1]);
+        } else {
+            System.out.println(-1);
+        }
+
+    }
+
+}
+
+
+
+
+
