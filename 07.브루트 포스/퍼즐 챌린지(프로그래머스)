@@ -1,0 +1,45 @@
+class Solution {
+    int[] levels;
+    int min = Integer.MAX_VALUE;
+    public int solution(int[] diffs, int[] times, long limit) {
+        levels = diffs;
+        int start = 1;
+        int end = 100000;
+        while(start <= end) {
+            int mid = (start + end) / 2;
+             if(getTime(mid, times, limit)){
+                end = mid -1 ;
+             } else {
+                start = mid + 1;
+             }
+        }
+
+        return min;
+    }
+    
+    public boolean getTime(int level, int[] times, long limit) {
+        long spent = 0;
+        for(int i=0; i<levels.length; i++) {
+            int timeCur = times[i];
+            
+          
+            if(levels[i] <= level) {
+                spent += timeCur;
+            } else {
+                // 틀린 횟수
+                int n = (levels[i] - level);
+                spent += (n * (times[i-1] + timeCur) + timeCur);
+            }
+            
+            if(spent > limit){
+                return false;
+            }
+        }
+        
+        if(level < min) {
+            min = level;
+        }
+   
+        return true;
+    }
+}
