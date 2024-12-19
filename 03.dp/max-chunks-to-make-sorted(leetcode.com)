@@ -1,0 +1,45 @@
+import java.util.*;
+class Solution {
+    public int maxChunksToSorted(int[] arr) {
+        int n = arr.length;
+        int[][] dp = new int[n][n];
+
+        int[][] prefixMax =  new int[n][n];
+        int[][] suffixMin =  new int[n][n];
+
+        
+       for(int i=0; i<n; i++) {
+            prefixMax[i][i] = arr[i];
+            for(int j=i+1; j<n; j++) {
+                prefixMax[i][j] = Math.max(prefixMax[i][j-1],  arr[j]);
+            }
+       }
+
+               
+       for(int i=0; i<n; i++) {
+        suffixMin[i][i] = arr[i];
+            for(int j=i+1; j<n; j++) {
+                suffixMin[i][j] = Math.min(suffixMin[i][j-1],  arr[j]);
+            }
+       }
+
+
+        for(int i=0; i<n; i++) {
+            dp[i][i] = 1;
+        }
+        
+        for (int k=1; k<n; k++) {
+            for (int i = 0; i+k < n; i++) {
+                int last = i+k;
+                dp[i][last] = 1;
+                for (int j= i; j <last; j++) {
+
+                    if (prefixMax[i][j] < suffixMin[j+1][last] ) {
+                        dp[i][last] = Math.max(dp[i][j] + dp[j+1][last], dp[i][last] ) ;
+                    }
+                }
+            }
+        }
+        return dp[0][n-1];
+    }
+}
