@@ -1,0 +1,43 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    static int n;
+    public static void main(String[] args) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        Stack<Integer> stack = new Stack<>();
+        n = Integer.parseInt(br.readLine());
+        while (n-- > 0) {
+            String[] s = br.readLine().split(" ");
+            String order = s[0];
+            if(order.equals("push")) {
+                int n = Integer.parseInt(s[1]);
+                stack.push(n);
+            } else if(order.equals("pop")) {
+                if(stack.isEmpty()) {
+                    sb.append(-1).append("\n");
+                } else {
+                    int n = stack.pop();
+                    sb.append(n).append("\n");
+                }
+
+            }  else if(order.equals("size")) {
+                sb.append(stack.size()).append("\n");
+
+            }  else if(order.equals("empty")) {
+                sb.append(stack.empty() ? 1 : 0 ).append("\n");
+            }  else if(order.equals("top")) {
+                sb.append(stack.empty() ? -1 : stack.peek() ).append("\n");
+            }
+        }
+        System.out.println(sb);
+
+    }
+
+
+
+}
