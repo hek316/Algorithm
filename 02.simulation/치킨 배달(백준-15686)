@@ -1,0 +1,83 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+
+    static int n;
+    static int m;
+    static int[][] arr;
+    static int min = Integer.MAX_VALUE;
+    static ArrayList<int[]> house = new ArrayList<>();
+    static ArrayList<int[]> chicken = new ArrayList<>();
+    static boolean[] visit;
+    static final int HOUSE = 1, CH = 2;
+    static int[][] dist;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+        n = Integer.parseInt(s[0]);
+        m = Integer.parseInt(s[1]);
+        arr = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            s = br.readLine().split(" ");
+            for (int j = 0; j < n; j++) {
+                arr[i][j] = Integer.parseInt(s[j]);
+                if(arr[i][j] == HOUSE) {
+                    house.add(new int[]{i, j});
+                }else if(arr[i][j] == CH) {
+                    chicken.add(new int[]{i, j});
+                }
+            }
+        }
+        dist = new int[house.size()][chicken.size()];
+        visit = new boolean[chicken.size()];
+        for (int i = 0; i < house.size(); i++) {
+            for (int j = 0; j < chicken.size(); j++) {
+                dist[i][j] = Math.abs(house.get(i)[0] - chicken.get(j)[0]) + Math.abs(house.get(i)[1] - chicken.get(j)[1]);
+            }
+        }
+
+
+        for (int i=0; i<chicken.size(); i++) {
+            visit[i] = true;
+            find(i, 1);
+            visit[i] = false;
+        }
+        System.out.println(min);
+
+    }
+    // 살아남을 치킨집 선택
+    public static void find(int idx, int cnt) {
+        if(cnt == m) {
+            // 거리를 계산
+            min = Math.min(check(), min);
+            return;
+        }
+        for (int i=idx+1; i<chicken.size(); i++) {
+            visit[i] = true;
+            find(i, cnt+1);
+            visit[i] = false;
+        }
+    }
+
+    public static int check() {
+        int sum = 0;
+        for (int i=0; i< house.size(); i++) {
+            int tmpMin = Integer.MAX_VALUE;
+            for (int j=0; j< chicken.size(); j++ ) {
+                if(visit[j]) {
+                    tmpMin = Math.min(dist[i][j], tmpMin);
+                }
+            }
+            // 집이랑 가장 가까운 치킨집
+            sum += tmpMin;
+        }
+        return sum;
+    }
+
+
+
+}
