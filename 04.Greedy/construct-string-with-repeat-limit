@@ -1,0 +1,43 @@
+import java.util.*;
+class Solution {
+    public String repeatLimitedString(String s, int repeatLimit) {
+        int[] freq = new int[26];
+
+        for (char c : s.toCharArray()) {
+            int t = c - 'a';
+            freq[t]++;
+        }
+
+        StringBuilder result = new StringBuilder();
+        int curCharIdx = 25;
+        int pre = -1;
+        int cnt = 1;
+        while(curCharIdx >= 0){
+            if(freq[curCharIdx] == 0 ) {
+                curCharIdx--;
+                continue;
+            }
+
+            int use = Math.min(freq[curCharIdx] , repeatLimit);
+            for(int k = 0; k < use; k++) {
+                result.append((char)(curCharIdx + 'a'));
+            }
+            freq[curCharIdx] -= use;
+
+            if(freq[curCharIdx] > 0 ) {
+                int smallerCharIdx = curCharIdx - 1;
+                while(smallerCharIdx >=0 && freq[smallerCharIdx] == 0){
+                    smallerCharIdx--;
+                }
+                if (smallerCharIdx < 0) {
+                    break;
+                }
+                 result.append((char)(smallerCharIdx + 'a'));
+                 freq[smallerCharIdx]--;
+            }
+           
+        } 
+        
+        return result.toString();
+    }
+}
