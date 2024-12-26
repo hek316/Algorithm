@@ -1,0 +1,85 @@
+import java.util.*;
+class Solution {
+    
+    int[][] p;
+    ArrayList<Integer>[][] arr  = new ArrayList[101][101];
+    // 충돌이 일어나는 경우의 수
+    public int solution(int[][] points, int[][] routes) {
+        int answer = 0;
+        p = points;
+        
+         for (int i=1; i<=100; i++ ) {
+            for (int j=1; j<=100; j++) {
+                arr[i][j] = new ArrayList<>();
+            }
+         }
+        
+        // 로봇이 1초마다 이동 (r좌표 즉 위아래로 먼저 움직임 )
+        for (int[] route : routes) {
+            int second = 0;
+            for (int i=0; i< route.length-1; i++) {
+                int start = route[i]-1;
+                int end = route[i+1]-1; 
+                int t = move (start, end, second);
+                second = t;
+            }
+          
+        }
+       
+        // 충돌하는 경우
+        for (int i=1; i<=100; i++ ) {
+            for (int j=1; j<=100; j++) {
+         
+                 HashSet<Integer> set = new HashSet<>();
+                 HashSet<Integer> crashSet = new HashSet<>();
+                for (int k = 0; k < arr[i][j].size(); k++) {
+                    int tmp = arr[i][j].get(k);
+                    if(set.contains(tmp)){
+                        if(!crashSet.contains(tmp)) {
+                             crashSet.add(tmp);
+                            // 충돌 발행
+                            answer++;
+                        } 
+                    } else {
+                        set.add(tmp);
+                    }
+                }
+            }
+        }
+        
+        return answer;
+    }
+    
+    public int move (int start , int end, int second) {
+        int curi = p[start][0];
+        int curj = p[start][1];
+    
+         int endi = p[end][0];
+         int endj = p[end][1];
+        if(second == 0) {
+                   arr[curi][curj].add(second); 
+        }
+
+        while(true) {
+            if(curi < endi) {
+                curi++;
+            } else if (curi > endi) {
+                curi--;
+            } else {
+                // i 같은 줄에 있는 경우
+                  if(curj < endj) {
+                    curj++;
+                } else if (curj > endj) {
+                    curj--;
+                } else {
+                       // 포인트에 도착하면 로봇 종료
+                      return second;
+                  }
+            }
+            
+            second++;;
+            arr[curi][curj].add(second);
+            
+        }
+    }
+}
