@@ -1,0 +1,58 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        int T =  Integer.parseInt(br.readLine());
+        while (T-- > 0) {
+            String[] s = br.readLine().split(" ");
+            int n = Integer.parseInt(s[0]);
+            int k = Integer.parseInt(s[1]);
+
+            Queue<int[]> queue = new ArrayDeque<>();
+            PriorityQueue<Integer> pq = new PriorityQueue<>((a , b)-> b.compareTo(a));
+
+            s = br.readLine().split(" ");
+            for (int i = 0; i < n; i++) {
+                int tmp = Integer.parseInt(s[i]);
+                queue.offer(new int[]{i, tmp});
+                pq.offer(tmp);
+            }
+
+
+            int print = 0;
+            int curMax = pq.poll();
+            while(!queue.isEmpty()) {
+                // 중요도 순서
+                int[] curpq =  queue.poll();
+
+                if(curpq[1] == curMax) { // 우선 순위가 가장 높은 경우
+                    // 우선 순위가 가장 높은 경우 인쇄 실행
+                    print++;
+
+                    // 인덱스가 k 번째인지
+                    if(curpq[0] == k ) {
+                        sb.append(print).append("\n");
+                        break;
+                    }
+                    // 다음 수선순위 셋팅
+                    curMax = pq.poll();
+                } else {
+                    // 더 높은 우선순위가 있는 경우
+                    // 더 큰 우선순위가 있는 경우 뒤에 넣기
+                    queue.offer(curpq);
+                }
+
+            }
+        }
+
+        System.out.println(sb);
+    }
+
+
+}
