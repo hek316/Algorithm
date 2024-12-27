@@ -1,83 +1,89 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
-// 구현
-// 회전정하기
-// 뱀의 몸통 움직이기
 public class Main {
-    static int[][] arr;
-    static int[] dx = {-1, 0, 1, 0}; // 동서남북
-    static int[] dy = {0, +1, 0, -1};
 
-    public static void main(String[] args) throws Exception{
+    static int N;
+    static int[][] apple;
+    static int[][] board;
+    static final int L = 0, D = 1;
+    static Queue<int[]> timeQueue = new ArrayDeque<>();
+    static Queue<int[]> queue = new ArrayDeque<>();
+    static int[][] dir ={ {0,1}, {1,0} , {0, -1}, {-1, 0}};
+    static int seconds = 0;
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N =  Integer.parseInt(br.readLine());
+        apple = new int[N][N];
+        board = new int[N][N];
 
-        int n = Integer.parseInt(br.readLine());
-        arr = new int[n+1][n+1];
-        int apple = Integer.parseInt(br.readLine());
-        for(int i=0; i<apple; i++){
-            String[] s = br.readLine().split(" ");
-            int x = Integer.parseInt(s[0]);
-            int y = Integer.parseInt(s[1]);
-            arr[x][y] = 1;
+        int  t = Integer.parseInt(br.readLine());
+        while (t-- > 0) {
+            String[] input = br.readLine().split(" ");
+            int a = Integer.parseInt(input[0]) -1;
+            int b = Integer.parseInt(input[1]) -1;
+            apple[a][b] = 2;
         }
 
-        int l = Integer.parseInt(br.readLine());
-        int[] seconds = new int[10001];
-        int[] dr = new int[10001];
-        for(int i=0; i<l; i++){
-            String[] s = br.readLine().split(" ");
-            int sec = Integer.parseInt(s[0]);
-            seconds[sec] = 1;
-            if(s[1].equals("L")){
-                dr[sec] = -1;
-            }else {
-                dr[sec] = +1;
+        t = Integer.parseInt(br.readLine());
+        while (t-- > 0) {
+            String[] input = br.readLine().split(" ");
+            int a = Integer.parseInt(input[0]);
+            if(input[1].equals("L")){
+                timeQueue.add(new int[]{a, L});
+            } else {
+                timeQueue.add(new int[]{a, D});
+            }
+        }
+        queue.offer(new int[]{0,0});
+        move(0,0,0);
+        System.out.println(seconds);
+    }
+
+    public static void move(int x, int y, int curD ){
+        seconds++;
+        // 앞으로 이동
+        int nx = x + dir[curD][0];
+        int ny = y + dir[curD][1];
+        if(nx >= 0 && nx < N && ny >=0 && ny < N) {
+            if(board[nx][ny] == 1) { // 자신의 몸에 부딪힘
+                return;
+            }
+            board[nx][ny] = 1;
+            if(apple[nx][ny]== 2) {
+                // 사과가 있는 경우
+                apple[nx][ny] = 0;
+            } else {
+                // 사과가 없는 경우
+                // 꼬리 줄이기
+                int[] tail = queue.poll();
+                board[tail[0]][tail[1]] = 0;
+
+            }
+            queue.offer(new int[]{nx,ny});
+
+        } else {
+            // 벽에 붙딪힘
+            return;
+        }
+        //  게임 시작 시간으로부터 X초가 끝난 뒤 방향 회전
+        if(!timeQueue.isEmpty() &&seconds == timeQueue.peek()[0]) {
+            int[] t = timeQueue.poll();
+            // 방향 바꿔 주기
+            if(t[1] == L) {
+                // 왼쪽 회전
+                curD = (curD+3) %4;
+            } else {
+                //오른쪽 회전
+                curD = (curD+1) %4;
             }
         }
 
-        int curX = 1;
-        int curY = 1;
-        int curD = 1; // 처음 시작 방향 : 동쪽
-        int time = 0;
-        // 뱀의 몸통 좌표
-        Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{1,1});
-        arr[curX][curY]= 3;
-        while(true){
-           if(seconds[time] == 1){
-               if(dr[time] == -1){ // 왼쪽 회전
-                   curD = ((curD -1 + 4) % 4) ;
-               } else { // 오른쪽 회전
-                   curD = ((curD +1) % 4);
-               }
-           }
-           int nextX = curX + dx[curD];
-           int nextY = curY + dy[curD];
-           time++;
+        move(nx, ny, curD );
 
-           // 탈출조건 - 벽에 부딪침.
-           if(nextX <=0 || nextX >n || nextY <=0 || nextY >n ){
-               break;
-           }
-           //  자신의 몸에 부딪침
-           if(arr[nextX][nextY] == 3){
-               break;
-           }
-
-           if(arr[nextX][nextY] != 1) { // 사과가 아닐때 - 꼬리 부분 지워주기
-               if (!queue.isEmpty()) {
-                   int[] tail = queue.poll();
-                   arr[tail[0]][tail[1]] = 0;
-               }
-           }
-           queue.add(new int[]{nextX, nextY});
-            arr[nextX][nextY] = 3;
-           curX = nextX;
-           curY = nextY;
-       }
-        System.out.println(time);
     }
+
+
 }
