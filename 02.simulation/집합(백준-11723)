@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        StringBuilder sb = new StringBuilder();
+        int T = Integer.parseInt(br.readLine());
+        Set<Integer> set =  new HashSet<>();
+        while (T-- > 0) {
+            String[] s = br.readLine().split(" ");
+            String command = s[0];
+            if("add".equals(command)) {
+                int n = Integer.parseInt(s[1]);
+                set.add(n);
+            } else if ("remove".equals(command)) {
+                int n = Integer.parseInt(s[1]);
+                if(set.contains(n)) {
+                    set.remove(n);
+                }
+
+            } else if ("check".equals(command)) {
+                int n = Integer.parseInt(s[1]);
+                if(set.contains(n)) {
+                    sb.append(1).append("\n");
+                } else {
+                    sb.append(0).append("\n");
+                }
+
+            } else if ("toggle".equals(command)) {
+                int n = Integer.parseInt(s[1]);
+                if(set.contains(n)) {
+                    set.remove(n);
+                } else {
+                    set.add(n);
+                }
+
+            } else if ("all".equals(command)) {
+
+                for(int i=1; i<=20; i++){
+                    set.add(i);
+                }
+
+            } else if ("empty".equals(command))  {
+                set.clear();
+            }
+
+        }
+
+        System.out.println(sb);
+
+    }
+}
