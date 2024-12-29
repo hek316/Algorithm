@@ -1,0 +1,122 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    static int[][] arr;
+
+    // 위,  왼쪽 ,  오 , 아래
+    static int[][] dir = {{-1, 0}, {0, -1},  {0, +1} ,{+1, 0}} ;
+
+    static int n;
+    static int curX = 0;
+    static int cutY = 0;
+    static int curSize = 2;
+    static int seconds = 0;
+    static int currentEat = 0;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        n = Integer.parseInt(br.readLine());
+        arr = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            String[] s = br.readLine().split(" ");
+            for (int j = 0; j < n; j++) {
+                arr[i][j] = Integer.parseInt(s[j]);
+                if(arr[i][j] == 9) {
+                    curX = i;
+                    cutY = j;
+                    arr[i][j] = 0;
+                }
+            }
+        }
+
+
+        while(true) {
+            // 거리 구하기
+            // 자신보다 작은 물고기가 없는 경우
+            if(!sharkGo()) {
+                System.out.println(seconds);
+                return;
+            }
+
+            // 사이즈 업
+            if(curSize == currentEat) {
+                curSize++;
+                currentEat = 0;
+            }
+
+        }
+        // 먹을 수 있다면 물고기 거리 구하기 및 그 물고기 자리로 이동
+
+    }
+
+
+    static boolean sharkGo() {
+        int[][] board = new int[n][n];
+        // 거리 구하기
+        Queue<int[]> q = new ArrayDeque<>();
+
+        int minx = Integer.MAX_VALUE, miny = Integer.MAX_VALUE, minDist = Integer.MAX_VALUE;
+
+        q.offer(new int[]{curX, cutY, 1});
+        board[curX][cutY] = 1;
+        boolean foundFish = false;
+        while(!q.isEmpty()) {
+            int[] t= q.poll();
+            int x = t[0];
+            int y = t[1];
+            int dist = t[2];
+
+            // 4방향 탐색
+            for (int i=0; i<4; i++) {
+                int nx = x + dir[i][0];
+                int ny = y + dir[i][1];
+
+                // 범위를 초과하거나 방문한 경우
+                if (!isMovable(nx, ny, board)) continue;
+
+                // 믈고기를 발견한 경우 처리
+                // 벽이 아니면서 사이즈가 자신보다 작은 경우
+                if(arr[nx][ny] > 0 && arr[nx][ny] < curSize ) {
+                    foundFish = true;
+                    // 물고기 먹기
+
+                    // 현재 물고기가 더 가까운 경우
+                    // 거리가 더 작은 경우, 거리는 같지만 x 가 더 작은 경우 , 거리는 같지만 x 가 더 작고
+                    if(dist < minDist  || (dist == minDist && nx<minx) || (dist == minDist && nx == minx && ny < miny) ) {
+                        minx = nx;
+                        miny = ny;
+                        minDist = dist;
+                    }
+                } else {
+                    // 빈칸이거나 물고기 사이즈가 같은 경우
+                    board[nx][ny] = dist + 1;
+                    q.offer(new int[]{nx, ny, board[nx][ny] });
+                }
+            }
+        }
+
+        if (foundFish) {
+            seconds += minDist;
+            curX = minx;
+            cutY = miny;
+            currentEat++;
+            // 가장 가까운 물고기 먹기
+            arr[curX][cutY] = 0;
+            return true;
+        }
+        return false;
+
+    }
+
+    static boolean isMovable(int nx, int ny, int[][] board) {
+        // 현재 크기보다 작거나 같을때 - 미방문
+        return nx >= 0 && nx < n && ny >= 0 && ny < n && board[nx][ny] == 0 && arr[nx][ny] <= curSize;
+    }
+
+}
+
+
