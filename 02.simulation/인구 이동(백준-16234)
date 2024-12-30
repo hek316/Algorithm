@@ -1,0 +1,100 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Queue;
+
+
+public class Main {
+    static int[][] arr;
+    static int N;
+    static int L;
+    static int R;
+    static int seconds;
+    // 위 아 오 왼
+    static int[][] dir = {{-1, 0}, {+1, 0}, {0, +1} , {0, -1}};
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] s = br.readLine().split(" ");
+
+        N = Integer.parseInt(s[0]);
+        L = Integer.parseInt(s[1]);
+        R = Integer.parseInt(s[2]);
+        arr = new int[N][N];
+
+        for (int i = 0; i < N; i++) {
+            String[] s1 = br.readLine().split(" ");
+            for (int j = 0; j < N; j++) {
+                arr[i][j] = Integer.parseInt(s1[j]);
+            }
+        }
+
+        while(true) {
+            // 인구 이동 가능 여부 확인 하기
+            if(!move()) {
+                // 인구 이동이 없는 경우
+                System.out.println(seconds);
+                return;
+            }
+            seconds++;
+        }
+    }
+
+    static boolean move() {
+        boolean check = false;
+        boolean[][] visit = new boolean[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                // 미방문
+                if(visit[i][j] == false) {
+                    if(bfs(i, j, visit)) check = true;
+                }
+            }
+        }
+        return check;
+    }
+
+    static boolean bfs(int a, int b, boolean[][] visit) {
+        boolean check = false;
+        int sum = arr[a][b];
+        Queue<int[]> q = new ArrayDeque<>();
+        ArrayList<int[]> list = new ArrayList<>();
+        q.add(new int[]{a, b});
+        list.add(new int[]{a, b});
+        visit[a][b] = true;
+        while(!q.isEmpty()) {
+            int[] t = q.poll();
+            int x = t[0];
+            int y = t[1];
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dir[i][0];
+                int ny = y + dir[i][1];
+                if (nx >= 0 && nx < N && ny >= 0 && ny < N && visit[nx][ny] == false) {
+                    int diff = Math.abs(arr[x][y] - arr[nx][ny]);
+                    if(diff >= L && diff <= R ) {
+                        check = true;
+                        //국경선이 열려있는 경우
+                        sum += arr[nx][ny];
+                        visit[nx][ny] = true;
+                        list.add(new int[]{nx, ny});
+                        q.add(new int[]{nx, ny});
+                    }
+                }
+            }
+        }
+
+        int tmp = sum / list.size();
+        for (int i = 0; i < list.size(); i++) {
+            int[] t2 = list.get(i);
+            arr[t2[0]][t2[1]] = tmp;
+        }
+
+        return check;
+    }
+
+
+}
+
