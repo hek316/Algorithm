@@ -1,0 +1,70 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+
+public class Main {
+
+    static int[][] arr;
+    static int n;
+    static int m;
+    static int b;
+    static int MIN = Integer.MAX_VALUE;
+    static int hight = -1;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] s = br.readLine().split(" ");
+
+        n = Integer.parseInt(s[0]);
+        m = Integer.parseInt(s[1]);
+        b = Integer.parseInt(s[2]);
+
+        arr = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            s = br.readLine().split(" ");
+            for (int j = 0; j < m; j++) {
+                arr[i][j] = Integer.parseInt(s[j]);
+            }
+        }
+
+        for(int i=0; i<=256; i++) {
+            find(i);
+        }
+
+        System.out.println(MIN + " " + hight);
+
+    }
+
+    static void find(int h) {
+        int high = 0;
+        int low = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if(h == arr[i][j]) continue;
+                // 높이가 높은 경우
+                // 블록 제거
+                if(h < arr[i][j]) {
+                    int diff = arr[i][j] - h;
+                    high+=diff;
+                } else {
+                    int diff = h - arr[i][j];
+                    low = low + diff;
+                }
+            }
+        }
+
+        if(high + b >= low) {
+            int tmp = (high * 2) +  low;
+            if (MIN >= tmp) {
+                MIN = tmp;
+                hight = h;
+            }
+        }
+
+    }
+
+
+}
+
