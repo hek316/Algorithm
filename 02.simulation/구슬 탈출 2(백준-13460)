@@ -1,0 +1,140 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+
+public class Main {
+
+    // 오 , 왼, 위, 아래
+    static int[][] dir = {{0, +1}, {0, -1}, {-1, 0}, {+1, 0}};
+
+    static int n;
+    static int m;
+
+    static char[][] arr;
+
+    static int MIN = Integer.MAX_VALUE;
+    
+    static class Point{
+        int x;
+        int y;
+        boolean isHole;
+        public Point(int x, int y, boolean isHole){
+            this.x = x;
+            this.y = y;
+            this.isHole = isHole;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] s = br.readLine().split(" ");
+        n = Integer.parseInt(s[0]);
+        m = Integer.parseInt(s[1]);
+
+        int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+        arr = new char[n][m];
+        for (int i = 0; i < n; i++) {
+            String s1 = br.readLine();
+            for (int j = 0; j < m; j++) {
+                arr[i][j] = s1.charAt(j);
+                if(arr[i][j] == 'R') {
+                    x1 = i;
+                    y1 = j;
+                }else if(arr[i][j] == 'B') {
+                    x2 = i;
+                    y2 = j;
+                }
+            }
+        }
+        find(x1, y1, x2, y2, 1);
+
+        System.out.println(MIN == Integer.MAX_VALUE ? -1 : MIN);
+    }
+
+    public static void find(int x1, int y1, int x2, int y2, int cnt ) {
+        if(cnt == 11 ){
+            return;
+        }
+        for (int i = 0; i < 4; i++) {
+
+            Point red = move(x1, y1, i);
+            Point blue = move(x2, y2, i);
+
+            if(red.x == x1 && red.y == y1 && blue.x == x2 && blue.y == y2){
+                continue;
+            }
+
+            if(blue.isHole){
+                // 파란색이 구멍인 경우
+                continue;
+            }
+
+            if(red.isHole){
+                // 빨간색이 구멍인 경우
+                MIN = Math.min(MIN, cnt);
+                continue;
+            }
+
+            // 공 이동
+            if(!(red.x == x1 && red.y == y1)) {
+                arr[red.x][red.y] = 'R';
+                arr[x1][y1] = '.';
+            }
+            if(!(blue.x == x2 && blue.y == y2)) {
+                arr[blue.x][blue.y] = 'B';
+                arr[x2][y2] = '.';
+            }
+
+//            System.out.println("red.x : " + red.x + " red.y : " + red.y + " R " + arr[red.x][red.y]);
+            // 이동 후
+
+
+            find(red.x, red.y, blue.x, blue.y, cnt + 1);
+
+            if(!(red.x == x1 && red.y == y1)) {
+                arr[red.x][red.y] = '.';
+                arr[x1][y1] = 'R';
+            }
+            if(!(blue.x == x2 && blue.y == y2)) {
+                arr[blue.x][blue.y] = '.';
+                arr[x2][y2] = 'B';
+            }
+        }
+    }
+
+    public static Point move(int  x, int y, int d) {
+        int ansX = x;
+        int ansY = y;
+        boolean overrap = false;
+        boolean isHole = false;
+        for (int i = 1; i <= 10; i++) {
+            int nx = x + dir[d][0]*i;
+            int ny = y + dir[d][1]*i;
+            if(arr[nx][ny] == '#') { // 벽일 경우
+                if(overrap) {
+                    // 겹친 경우가 있는 경우
+                    ansX = ansX - dir[d][0];
+                    ansY = ansY - dir[d][1];
+                }
+                return new Point(ansX, ansY, isHole);
+            } else {
+                if(arr[nx][ny] == 'R' ||arr[nx][ny] == 'B' ) {
+                    overrap = true;
+                } else if (arr[nx][ny] == 'O') { // 구멍에 빠진 경우
+                    isHole = true;
+                }
+            }
+            ansX = nx;
+            ansY = ny;
+        }
+
+
+        return new Point(-1, -1, false);
+    }
+
+
+}
+
