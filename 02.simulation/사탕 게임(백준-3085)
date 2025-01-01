@@ -1,0 +1,97 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class Main {
+
+
+    static char[][] arr;
+    static int n;
+
+    static int MAX = 0;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+
+        arr = new char[n][n];
+
+        for (int i = 0; i < n; i++) {
+            String s = br.readLine();
+            for (int j = 0; j < n; j++) {
+                arr[i][j] = s.charAt(j);
+            }
+        }
+
+        // 가로 바꾸기
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n-1; j++) {
+                chageRow(i, j);
+                // 줄 확인하기
+                checkRow(i);
+                //세로 확인하기 2
+                checkCol(j);
+                checkCol(j+1);
+
+                // 원복
+                chageRow(i, j);
+
+            }
+        }
+
+        // 세로 바꾸기
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < n-1; i++) {
+                chageCol(i, j);
+
+                // 줄 확인하기
+                checkRow(i);
+                checkRow(i+1);
+
+                // 세로 확인
+                checkCol(j);
+                // 원복
+                chageCol(i, j);
+
+            }
+        }
+        System.out.println(MAX);
+
+    }
+
+    static void chageRow (int i, int j) {
+        char tmp = arr[i][j];
+        arr[i][j] = arr[i][j+1];
+        arr[i][j+1] = tmp;
+    }
+
+    static void checkRow(int i) {
+        int cnt = 1;
+        for (int k = 0; k < n-1; k++) {
+            if(arr[i][k] == arr[i][k+1]) {
+                cnt++;
+                MAX = Math.max(MAX, cnt);
+            } else {
+                cnt = 1;
+            }
+        }
+    }
+
+    static void checkCol(int j) {
+        int cnt = 1;
+        for (int k = 0; k < n-1; k++) {
+            if(arr[k][j] == arr[k+1][j]) {
+                cnt++;
+                MAX = Math.max(MAX, cnt);
+            } else {
+                cnt = 1;
+            }
+        }
+    }
+    static void chageCol (int i, int j) {
+        char tmp = arr[i][j];
+        arr[i][j] = arr[i+1][j];
+        arr[i+1][j] = tmp;
+    }
+}
