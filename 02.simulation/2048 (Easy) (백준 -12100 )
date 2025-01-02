@@ -1,0 +1,162 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+
+public class Main {
+
+
+    static int[][] arr;
+    static int n;
+    static int MAX = 0;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+
+        n = Integer.parseInt(br.readLine());
+
+        arr = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            String[] s = br.readLine().split(" ");
+            for (int j = 0; j < n; j++) {
+                int value = Integer.parseInt(s[j]);
+                arr[i][j] = value;
+            }
+        }
+        find(arr, 0);
+        System.out.println(MAX);
+    }
+
+    public static void find(int[][] arr, int cnt) {
+        if(cnt == 5) {
+            //최대 5번 이동해서 만들 수 있는 가장 큰 블록의 값
+            getMax(arr);
+            return;
+        }
+        // 위 이동
+        int[][] copy = new int[n][n];
+
+        for (int j=0; j<n; j++) {
+            int last = 0;
+            for (int i =0; i<n; i++) {
+                if(arr[i][j] != 0) {
+                    //원본 값이 있을 경우 이동하기
+
+                    if(copy[last][j] == 0) {
+                        // 복사할 곳에 값이 없는 경우
+                        copy[last][j] = arr[i][j];
+                    } else if (copy[last][j] ==  arr[i][j]) {
+                        // 값이 있지만 충돌하지 않은 경우
+                        copy[last][j] += arr[i][j];
+                        last++;
+                    } else {
+                        // 복사할 곳에 값이 있지만 값이 같지 않아 합치지 못할 경우
+                        while(copy[last][j] != 0) {
+                            last++;
+                        }
+                        copy[last][j] = arr[i][j];
+                    }
+                }
+            }
+        }
+        find(copy, cnt +1);
+
+        // 아래 이동
+        int[][] copy1 = new int[n][n];
+
+        for (int j=0; j<n; j++) {
+            int last = n-1;
+            for (int i = n-1; i>=0; i--) {
+                if(arr[i][j] != 0) {
+
+                    if(copy1[last][j] == 0) {
+                        // 복사할 곳에 값이 없는 경우
+                        copy1[last][j] = arr[i][j];
+                    } else if (copy1[last][j] ==  arr[i][j]) {
+                        // 값이 있지만 충돌하지 않은 경우
+                        copy1[last][j] += arr[i][j];
+                        last--;
+                    } else {
+                        // 복사할 곳에 값이 있지만 값이 같지 않아 합치지 못할 경우
+                        while(copy1[last][j] != 0) {
+                            last--;
+                        }
+                        copy1[last][j] = arr[i][j];
+                    }
+
+                }
+            }
+        }
+        find(copy1, cnt +1);
+
+//         오른쪽 이동
+        int[][] copy2 = new int[n][n];
+
+
+        for (int i=0; i<n; i++) {
+            int last = n-1;
+            for (int j = (n-1); j>=0; j--) {
+                if(arr[i][j] != 0) {
+                    //원본 값이 있을 경우 이동하기
+
+                    if(copy2[i][last] == 0) {
+                        // 복사할 곳에 값이 없는 경우
+                        copy2[i][last] = arr[i][j];
+                    } else if (copy2[i][last] ==  arr[i][j]) {
+                        // 값이 있지만 충돌하지 않은 경우
+                        copy2[i][last] += arr[i][j];
+                        last--;
+                    } else {
+                        // 복사할 곳에 값이 있지만 값이 같지 않아 합치지 못할 경우
+                        while(copy2[i][last] != 0) {
+                            last--;
+                        }
+                        copy2[i][last] = arr[i][j];
+                    }
+
+                }
+            }
+        }
+
+        find(copy2, cnt +1);
+
+        // 왼쪽 이동
+        int[][] copy3 = new int[n][n];
+        for (int i=0; i<n; i++) {
+           int last = 0;
+            for (int j = 0; j < n; j++ ) {
+                if(arr[i][j] != 0) {
+                    //원본 값이 있을 경우 이동하기
+
+                    if(copy3[i][last] == 0) {
+                        // 복사할 곳에 값이 없는 경우
+                        copy3[i][last] = arr[i][j];
+                    } else if (copy3[i][last] ==  arr[i][j]) {
+                        // 값이 있지만 충돌하지 않은 경우
+                        copy3[i][last] += arr[i][j];
+                        last++;
+                    } else {
+                        // 복사할 곳에 값이 있지만 값이 같지 않아 합치지 못할 경우
+                        while(copy3[i][last] != 0) {
+                            last++;
+                        }
+                        copy3[i][last] = arr[i][j];
+                    }
+
+                }
+            }
+        }
+
+        find(copy3, cnt +1);
+    }
+
+    public static void getMax(int[][] copy){
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<n; j++) {
+                MAX  = Math.max(MAX, copy[i][j]);
+            }
+        }
+    }
+}
+
