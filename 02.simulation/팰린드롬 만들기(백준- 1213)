@@ -1,0 +1,63 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+
+public class Main {
+
+
+    static StringBuilder sb =new StringBuilder();
+    static int[] arr = new int[26];
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String s = br.readLine();
+        int n = s.length();
+
+        for(char ch : s.toCharArray()){
+            int idx = ch -'A';
+            arr[idx]++;
+        }
+
+        int limit = 0;
+        int cutOdd = 0;
+        char mid = 'a';
+
+        // 홀수 길이인 경우 홀수개 단어 하나 허용
+        if(n % 2 != 0) limit++;
+
+        for (int i=0; i<26; i++) {
+            while(arr[i] > 1) {
+                char c = (char)(i + 'A');
+                sb.append(c);
+                arr[i] -= 2;
+            }
+
+
+            if(arr[i] == 1) {
+                cutOdd++;
+                if(limit < cutOdd) {
+                    System.out.println("I'm Sorry Hansoo");
+                    return;
+                }
+                mid =(char)(i + 'A');
+            }
+        }
+
+        String reverse = new StringBuilder(sb).reverse().toString();
+
+        if(limit == 1) {
+            sb.append(mid);
+        }
+
+         sb.append(reverse);
+
+        System.out.println(sb);
+
+
+
+
+    }
+
+}
+
