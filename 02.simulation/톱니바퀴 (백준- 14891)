@@ -1,0 +1,92 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+
+public class Main {
+
+
+    static int[][] arr;
+    static int N = 0, S = 1;
+    static int[] rotate = new int[4];
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        arr = new int[4][8];
+
+        for (int i = 0; i < 4; i++) {
+            String s = br.readLine();
+            for (int j = 0; j < 8; j++) {
+                arr[i][j] = s.charAt(j) -'0';
+            }
+        }
+
+        int k = Integer.parseInt(br.readLine());
+        for (int i = 0; i < k; i++) {
+            // 회전 여부 정하기
+            // 톱니 회전 초기화
+            rotate = new int[4];
+            String[] s = br.readLine().split(" ");
+            int idx = Integer.parseInt(s[0]) -1;
+            int dir = Integer.parseInt(s[1]);
+            rotate[idx] = dir;
+            int t = idx; // 회전 할 톱니 왼쪽 구하기
+            while( t >= 1 && arr[t-1][2] != arr[t][6]) {
+                rotate[t-1] = rotate[t]*-1;
+                t--;
+            }
+            t = idx; // 회전 할 톱니 오른쪽 구하기
+            while( t <= 2 && arr[t][2] != arr[t+1][6]) {
+                rotate[t+1] = rotate[t]*-1;
+                t++;
+            }
+            rotate();
+        }
+
+        int answer = getAnswer();
+        System.out.println(answer);
+
+    }
+
+    static void rotate() {
+        for (int i = 0; i < 4; i++) {
+            if(rotate[i] == 1) {
+                // 시계 방향 회전
+                rotateRight(i);
+            } else if (rotate[i] == -1){
+                // 반시계 방향 회전
+                rotateLeft(i);
+            }
+        }
+    }
+
+    static void rotateRight(int idx) {
+        int tmp = arr[idx][7];
+        for (int i=6; i>=0; i--) {
+            arr[idx][i+1] = arr[idx][i];
+        }
+        arr[idx][0] = tmp;
+    }
+
+
+    static void rotateLeft(int idx) {
+        int tmp = arr[idx][0];
+        for (int i=1; i <= 7; i++) {
+            arr[idx][i-1] = arr[idx][i];
+        }
+        arr[idx][7] = tmp;
+    }
+
+
+    static int getAnswer() {
+        int sum  = 0;
+        for (int i = 0; i < 4; i++) {
+            if(arr[i][0] == S) {
+                sum += 1* Math.pow(2, i);
+            }
+        }
+        return sum;
+    }
+}
+
