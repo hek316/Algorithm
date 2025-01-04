@@ -1,0 +1,36 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+
+public class Main {
+
+
+    static int[] arr;
+    static int N;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        N = Integer.parseInt(br.readLine());
+        arr = new int[N];
+
+        for (int i = 0; i < N ; i++) {
+            arr[i] = Integer.parseInt(br.readLine());
+        }
+        Arrays.sort(arr);
+
+        double end = N * 0.15;
+        int  start = (int) Math.round(end);
+        int sum = 0;
+        for (int i = start ; i<N -start; i++) {
+            sum += arr[i];
+        }
+
+        double mod = N - 2*start;
+        double result = sum/mod;
+        int ans = (int) Math.round(result);
+        System.out.println(ans);
+    }
+}
+
