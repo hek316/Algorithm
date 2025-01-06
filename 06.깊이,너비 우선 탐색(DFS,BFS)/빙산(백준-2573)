@@ -1,0 +1,114 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+
+    static int[][] arr;
+    static int n;
+    static int m;
+    static int[][] dir = {{0, 1},{0, -1} , {1, 0}, {-1, 0}};
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] s = br.readLine().split(" ");
+        n = Integer.parseInt(s[0]);
+        m = Integer.parseInt(s[1]);
+
+        arr = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            s = br.readLine().split(" ");
+            for (int j = 0; j < m; j++) {
+                arr[i][j] = Integer.parseInt(s[j]);
+            }
+        }
+        int year = 0;
+
+        while (true) {
+            int count = count();
+            if(count >=2) {
+                System.out.println(year);
+                return;
+            }
+
+            if(count == 0) {
+                // 빙하 없음
+                System.out.println(0);
+                return;
+            }
+
+            // 2 이상일 경우
+            // 빙하 녹이기
+            arr = melt();
+            year++;
+        }
+
+    }
+
+    public static int[][] melt() {
+        int[][] board = new int[n][m];
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<m; j++) {
+                if(arr[i][j] != 0) {
+                    int tmp = 0;
+                    for (int k=0 ; k<4; k++) {
+                        int nx = i + dir[k][0];
+                        int ny = j + dir[k][1];
+                        if(nx >=0 && nx < n && ny >=0 && ny <m ) {
+                            if(arr[nx][ny] == 0) {
+                                tmp++;
+                                // 주변이 빙하일 경우
+                            }
+                        }
+                    }
+                    board[i][j] = arr[i][j]- tmp;
+                    if(board[i][j] < 0) board[i][j] = 0;
+                }
+            }
+        }
+        return board;
+    }
+
+    public static int count(){
+        boolean[][] visit = new boolean[n][m];
+        // 빙하가 두덩어리 이하인 경우
+        // 또는 분리X 빙하가 다 녹은 경우 0  출력
+        int cnt = 0;
+        for(int i=0; i<n; i++){
+            for (int j=0; j<m; j++) {
+                // 빙하가 있고 방문하지 않은 경우
+                if(arr[i][j] != 0 && visit[i][j] == false ){
+                    cnt++;
+                    bfs(i, j, visit);
+                }
+            }
+        }
+
+        return cnt;
+    }
+
+    public static void bfs(int x, int y, boolean[][] visit) {
+        Queue<int[] > q = new ArrayDeque<>();
+        q.add(new int[]{x, y});
+        visit[x][y] = true;
+        while(!q.isEmpty()) {
+            int[] t = q.poll();
+            x = t[0];
+            y = t[1];
+            for (int i=0 ; i<4; i++) {
+                int nx = x + dir[i][0];
+                int ny = y + dir[i][1];
+                if(nx >=0 && nx < n && ny >=0 && ny <m ) {
+                    if(arr[nx][ny] != 0 && visit[nx][ny] == false) {
+                        visit[nx][ny] = true;
+                        q.add(new int[]{nx, ny});
+                    }
+                }
+            }
+        }
+
+    }
+}
