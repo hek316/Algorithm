@@ -1,0 +1,100 @@
+import java.io.*;
+import java.util.*;
+
+class Main {
+
+    static class Node{
+        int x;
+        int y;
+        Node(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    static boolean[][] visited = new boolean[5][5];
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        Node[] nodes = new Node[26];
+
+        for (int i = 0; i < 5; i++) {
+            String[] s = br.readLine().split(" ");
+            for (int j = 0; j < 5; j++) {
+                int x = Integer.parseInt(s[j]);
+                nodes[x] = new Node(i, j);
+            }
+        }
+
+
+        int ans = 0;
+        for (int i = 0; i < 5; i++) {
+            String[] s = br.readLine().split(" ");
+            for (int j = 0; j < 5; j++) {
+                ans++;
+                int num = Integer.parseInt(s[j]);
+                visited[nodes[num].x][nodes[num].y] = true;
+                if(ans > 10) {
+                    if(check() >= 3) {
+                        System.out.println(ans);
+                        return;
+                    }
+                }
+            }
+        }
+
+
+
+    }
+
+    public static  int check() {
+        // 가로 체크
+        int sum = 0;
+        for (int i=0; i<5; i++) {
+            boolean binggo = true;
+            for(int j=0; j<5; j++) {
+                if(!visited[i][j]) {
+                    binggo = false;
+                    break;
+                }
+            }
+            if(binggo) {sum++;}
+        }
+
+        // 세로 체크
+        for (int j=0; j<5; j++) {
+            boolean binggo = true;
+            for(int i=0; i<5; i++) {
+                if(!visited[i][j]) {
+                    binggo = false;
+                    break;
+                }
+            }
+            if(binggo) {sum++;}
+        }
+
+        // 대각선 체크
+        boolean binggo = true;
+
+        for (int i=0; i<5; i++) {
+            int j = 4 - i;
+            if(!visited[i][j]){
+                binggo = false;
+                break;
+            }
+        }
+        if(binggo) {sum++;}
+
+        // 대각선 체크
+        binggo = true;
+
+        for (int i=0; i< 5; i++) {
+            if(!visited[i][i]){
+                binggo = false;
+                break;
+            }
+        }
+        if(binggo) {sum++;}
+        return sum;
+    }
+}
