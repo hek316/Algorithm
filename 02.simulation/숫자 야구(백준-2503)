@@ -1,0 +1,100 @@
+import java.io.*;
+import java.util.*;
+
+class Main {
+    static class Node {
+        int a, b, c;
+        int strike;
+        int ball;
+
+        public Node(int a, int b, int c, int strike, int ball) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.strike = strike;
+            this.ball = ball;
+        }
+
+    }
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int n = Integer.parseInt(br.readLine());
+        Node[] nodes = new Node[n];
+
+        for (int i = 0; i < n; i++) {
+            String[] s = br.readLine().split(" ");
+            int num = Integer.parseInt(s[0]);
+            int strike = Integer.parseInt(s[1]);
+            int ball = Integer.parseInt(s[2]);
+
+            int c= num%10;
+            num = num/10;
+
+            int b = num%10;
+            num = num/10;
+
+            int a = num%10;
+            nodes[i] = new Node(a, b, c, strike, ball);
+        }
+
+        int ans = 0;
+        for (int a = 1; a<=9 ; a++) {
+            for (int b = 1; b<=9 ; b++) {
+                for (int c = 1; c<=9 ; c++) {
+                    boolean check = true;
+                    if (!check(a, b, c)) continue;
+                        for (int j = 0; j < nodes.length; j++) {
+                            int strike = 0;
+                            int ball = 0;
+
+                            if(a == nodes[j].a) {
+                                strike++;
+                            }
+                            if(b == nodes[j].b) {
+                                strike++;
+                            }
+                            if(c == nodes[j].c) {
+                                strike++;
+                            }
+
+                            if(a == nodes[j].b || a == nodes[j].c) {
+                                ball++;
+                            }
+
+                            if(b == nodes[j].a || b == nodes[j].c) {
+                                ball++;
+                            }
+
+                            if(c == nodes[j].a || c == nodes[j].b) {
+                                ball++;
+                            }
+
+
+                            // 확인
+                            if (nodes[j].strike == strike && nodes[j].ball == ball) continue;
+                            // 해당 수는 답이 될 수 없음
+                            check = false;
+                            break;
+
+                        }
+                    // 모든 응답과 일치하는 경우
+                    if(check) {
+                        ans++;
+                    }
+                }
+
+            }
+        }
+
+        System.out.println(ans);
+
+    }
+
+    static boolean check(int a, int b , int c) {
+       if(a == b) return false;
+       if(a == c) return false;
+       if(b == c) return false;
+       return true;
+    }
+}
