@@ -1,0 +1,79 @@
+import java.io.*;
+import java.util.*;
+
+class Main {
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String s = br.readLine();
+        Stack<Character> stack1 = new Stack<>();
+
+        int tmp = 1;
+        if(s.charAt(0) == ')' || s.charAt(0) == ']') {
+            System.out.println(0);
+            return;
+        } else if(s.charAt(0) == '(') {
+            stack1.push('(');
+            tmp = 2;
+        }else if(s.charAt(0) == '[') {
+            stack1.push('[');
+            tmp = 3;
+        }
+
+
+        int sum = 0;
+        for (int i=1; i<s.length(); i++) {
+            char c = s.charAt(i);
+            if(c == '(') {
+               stack1.push(c);
+               tmp = tmp*2;
+
+            } else if(c == '[') {
+                stack1.push(c);
+                tmp = tmp*3;
+
+            }else if(c == ')') {
+                if(stack1.isEmpty()) {
+                    System.out.println(0);
+                    return;
+                }
+                char pop = stack1.pop();
+                if(pop == '(') {
+                    if(s.charAt(i-1) == '(') {
+                        sum = sum + tmp;
+                    }
+
+                } else {
+                    System.out.println(0);
+                    return;
+                }
+                tmp = tmp / 2;
+            }else if(c == ']') {
+                if(stack1.isEmpty()) {
+                    System.out.println(0);
+                    return;
+                }
+                char pop = stack1.pop();
+                if(pop == '['){
+                    if(s.charAt(i-1) == '[') {
+                        sum = sum + tmp;
+                    }
+                } else {
+                    System.out.println(0);
+                    return;
+                }
+                tmp = tmp / 3;
+
+            }
+        }
+
+        if(!stack1.isEmpty()) {
+            System.out.println(0);
+            return;
+        }
+
+        System.out.println(sum);
+    }
+
+}
