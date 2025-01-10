@@ -1,0 +1,75 @@
+import java.io.*;
+import java.util.*;
+
+class Main {
+
+    static int n;
+    static int m;
+    static int[][] arr;
+    static int[][] dir = {{0, 1}, {0, -1}, {-1, 0}, {+1, 0}};
+    static boolean[][] visited;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] s = br.readLine().split(" ");
+        n = Integer.parseInt(s[0]);
+        m = Integer.parseInt(s[1]);
+        arr = new int[n][m];
+
+        for (int i = 0; i < n; i++) {
+            s = br.readLine().split(" ");
+            for (int j = 0; j < m; j++) {
+                arr[i][j] = Integer.parseInt(s[j]);
+            }
+        }
+
+        int time = 0;
+        int pre = 0;
+        while(true) {
+            // 녹일 치즈 체크
+            visited = new boolean[n][m];
+            go(0,0, visited);
+
+            int cnt = 0;
+            // 치즈 녹이기
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if(arr[i][j] == 2) {
+                        arr[i][j] = 0;
+                        cnt++;
+                    }
+                }
+            }
+
+
+            if(cnt == 0) {
+                // 녹인 치즈가 없는 경우
+                System.out.println(time);
+                System.out.println(pre);
+                return;
+            }
+            pre = cnt;
+            time++;
+        }
+
+    }
+    // 녹일 치즈 체크하기
+    public static void go(int x, int y, boolean[][] visited) {
+        // 밖에서 부터 확인
+        for (int i = 0; i < 4; i++) {
+           int nx = x + dir[i][0];
+           int ny = y + dir[i][1];
+
+           if(nx >= 0 && nx < n && ny >= 0 && ny < m && visited[nx][ny] == false) {
+               visited[nx][ny] = true;
+               if(arr[nx][ny] == 1) { // 녹일 치즈
+                   arr[nx][ny] = 2;
+                   continue;
+               }
+               // 빈공간인 경우
+               go(nx, ny, visited);
+           }
+        }
+    }
+
+}
