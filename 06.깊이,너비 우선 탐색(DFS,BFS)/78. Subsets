@@ -1,0 +1,25 @@
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        find(0, new ArrayList<>(), result, nums);
+
+        return result;
+    }
+
+    public void find(int idx, List<Integer> current, List<List<Integer>> result, int[] nums) {
+
+        if(idx == nums.length) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+
+
+        // 선택 안하는 경우
+        find(idx+1, current, result, nums);
+
+        // 선택하는 경우
+        current.add(nums[idx]);
+        find(idx+1, current, result, nums);
+        current.removeLast();
+    }
+}
