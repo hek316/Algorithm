@@ -1,0 +1,24 @@
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        boolean[] visit = new boolean[nums.length];
+        List<List<Integer>> result = new ArrayList<>();
+        find(nums, visit, new ArrayList<>(), result);
+        return result;
+    }
+
+    public void find(int[] nums, boolean[] visit, List<Integer> current, List<List<Integer>> result) {
+        if(current.size() == nums.length) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+        for (int i=0; i<nums.length; i++) {
+            if(!visit[i]) {
+                visit[i] = true;
+                current.add(nums[i]);
+                find(nums, visit, current, result);
+                current.removeLast();
+                visit[i] = false;
+            }
+        }
+    }
+}
