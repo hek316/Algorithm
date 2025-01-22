@@ -1,0 +1,25 @@
+class Solution {
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        find(0, nums, result, new ArrayList<>(), true);
+        return result;
+    }
+
+    public void find(int offset, int[] nums, List<List<Integer>> result, List<Integer> current, boolean isPick){
+        if(offset == nums.length) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+
+        if(offset == 0 || nums[offset] != nums[offset-1] || isPick ) {
+            // pick
+            current.add(nums[offset]);
+            find(offset+1, nums, result, current, true);
+            current.removeLast();
+        }
+        find(offset+1, nums, result, current, false);
+        
+
+    }
+}
