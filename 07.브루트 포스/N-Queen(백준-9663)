@@ -1,0 +1,48 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+
+    static int cnt = 0;
+    static int n;
+    public static void find(int i, boolean[] checkCol, List<Integer> cur) {
+
+        if(i == n) {
+            cnt++;
+            return;
+        }
+
+        for (int j = 0; j < n; j++) {
+            if(!checkCol[j] && isValid(cur, i, j)) {
+                checkCol[j] = true;
+                cur.add(j);
+                find(i+1, checkCol, cur);
+                cur.remove(cur.size()-1);
+                checkCol[j] = false;
+            }
+        }
+    }
+
+    public static boolean isValid(List<Integer> cur, int x, int y) {
+        for (int i=0; i<cur.size(); i++) {
+            int dx = Math.abs(i - x);
+            int dy = Math.abs(cur.get(i)- y);
+            if(dx == dy) return false;
+        }
+        return true;
+    }
+
+
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+        boolean[] checkCol = new boolean[n];
+        List<Integer> cur = new ArrayList<>();
+        find(0, checkCol, cur);
+        System.out.println(cnt);
+    }
+}
