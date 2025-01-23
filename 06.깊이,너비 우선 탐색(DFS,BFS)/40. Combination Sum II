@@ -1,0 +1,32 @@
+class Solution {
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> cur = new ArrayList<>();
+        find(candidates, target, 0, result, cur, 0, false);
+        
+
+        return result;
+    }
+
+    public void find(int[] candidates, int target, int sum, List<List<Integer>> result, List<Integer> cur, int idx, boolean isPick){
+
+        if(sum == target) {
+            result.add(new ArrayList<>(cur));
+            return;
+        }
+        if(sum > target || idx == candidates.length) return;
+
+        // pick
+        if(idx ==0 || candidates[idx] != candidates[idx-1] || (candidates[idx] == candidates[idx-1]) && isPick ) {
+            cur.add(candidates[idx]);
+            find(candidates, target, sum + candidates[idx], result, cur, idx+1, true);
+            cur.removeLast();
+        }
+
+
+        // not pick
+        find(candidates, target, sum, result, cur, idx+1, false);
+
+    }
+}
