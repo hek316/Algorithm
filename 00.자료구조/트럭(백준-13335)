@@ -1,0 +1,48 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+        int n = Integer.parseInt(s[0]);
+        int w = Integer.parseInt(s[1]);
+        int l = Integer.parseInt(s[2]);
+
+        int[] truck = new int[n];
+        s = br.readLine().split(" ");
+        for (int i=0; i<n; i++) {
+            truck[i] = Integer.parseInt(s[i]);
+        }
+        //트럭 다리에 올리기
+        Queue<Integer> q = new ArrayDeque<>();
+        int curIdx = 0;
+        int weight = 0;
+        int time = 0;
+        for (int i = 0; i < w-1; i++) {
+            q.add(0);
+        }
+        while (true) {
+            time++; 
+            if(q.size() == w) {
+                Integer poll = q.poll();
+                weight-=poll;
+            }
+            if (weight + truck[curIdx] <= l ) {
+                weight += truck[curIdx];
+                q.add(truck[curIdx]);
+                curIdx++;
+                if(curIdx == n) break;
+            } else {
+                // 트럭이 하중을 못 버틸때
+                q.add(0);
+            }
+        }
+
+        time += q.size();
+
+        System.out.println(time);
+
+    }
+}
