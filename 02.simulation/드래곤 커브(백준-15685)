@@ -1,0 +1,61 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    static int[][] dir = {{0, 1}, {-1, 0}, {0, -1}, {1, 0}};
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        boolean[][] arr = new boolean[101][101];
+
+        for (int i = 0; i < n; i++) {
+            String[] s = br.readLine().split(" ");
+            int b = Integer.parseInt(s[0]);
+            int a = Integer.parseInt(s[1]);
+            int d = Integer.parseInt(s[2]);
+            int g = Integer.parseInt(s[3]);
+
+            // 0 세대 // 방향 구하기
+            List<int[]> list = new ArrayList<>();
+            list.add(new int[]{a, b});
+
+            int n0 = a+dir[d][0];
+            int n1 = b+dir[d][1];
+            list.add(new int[]{n0, n1});
+
+            arr[a][b] = true;
+            arr[n0][n1] = true;
+            // 꼭지점 구하기
+            for (int j = 1; j <= g; j++) { // 1 세대~ g 세대
+                List<int[]> nextList = new ArrayList<>(list);
+                int[] end = list.get(list.size() - 1);
+                for (int k = list.size() -2; k >=0; k--) {
+                    int[] cur = list.get(k);
+                    int nx =end[0] - (end[1]- cur[1]);
+                    int ny =end[1] + (end[0]- cur[0]);
+                    arr[nx][ny] = true;
+                    nextList.add(new int[]{nx, ny});
+                }
+                list = nextList;
+            }
+        }
+        // 3. 정사각형 구하기
+        int count = count(arr);
+        System.out.println(count);
+
+    }
+    public static int count(boolean[][] arr) {
+        int cnt = 0;
+        for (int i = 0; i < 100; i++) {
+            for (int j = 0; j < 100; j++) {
+                if (arr[i][j] && arr[i+1][j] && arr[i][j+1] && arr[i+1][j+1] ) {
+                    cnt++;
+                }
+            }
+        }
+        return cnt;
+    }
+}
