@@ -1,0 +1,85 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static int cnt = 0;
+    static int k = 0;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] s = br.readLine().split(" ");
+        int n = Integer.parseInt(s[0]);
+        k = Integer.parseInt(s[1]);
+
+        int[] arr = new int[n];
+        int[] tmp = new int[n];
+        String[] s1 = br.readLine().split(" ");
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(s1[i]);
+        }
+        mergeSort(arr, tmp, 0, arr.length-1);
+        if(cnt < k) {
+            System.out.println(-1);
+        }
+
+    }
+
+    private static void mergeSort(int[] arr, int[] tmp, int start, int end) {
+        if(start < end) {
+            int mid = (start + end) / 2;
+            mergeSort(arr, tmp, start, mid);
+            mergeSort(arr, tmp, mid+1, end);
+            merge(arr, tmp, start, mid, end);
+        }
+    }
+
+    private static void merge(int[] arr, int[] tmp, int start, int mid, int end) {
+        for (int i=start; i<=end; i++) {
+            tmp[i] = arr[i];
+        }
+
+        int part1 = start;
+        int part2 = mid+1;
+        int idx = start;
+        while (part1 <= mid && part2 <= end) {
+            if(tmp[part1] <= tmp[part2]) {
+                arr[idx] = tmp[part1];
+                part1++;
+            } else {
+                arr[idx] = tmp[part2];
+                part2++;
+            }
+            cnt++;
+            if(cnt == k)  {
+                System.out.println(arr[idx]);
+                return;
+            }
+            idx++;
+        }
+
+        // 왼쪽이 남는 경우
+        while(part1 <= mid) {
+            arr[idx] = tmp[part1++];
+            cnt++;
+            if(cnt == k)  {
+                System.out.println(arr[idx]);
+                return;
+            }
+            idx++;
+        }
+
+        // 오른쪽이 남는 경우
+        while(part2 <= end) {
+            arr[idx] = tmp[part2++];
+            cnt++;
+            if(cnt == k)  {
+                System.out.println(arr[idx]);
+                return;
+            }
+            idx++;
+        }
+
+    }
+}
