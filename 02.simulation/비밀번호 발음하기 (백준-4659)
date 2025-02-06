@@ -1,0 +1,70 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        while(true) {
+            String s = br.readLine();
+            if("end".equals(s)) {
+                System.out.println(sb);
+                return;
+            }
+
+            boolean result = false;
+            if(check1(s)) {
+                if(check2(s)) {
+                    if(check3(s)) {
+                        result = true;
+                    }
+                }
+            }
+            sb.append("<").append(s).append("> is ");
+            if(!result) {
+                sb.append("not ");
+            }
+            sb.append("acceptable. \n");
+        }
+    }
+
+    public static boolean check1(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean check2(String s) {
+        int aeiou = 0;
+        int bc = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' ) {
+                aeiou++;
+                bc = 0;
+            } else {
+                aeiou = 0;
+                bc++;
+            }
+            if(aeiou == 3 || bc == 3) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean check3(String s) {
+        for (int i = 1; i < s.length(); i++) {
+            if(s.charAt(i) == 'e' || s.charAt(i) == 'o') continue;
+            if(s.charAt(i-1) == s.charAt(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
