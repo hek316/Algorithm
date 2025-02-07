@@ -1,0 +1,40 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] s = br.readLine().split(" ");
+        int n = Integer.parseInt(s[0]);
+        int pow = Integer.parseInt(s[1]);
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(n);
+        while(true) {
+            // 순열 반복 발생시
+            int r = 0 ;
+            int next = 0;
+            while(n != 0) {
+                r =n%10;
+                next += Math.pow(r, pow);
+                n = n/10;
+            }
+
+            if(list.contains(next)) {
+                for (int i = 0; i < list.size(); i++) {
+                    if(list.get(i) == next) {
+                        System.out.println(i);
+                        return;
+                    }
+                }
+
+                return;
+            }
+            list.add(next);
+            n = next;
+        }
+    }
+}
