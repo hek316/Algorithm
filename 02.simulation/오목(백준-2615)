@@ -1,0 +1,70 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static int[][] arr = new int[19][19];
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+
+        for (int i = 0; i < 19; i++) {
+            String[] s = br.readLine().split(" ");
+            for (int j = 0; j < 19; j++) {
+                arr[i][j] = Integer.parseInt(s[j]);
+            }
+        }
+
+
+
+        for (int i = 0; i < 19; i++) {
+            for (int j = 0; j < 19; j++) {
+                if(check(i, j , 0, 1, arr) ||   check(i, j , 1, 0, arr) ||  check(i, j , 1, 1, arr) || check(i, j , -1, 1, arr) ) {
+                    System.out.println(arr[i][j] + "\n" + (i+1) + " "+  (j+1));
+                    return;
+                }
+            }
+        }
+        System.out.println("0");
+
+
+    }
+
+    public static boolean check(int x, int y, int dx, int dy, int[][] arr){
+        if(arr[x][y] == 0) {
+            // 빈칸
+            return false;
+        }
+        // 오목 검사
+
+        for (int i = 1; i <=4; i++) {
+            int nx =  x + i*dx;
+            int ny = y + i*dy;
+            if(nx >= 0 && ny >= 0 && nx < 19 && ny < 19 && arr[nx][ny] == arr[x][y]) {
+
+            } else {
+                return false;
+            }
+        }
+
+        // 육목인지 확인 전 후 검사
+        int nx = x - dx;
+        int ny = y - dy;
+        if(nx >= 0 && ny >= 0 && nx < 19 && ny < 19) {
+            if(arr[nx][ny] == arr[x][y]) {
+                return false;
+            }
+        }
+
+         nx = x + 5*dx;
+         ny = y + 5*dy;
+        if(nx >= 0 && ny >= 0 && nx < 19 && ny < 19) {
+            if(arr[nx][ny] == arr[x][y]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+}
