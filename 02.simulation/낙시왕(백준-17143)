@@ -1,0 +1,129 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static class Shark{
+        int x, y, s, d, size;
+        Shark(int x, int y,int s, int d, int size) {
+            this.x  = x;
+            this.y = y;
+            this.s  = s;
+            this.d = d;
+            this.size = size;
+        }
+    }
+    static int R;
+    static int C;
+
+    static List<Shark> list = new ArrayList<>();
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+        R = Integer.parseInt(s[0]);
+        C = Integer.parseInt(s[1]);
+        int M = Integer.parseInt(s[2]);
+
+        Shark[][] arr = new Shark[R+1][C+1];
+
+        for (int i = 0; i < M; i++) {
+            s = br.readLine().split(" ");
+            int r = Integer.parseInt(s[0]);
+            int c = Integer.parseInt(s[1]);
+            int speed = Integer.parseInt(s[2]);
+            int d = Integer.parseInt(s[3]);
+            int size = Integer.parseInt(s[4]);
+
+            Shark shark = new Shark(r, c, speed, d, size);
+            list.add(shark);
+            arr[r][c] = shark;
+        }
+        int ans = 0;
+        // 사람 이동하기
+        for (int j = 1; j <= C ; j++) {
+            //물고기 사냥
+            for (int i = 1; i <= R; i++) {
+                Shark shark = arr[i][j];
+                if(shark != null) {
+                    ans += shark.size;
+                    list.remove(shark); // 상어 잡기
+                    arr[i][j] = null;
+                    break;
+                }
+            }
+
+            // 상어 이동
+            arr = move();
+            eatShark(arr);
+        }
+        System.out.println(ans);
+    }
+    public static Shark[][] move () {
+        Shark[][] arr = new Shark[R+1][C+1];;
+        int[][] dir = {{0,0}, {-1, 0} , {+1, 0} , {0, +1} , {0, -1}};
+        int[] chageDir = {0, 2, 1, 4, 3};
+        List<Shark> tmp = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                Shark shark = list.get(i);
+                // 상어 움직이기
+                if(shark.d == 1 || shark.d == 2) {
+                    // 위 아래
+                    shark.s = shark.s % ((R-1)*2);
+                } else {
+                    // 왼 오
+                    shark.s = shark.s % ((C-1)*2);
+                }
+
+                for (int j = 0; j < shark.s; j++) {
+
+                    if(checkRage(shark.x +dir[shark.d][0] , shark.y + dir[shark.d][1])) {
+                        shark.x += dir[shark.d][0];
+                        shark.y += dir[shark.d][1];
+                    } else {
+                        shark.d = chageDir[shark.d];
+                        shark.x += dir[shark.d][0];
+                        shark.y += dir[shark.d][1];
+                    }
+                }
+                tmp.add(shark);
+            }
+
+            list.clear();
+            list.addAll(tmp);
+        return arr;
+    }
+
+    public static void eatShark(Shark[][] arr) {
+        List<Shark> tmp = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            Shark shark = list.get(i);
+            tmp.add(shark);
+            // 기존에 상어가 있는 경우
+            if(arr[shark.x][shark.y] != null) {
+                int size = arr[shark.x][shark.y].size;
+                if(shark.size > size){
+                    // 사이즈가 큰 경우 교채
+                    // 이전 상어 제거
+                    tmp.remove(arr[shark.x][shark.y]);
+                    // 새로운 상어
+                    arr[shark.x][shark.y] = shark;
+                } else {
+                    // 현재 상어가 더 사이즈가 작은 경우
+                    tmp.remove(shark);
+                }
+            } else {
+                arr[shark.x][shark.y] = shark;
+            }
+        }
+        list.clear();
+        list.addAll(tmp);
+    }
+
+    public static boolean checkRage(int x, int y) {
+        if(x >= 1 && y >= 1 && x <= R && y <= C) {
+            return true;
+        }
+        return false;
+    }
+}
