@@ -1,0 +1,33 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int n = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= n; i++) {
+            sb.append("Class ").append(i).append("\n");
+            String[] s = br.readLine().split(" ");
+            int k = Integer.parseInt(s[0]);
+            int[] arr = new int[k];
+            for (int j=1;  j<=k; j++) {
+                arr[j-1] = Integer.parseInt(s[j]);
+            }
+            Arrays.sort(arr);
+            int gap = 0;
+            for (int j = 1; j < k; j++) {
+                int tmp = Math.abs(arr[j-1] - arr[j]);
+                gap = Math.max(gap, tmp);
+            }
+            sb.append("Max ").append(arr[k-1]).append(", Min ").append(arr[0]).append(", Largest gap ").append(gap).append("\n");
+        }
+
+        System.out.println(sb);
+
+
+    }
+
+}
