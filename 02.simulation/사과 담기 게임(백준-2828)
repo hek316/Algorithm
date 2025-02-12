@@ -1,0 +1,32 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s  = br.readLine().split(" ");
+        int n = Integer.parseInt(s[0]);
+        int size = Integer.parseInt(s[1]) ;
+        int start  = 1;
+        int end = size;
+        int sum = 0;
+        int k = Integer.parseInt(br.readLine());
+        for (int i = 0; i <k ; i++) {
+            int idx = Integer.parseInt(br.readLine());
+            if(idx < start) {
+                // 왼쪽이동
+                sum += (start - idx);
+                end -= (start - idx) ;
+                start = idx;
+            } else if (end < idx) {
+                sum += idx - end;
+                start += (idx - end);
+                end = idx;
+
+            }
+        }
+        System.out.println(sum);
+    }
+}
