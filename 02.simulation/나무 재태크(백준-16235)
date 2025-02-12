@@ -1,0 +1,124 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static class Tree implements Comparable<Tree> {
+        int x, y, age;
+        Tree(int x, int y, int age) {
+            this.x = x;
+            this.y = y;
+            this.age = age;
+        }
+
+        public int compareTo(Tree o){
+            return this.age - o.age;
+        }
+    }
+
+    static int[][] nutrition;
+    static int n;
+    static List<Tree> list = new ArrayList<>();
+    static int[][] addNutrition;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+        n = Integer.parseInt(s[0]);
+        int m = Integer.parseInt(s[1]);
+        int k = Integer.parseInt(s[2]);
+
+        nutrition = new int[n][n];
+        addNutrition = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            s = br.readLine().split(" ");
+            for (int j = 0; j < n; j++) {
+                nutrition[i][j] =  5;
+                addNutrition[i][j] = Integer.parseInt(s[j]);
+            }
+        }
+
+        for (int i = 0; i < m; i++) {
+            s = br.readLine().split(" ");
+             int x = Integer.parseInt(s[0])-1;
+             int y = Integer.parseInt(s[1])-1;
+             int age = Integer.parseInt(s[2]);
+             list.add(new Tree(x, y, age));
+        }
+        while(k-- > 0) {
+            list = springAndSummer(list);
+            fall(list);
+            winter();
+        }
+
+        System.out.println(list.size());
+
+    }
+
+    // 봄 양분 먹기 (나이가 어린 나무부터)
+    public static ArrayList<Tree> springAndSummer(List<Tree> list ) {
+        Collections.sort(list);
+        ArrayList<Tree> deadTrees = new ArrayList<>();
+        ArrayList<Tree> liveTrees = new ArrayList<>();
+
+       for(Tree tree : list){
+            int x = tree.x;
+            int y = tree.y;
+//            System.out.println(x + " , " + y + " , "  + tree.age);
+            // 양분이 충분한 경우
+            if (nutrition[x][y] >= tree.age) {
+                nutrition[x][y]-= tree.age;
+                tree.age++;
+                liveTrees.add(tree);
+            } else {
+                // 양분이 없는 경우
+                deadTrees.add(tree);
+            }
+        }
+
+        // 여름 - 양분주기
+        for (Tree tree : deadTrees) {
+            nutrition[tree.x][tree.y] += tree.age/2;
+        }
+        list.clear();
+        list.addAll(liveTrees);
+        return liveTrees;
+    }
+
+    // 가을
+    public static void fall(List<Tree> liveTrees) {
+        int[][] dir = {{-1, -1}, {-1, 0}, {-1, +1}, {0, -1},{0, +1} ,{+1, -1}, {+1, 0}, {+1, +1}};
+        List<Tree> newTrees = new ArrayList<>();
+        for (Tree tree : liveTrees) {
+            int x = tree.x;
+            int y = tree.y;
+            if(tree.age % 5 == 0) {
+                // 번식
+                for (int j = 0; j < 8; j++) {
+                    int nx = x + dir[j][0];
+                    int ny = y + dir[j][1];
+                    if(checkRage(nx, ny)) {
+                        newTrees.add(new Tree(nx, ny, 1));
+                    }
+                }
+            }
+        }
+        list.addAll(newTrees);
+    }
+
+    public static void winter() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                nutrition[i][j] += addNutrition[i][j];
+            }
+        }
+    }
+
+    public static boolean checkRage(int x, int y){
+        if(x>=0 && y>=0 && x < n && y < n) {
+            return true;
+        }
+        return false;
+    }
+
+}
