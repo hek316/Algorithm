@@ -1,0 +1,52 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s  = br.readLine().split(" ");
+        int col = Integer.parseInt(s[0]);
+        int row = Integer.parseInt(s[1]) ;
+        int maxRow = 0;
+        int maxCol = 0;
+        boolean[] rows = new boolean[row+1];
+        boolean[] cols = new boolean[col+1];
+        int n = Integer.parseInt(br.readLine());
+        for (int i = 0; i < n; i++) {
+            s  = br.readLine().split(" ");
+            int t = Integer.parseInt(s[1]);
+            if(s[0].equals("0")) {
+                // 가로
+                rows[t] = true;
+            } else {
+                // 세로
+                cols[t] = true;
+            }
+        }
+
+        // max가로 구하기
+        int tmp = 0;
+        for (int i = 1; i <= row; i++) {
+            tmp++;
+            if(rows[i]) {
+                maxRow = Math.max(maxRow, tmp);
+                tmp = 0;
+            }
+        }
+        maxRow = Math.max(maxRow, tmp);
+
+        tmp = 0;
+        for (int i = 1; i <= col; i++) {
+            tmp++;
+            if(cols[i]) {
+                maxCol = Math.max(maxCol, tmp);
+                tmp = 0;
+            }
+        }
+        maxCol = Math.max(maxCol, tmp);
+        System.out.println(maxRow*maxCol);
+
+    }
+}
