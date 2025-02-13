@@ -1,0 +1,77 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int[][] board = new int[9][9];
+        for (int i = 0; i < 9; i++) {
+            String s = br.readLine();
+            for (int j = 0; j < 9; j++) {
+                board[i][j] = s.charAt(j) - '0';
+            }
+        }
+        combi(board, 0,0);
+    }
+
+    public static boolean combi(int[][] board, int curR, int curC) {
+        if(curC == 9) {
+            if(curR == 8) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < 9; i++) {
+                    for (int j = 0; j < 9; j++) {
+                        sb.append(board[i][j]);
+                    }
+                    sb.append("\n");
+                }
+                System.out.println(sb);
+                return true;
+            }
+            return combi(board, curR+1, 0);
+        }
+
+        if(board[curR][curC] != 0) {
+            return combi(board, curR, curC+1);
+        }
+        for (int i = 1; i <= 9; i++) {
+            board[curR][curC] = i;
+            if(check(board, curR, curC)) {
+                if(combi(board, curR, curC+1)) {
+                   return true;
+                }
+            }
+            board[curR][curC] = 0;
+        }
+        return false;
+    }
+
+    public static boolean check(int[][] board, int r, int c){
+        // 가로 체크
+        for (int i = 0; i < 9; i++) {
+            if(i == c) continue;
+            // 같은 값이 있을 경우
+            if(board[r][c] == board[r][i]) return false;
+        }
+
+        // 위 아래 체크
+        for (int i = 0; i < 9; i++) {
+            if(i == r) continue;
+            // 같은 값이 있을 경우
+            if(board[r][c] == board[i][c]) return false;
+        }
+
+        // box 체크
+        int x = (r/3)*3;
+        int y = (c/3)*3;
+        for (int i = x; i < x + 3; i++) {
+            for (int j = y; j < y + 3; j++) {
+                if(i == r && j == c) continue;
+                if(board[r][c] == board[i][j]) return false;
+            }
+        }
+
+        return true;
+    }
+
+}
