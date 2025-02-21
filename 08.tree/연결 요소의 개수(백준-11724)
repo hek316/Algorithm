@@ -1,0 +1,45 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+public class Main {
+
+    // dfs
+    public static void main(String[] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+        int n = Integer.parseInt(s[0]); // 정점의 개수
+        int m = Integer.parseInt(s[1]);
+        ArrayList<Integer>[] arr = new ArrayList[n+1];
+        for(int i=1; i<=n; i++){
+            arr[i] = new ArrayList<>();
+        }
+        while(m-- > 0){
+            s = br.readLine().split(" ");
+            int u = Integer.parseInt(s[0]);
+            int v = Integer.parseInt(s[1]);
+            arr[u].add(v);
+            arr[v].add(u);
+        }
+        boolean[] visit = new boolean[n+1];
+        int ans = 0;
+        for(int i=1; i<=n; i++){
+            if(visit[i] == false){
+                ans++;
+                visit[i]= true;
+                dfs(arr, i, visit);
+            }
+        }
+
+        System.out.println(ans);
+
+    }
+    public static void dfs(ArrayList<Integer>[] arr, int idx,  boolean[] visit){
+        for(int child : arr[idx]){
+            if(visit[child] == false){
+                visit[child] = true;
+                dfs(arr, child, visit);
+            }
+        }
+    }
+}
