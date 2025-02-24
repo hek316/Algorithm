@@ -1,0 +1,18 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        // (100+1+ | 01)+
+            String s = br.readLine(); // + 하나 이상
+            if(s.matches("(100+1+|01)+")) { // | or [a|b] a 혹은 b , 01(2:3) 012 or 013
+                System.out.println("SUBMARINE");
+            } else {
+                System.out.println("NOISE");
+            }
+    }
+}
