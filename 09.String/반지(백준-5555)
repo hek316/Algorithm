@@ -1,0 +1,22 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String standard = br.readLine();
+        int n = Integer.parseInt(br.readLine());
+        int ans = 0;
+        while (n-- > 0) {
+            String s = br.readLine();
+            s += s;
+            if(s.contains(standard)) {
+                ans++;
+            }
+        }
+        System.out.println(ans);
+    }
+}
