@@ -1,0 +1,34 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        StringBuilder sb = new StringBuilder();
+        while (true) {
+            String s = br.readLine();
+            if(s.equals("0")) break;
+            // 사이간격
+            int sum = 1;
+            sum += s.length();
+            for (char c : s.toCharArray()) {
+                if(c == '1') {
+                    sum += 2;
+                } else if(c == '0') {
+                    sum += 4;
+                } else {
+                    sum += 3;
+                }
+            }
+            sb.append(sum + "\n");
+        }
+
+        System.out.println(sb);
+
+    }
+
+
+}
