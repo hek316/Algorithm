@@ -1,0 +1,20 @@
+import java.util.*;
+class Solution {
+
+    public String[] solution(String[] strings, int n) {
+        int len = strings.length;
+        String[] answer = new String[len];
+
+        int idx = 0;
+        for (String s : strings) {
+            answer[idx++] = s.charAt(n) + s;
+        }
+        Arrays.sort(answer);
+        for (int i=0; i<len; i++) {
+            answer[i] = answer[i].substring(1, answer[i].length());
+        }
+        
+
+        return answer;
+    }
+}
