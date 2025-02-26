@@ -1,0 +1,17 @@
+import java.util.*;
+class Solution {
+    public int[] solution(int[] array, int[][] commands) {
+        int[] answer = new int[commands.length];
+        int idx = 0;
+        for (int[] command : commands) {
+            int a = command[0]-1;
+            int b = command[1];
+            int c = command[2]-1;
+            int[] arr = Arrays.copyOfRange(array, a, b);
+            Arrays.sort(arr);
+            answer[idx++] = arr[c];
+        }
+
+        return answer;
+    }
+}
