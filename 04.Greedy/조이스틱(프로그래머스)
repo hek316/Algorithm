@@ -1,0 +1,31 @@
+class Solution {
+    // 각각의 자리에서 가장 최소의 경로를 구하면 됨 -> 그리디
+    // BAAA 와 같은 엣지 케이스 생각하기!
+    public int solution(String name) {
+        char[] chars = name.toCharArray();
+        int len = chars.length;
+        int sum = 0;
+        for (char c : chars) {
+            // 다음 알파벳
+            int num = c - 'A'; // 앞으로 커서
+            int reverse = 26-num; // 반대로 커서
+            sum += Math.min(num, reverse);
+        }
+
+        // 세로이동 구하기
+      
+        int min = len-1;
+        for (int i=0; i<len; i++) {
+            int next = i+1;
+            boolean check = false;
+            while(next <= len-1 && chars[next] == 'A'){
+                next++;
+                check = true;
+            }
+            if(!check) continue;
+            min = Math.min(min, i + len - next + Math.min(i, len - next));  
+        }
+        sum += min;
+        return sum;
+    }
+}
