@@ -1,73 +1,65 @@
 class Solution {
-    
-    int opStart;
-    int opEnd;
-    int vEnd;
-    
+    int os =0;
+    int oe =0;
     public String solution(String video_len, String pos, String op_start, String op_end, String[] commands) {
-         vEnd = toSec(video_len);
-         opEnd = toSec(op_end);
-         opStart = toSec(op_start);
-        int cur = toSec(pos);
+        // 오프닝 시간 셋팅
+         os = convertSeconds(op_start);
+         oe = convertSeconds(op_end);
         
-        for(String s : commands) {
-            if(s.equals("next")) {
-                if(isOpening(cur)) {
-                    cur = opEnd;
-                 }
-                cur += 10;
-            } else if (s.equals("prev")) {
-                 if(isOpening(cur)) {
-                    cur = opEnd;
-                 }
-                cur -= 10;
-     
-            }
-            cur = checkValue(cur);
+        int end = convertSeconds(video_len);
+        int cur = convertSeconds(pos);
+       if(checkOpening(cur)) { // 시작값 오프닝 확인
+           cur = oe;
+       }
+        for (String command : commands) {
+            cur = order(cur, command, end);
         }
-       
-        return  toTimeFormat(cur);
+
+        String answer = convertMinute(cur);
+     
+        return answer;
     }
     
-    public int checkValue(int time){
-        if(isOpening(time)) {
-            time = opEnd;
+    public int order(int time, String command, int end) {
+        if(command.equals("next")) {
+            time += 10;
+             time = Math.min(time, end);
+        } else {
+            // prev
+            time -= 10;
+            time = Math.max(0, time);
         }
-        if(time < 0) time = 0;
-        if(time > vEnd) time = vEnd;
-        
-        if(isOpening(time)) {
-            time = opEnd;
-        }
+       if(checkOpening(time)) {
+           time = oe;
+       }
         return time;
     }
     
-    public boolean isOpening(int time) {
-        if(time >= opStart && time <= opEnd) {
-            return true;
-        }
+    public boolean checkOpening(int time) {
+       if(time >= os && time <= oe) {
+           return true;           
+       }
         return false;
     }
     
-    public int toSec(String time){
+    
+    public int convertSeconds(String time) {
         String[] s = time.split(":");
         int mm = Integer.parseInt(s[0]);
         int ss = Integer.parseInt(s[1]);
-        return mm*60 + ss;
+        int result = mm*60 + ss;
+        return result;
     }
     
-    public String toTimeFormat(int time) {
-        int mm =time/60;
-        int ss =time%60;
-        String m = Integer.toString(mm);
-        String s = Integer.toString(ss);
-        if(mm <= 9 ) {
-            m = "0" + m;
-        }
-        
-        if(ss <= 9 ) {
-            s = "0" + s;
-        }
-        return m + ":" + s;
+      public String convertMinute(int time) {
+        StringBuilder sb = new StringBuilder();
+          int mm = time/60;
+          int ss = time%60;
+          if(mm >=0 && mm <=9) sb.append("0");
+          sb.append(mm);
+          sb.append(":");
+          if(ss >=0 && ss <=9) sb.append("0");
+          sb.append(ss);
+        return sb.toString();
     }
 }
