@@ -1,0 +1,21 @@
+import java.util.*;
+class Solution
+{
+    public int solution(int []A, int []B)
+    {
+        Arrays.sort(A);
+        Arrays.sort(B);
+        int len = A.length;
+        for (int i=0; i<len/2; i++) {
+            int tmp = B[i];
+            B[i] = B[len-1 -i];
+            B[len-1 -i] = tmp;
+        }
+         int answer = 0;
+        for (int i=0; i<len; i++) {
+            answer += A[i]*B[i];
+        }
+
+        return answer;
+    }
+}
