@@ -1,68 +1,87 @@
 import java.util.*;
 class Solution {
-  
-    List<Integer>[][] arr = new ArrayList[101][101];
-    
     public int solution(int[][] points, int[][] routes) {
-     
-        // 동시 충돌을 2차원 배열에 만들기 int 값 두개 -> 이차원 배열 이용
-        for (int i=0; i<=100; i++) {
-            for (int j=0; j<=100; j++) {
-                arr[i][j] = new ArrayList<>();
-            }
-        }
-        int[][] dest = new int[routes.length][2];
-        for (int i=0; i<routes.length; i++) {
-            int second = 0;
-            for (int j =0; j < routes[i].length-1; j++) {
-                int start = routes[i][j]-1;
-                int end = routes[i][j+1] -1;
-               second = move( points[start][0],  points[start][1], points[end][0],  points[end][1], second); 
-            }
+        // 포인트 번호(1~n)를 좌표로 변환하는 배열 (인덱스 1부터 사용)
+        int n = points.length;
+        int[][] pointArr = new int[n + 1][2];
+        for (int i = 0; i < n; i++) {
+            pointArr[i + 1] = points[i];
         }
         
-         int answer = 0;
-        for (int i=0; i<=100; i++) {
-            for (int j=0; j<=100; j++) {
-                HashMap<Integer, Integer> map = new HashMap<>();
-                for (int k=0; k<arr[i][j].size(); k++) {
-                    int t = arr[i][j].get(k);
-                    int cnt = map.getOrDefault(t, 0);
-                    if(cnt == 1) {
-            //            System.out.println("충돌 발생" +t + " 초 " + " x" + i + " j" + j );
-                        answer++;
-                    }
-                    map.put(t, cnt + 1);
+        // 각 로봇의 전체 이동 경로(시간별 좌표)를 구합니다.
+        int robotCount = routes.length;
+        List<List<int[]>> robotPaths = new ArrayList<>();
+        int maxTime = 0;
+        
+        for (int i = 0; i < robotCount; i++) {
+            List<int[]> path = getFullPath(routes[i], pointArr);
+            robotPaths.add(path);
+            maxTime = Math.max(maxTime, path.size());
+        }
+        
+        // 시간별로 모든 로봇의 위치를 기록하여 위험 상황(동일 좌표에 2대 이상)이 몇 번 발생하는지 계산
+        int riskCount = 0;
+        for (int t = 0; t < maxTime; t++) {
+            // System.out.println("----------------t---------" + t);
+            // 좌표별 로봇 수를 세기 위한 Map
+            Map<String, Integer> posCount = new HashMap<>();
+            for (List<int[]> path : robotPaths) {
+              
+                // 로봇이 t 시간에 아직 운행 중인지 확인
+                if (t < path.size()) {
+                    int[] pos = path.get(t);
+                    String key = pos[0] + "," + pos[1];
+               
+                    int value = posCount.getOrDefault(key, 0) + 1;
+                    posCount.put(key, value);
+                    // System.out.println("key: " + key+ " value"+ value + "t" + t);
+                }
+            }
+            // 해당 시간에 2대 이상 모인 좌표가 있으면 각 좌표마다 위험 상황 1번씩 추가
+            for (int count : posCount.values()) {
+                if (count >= 2) {
+                    riskCount++;
                 }
             }
         }
-
-        return answer;
+        return riskCount;
     }
     
-    public int move(int startX, int startY, int endX, int endY, int second ) {
-        if(second == 0) {
-                   arr[startX][startY].add(second++);  
+    // 각 로봇의 전체 경로를 생성
+    private List<int[]> getFullPath(int[] route, int[][] pointArr) {
+        List<int[]> fullPath = new ArrayList<>();
+        //시작점: route[0]번 포인트의 좌표
+        int[] start = pointArr[route[0]];
+        int[] end = pointArr[route[1]];
+        fullPath.add(new int[]{start[0], start[1]});
+        for (int i=1; i<route.length; i++) {
+            int[] current = fullPath.get(fullPath.size()-1);
+            int[] dest = pointArr[route[i]];
+            List<int[]> segment = getSegmentPath(current, dest);
+            fullPath.addAll(segment);
         }
+   
 
-        while(true) {
-            if(endX < startX) { 
-                startX--; // 목적지가 더 작은 경우
-            } else if (endX> startX){
-                startX++; // 목적지가 더 큰 경우
-            } else {
-                // x 가 같은 경우
-                if (endY > startY) {
-                    startY++;
-                } else if (endY < startY) {
-                    startY--;
-                } else {
-                    break;
-                }
-            } 
+        return fullPath;
+      
+    }
 
-            arr[startX][startY].add(second++);
+    private List<int[]> getSegmentPath(int[] current, int[] dest) {
+        List<int[]> segment = new ArrayList<>();
+        // 시작점: route[0] 번 포인트 좌표
+        int r = current[0], c = current[1];
+        int desR = dest[0], destC = dest[1];
+        
+        // r 좌표 먼저 이동
+        while(r != desR) {
+            r += (r < desR) ? 1 : -1;
+            segment.add(new int[]{r, c});
         }
-        return second;
+        
+        while(c != destC) {
+            c += (c < destC) ? 1 : -1;
+            segment.add(new int[]{r, c});
+        }
+        return segment;
     }
 }
