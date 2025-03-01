@@ -1,0 +1,123 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static final int[][] dx = {{-1, 0}, {+1, 0}, {0, -1}, {0, +1}};
+    static int n;
+    static int[][] arr;
+    static int[][] ans;
+    static int resultMin = Integer.MAX_VALUE;
+
+    static class Node implements Comparable<Node>{
+        int x, y, order;
+        Node(int x, int y, int order){
+            this.x = x;
+            this.y = y;
+            this.order = order;
+        }
+        public int compareTo(Node o){
+            return Integer.compare(order, o.order);
+        }
+    }
+    public static void main(String[] args) throws IOException {
+       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+       String[] s = br.readLine().split(" ");
+        n = Integer.parseInt(s[0]);
+       int virusCnt = Integer.parseInt(s[1]);
+       // 바이러스 활성 위치 구하기
+
+       ArrayList<int[]> list = new ArrayList<>();
+       arr = new int[n][n];
+       ans = new int[n][n];
+       for (int i = 0; i < n; i++) {
+            s = br.readLine().split(" ");
+            for (int j = 0; j < n; j++) {
+                arr[i][j] = Integer.parseInt(s[j]);
+                if(arr[i][j] == 2) {
+                    list.add(new int[]{i, j});
+                }
+            }
+       }
+       int[] result = new int[virusCnt];
+       combi(list, 0, virusCnt, 0, result);
+  
+       System.out.println(resultMin == Integer.MAX_VALUE ? -1 : resultMin);
+    }
+
+    
+    public static void combi(ArrayList<int[]> list, int cnt, int max, int idx, int[] result){
+        if(cnt == max) {
+            PriorityQueue<Node> q = new PriorityQueue<>();
+            boolean[][] visit = new boolean[n][n];
+            for (int r : result) {
+                int[] t = list.get(r);
+                q.add(new Node(t[0], t[1], 0));
+                visit[t[0]][t[1]] = true;
+            }
+            
+            spread(q, visit);
+            return;
+        }
+        for (int i=idx; i<list.size(); i++) {
+            result[cnt] = i;
+            combi(list, cnt+1, max, i+1, result);
+        }
+    }
+
+    // 바이러스 퍼뜨리기
+    public static void spread(PriorityQueue<Node> q, boolean[][] visit){
+   
+        int[][] result = new int[n][n];
+        while(!q.isEmpty()){
+            Node node =q.poll();
+            int x = node.x;
+            int y = node.y;
+            visit[x][y] = true;
+            for (int i=0; i<4; i++) {
+                int nx = x + dx[i][0];
+                int ny = y+ dx[i][1];
+                if (nx >=0 && ny>=0 && nx < n && ny< n ) {
+                    if(arr[nx][ny] == 0 && !visit[nx][ny]) {
+                        result[nx][ny] = result[x][y] + 1;
+                        if(result[nx][ny] > resultMin) {
+                            // 이미 구한 최소값을 넘어갈 경우
+                            return;
+                        }
+                        visit[nx][ny] = true;
+                        q.add(new Node(nx, ny, result[nx][ny]));
+                    } else if (arr[nx][ny] == 2 && !visit[nx][ny]) {
+                            // 비활성 -> 활성
+                         visit[nx][ny] = true;
+                         result[nx][ny] = result[x][y] + 1;
+                         q.add(new Node(nx, ny, result[x][y]+1));  
+                    }
+                }
+            }
+        }
+        getTime(result);
+    }
+
+    // 바이러스 퍼진 최대 시간 구하기
+    public static void getTime(int[][] result) {
+        int max = 0;
+        for(int i=0; i<n; i++) {
+            for (int j = 0; j < n; j++) {
+                if(arr[i][j] == 0) { // 빈벽일 경우만 확인
+                    if(result[i][j]== 0 ) { // 도달 X
+                        return;
+                    }
+                    max = Math.max(max, result[i][j]);
+                }   
+            }
+        }
+        // for (int i = 0; i < ans.length; i++) {
+        //     System.out.println(Arrays.toString(result[i]));
+        // }
+        // System.out.println("///////////");
+        // 최대 시간 중에 min 값 구하기
+        resultMin = Math.min(resultMin, max);
+    }
+
+    
+}
