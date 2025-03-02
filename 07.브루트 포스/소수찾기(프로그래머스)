@@ -1,0 +1,41 @@
+import java.util.*;
+class Solution {
+    HashSet<Integer> set = new HashSet<>();
+    public int solution(String numbers) {
+        // 소수 판별은 자기자신과 1 제외하고 나눠지는 경우가 없어야 함
+        // 모든 수를 나눠봐야 소수판별 가능 -> 브루트포스
+        //  7 이하 문자열 모든 경우 7! -> 5040 최대 13! 를 넘어가면 브루트포스 불가
+        combi(0, "", numbers, new boolean[numbers.length()]);
+         int answer = 0;
+        for (int s : set) {
+            if(isPrime(s)) {
+                answer++;
+            }
+        }
+
+        return answer;
+    }
+    // 0 이 들어가므로 HashSet 으로 중복 소수 제거
+    public void combi(int idx, String result, String numbers, boolean[] visit) {
+        if(!result.isEmpty()) {
+            int num = Integer.parseInt(result);
+            set.add(num);
+        }
+        for (int i=0; i<numbers.length(); i++) {
+            if(visit[i] == false) {
+                visit[i] = true;
+                combi(idx,  result + numbers.charAt(i), numbers,  visit);
+                visit[i] = false;
+            }
+        }
+    }
+    
+    public boolean isPrime(int number){
+        if(number == 1 || number == 0) return false;
+        if(number == 2) return true;
+        for (int i=2; i<= Math.sqrt(number); i++) {
+            if(number%i == 0) return false;
+        }
+        return true;
+    }
+}
