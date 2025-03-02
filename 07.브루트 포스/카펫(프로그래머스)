@@ -1,0 +1,16 @@
+class Solution {
+    public int[] solution(int brown, int yellow) {   
+        // 1억 10의 8승까지 브루트 포스 가능
+        // 5*10^3 * 5*10^3 = 25*10^6
+        for (int x = 3; x <=5000; x++) { // x 가 더 김
+            for (int y = 3; y <= x; y++) {
+                   if((x -2) * (y -2) == yellow ) {
+                       if(x * y == (yellow + brown)) {
+                           return new int[]{x, y};
+                       } 
+                   }
+            }
+        }
+        return new int[]{};
+    }
+}
