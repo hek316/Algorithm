@@ -1,0 +1,51 @@
+import java.util.*;
+class Solution {
+     ArrayList<Integer>[] list;
+    public int solution(int n, int[][] wires) {
+        list = new ArrayList[n+1];
+        for (int i=0; i<=n; i++) {
+            list[i] = new ArrayList<>();
+        }
+        int len = wires.length;
+        // 전체 노드
+        for (int i=0; i<len; i++) {
+            int x = wires[i][0];
+            int y = wires[i][1];
+            list[x].add(y);
+            list[y].add(x);    
+        }
+
+        int min = Integer.MAX_VALUE;
+        // 전력망 두개로 나누는 경우
+        boolean[][] seperate = new boolean[n+1][n+1];
+        for (int i=0; i<len; i++) {
+            int x = wires[i][0];
+            int y = wires[i][1];
+
+            seperate[x][y] = true;
+            seperate[y][x] = true;
+            boolean[] visit = new boolean[n+1];
+            visit[x] = true;
+            int res = dfs(seperate, x, visit);
+            int result = Math.abs((n-res)-res);
+            min = Math.min(result, min);
+            seperate[x][y] = false;
+            seperate[y][x] = false;
+        }
+
+        return min;
+    }
+    
+    public int dfs(boolean[][] seperate, int idx, boolean[] visit) {       
+        int sum = 1;
+        for (int next : list[idx]) {
+            if(seperate[idx][next]) continue;
+            if(!visit[next]) {
+                visit[next] = true;
+                sum +=dfs(seperate, next, visit);
+            }
+        }
+        return sum;
+    }
+    
+}
