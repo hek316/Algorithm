@@ -1,0 +1,27 @@
+class Solution {
+    int cnt = 0;
+    char[] chars = {'A', 'E', 'I', 'O', 'U'};
+    public int solution(String word) {
+        boolean[] visit = new boolean[5];
+        combi( word,  "", visit);
+        return cnt;
+    }
+    
+    public boolean combi(String word, String cur, boolean[] visit) {
+        
+        if(word.equals(cur)) {
+            return true;
+        }
+        if(cur.length() == 5) {
+            return false;
+        }
+        for (int i=0; i<5; i++) {
+            cnt++;
+            if(combi(word, cur + chars[i], visit)) {
+                return true;
+            } 
+        }
+        
+        return false;
+    }
+}
