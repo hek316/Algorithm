@@ -1,35 +1,38 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.*;
 
-class Main {
-    static int cnt;
-    static int N;
-    public static void main(String[] args) throws Exception  {
+
+public class Main {
+
+    static int n;
+    static int[] arr;
+    static int k;
+    static int answer;
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String[] s = br.readLine().split(" ");
-        N = Integer.parseInt(s[0]);
-        int k = Integer.parseInt(s[1]);
-
-        int[] arr =  new int[N];
-        String[] st = br.readLine().split(" ");
-        for(int i=0; i<arr.length; i++){
-            arr[i] = Integer.parseInt(st[i]);
+        n = Integer.parseInt(s[0]);
+        k = Integer.parseInt(s[1]);
+        arr = new int[n];
+        s = br.readLine().split(" ");
+        for (int i = 0; i < n; i++) {
+            arr[i] = Integer.parseInt(s[i]);
         }
+        if(k == 0) answer--;
+        combi(0, 0);
+        System.out.println(answer);
 
-        combi(k, arr, 0, 0);
-        if(k == 0) cnt--;
-        System.out.println(cnt);
     }
 
-    public static void combi(int k, int[] arr, int start, int sum){
-        if(start == N) {
-            if(sum == k) cnt++;
-            return;
+    public static void combi(int idx, int sum) {
+        if(sum == k) {
+            answer++;
         }
-
-        combi(k, arr, start+1, sum);
-        combi(k, arr, start+1, sum + arr[start]);
-
+        for (int i = idx; i < n; i++) {
+            combi(i+1, sum + arr[i]);
+        }
     }
 
 }
