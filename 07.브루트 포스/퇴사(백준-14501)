@@ -1,0 +1,42 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+
+public class Main {
+
+    // 2 의 15 승으로 브루트포스 가능
+    static int n;
+    static int[] day;
+    static int[] pay;
+    static int max = 0;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+
+        day = new int[n];
+        pay = new int[n];
+        for (int i = 0; i < n; i++) {
+            String[] s = br.readLine().split(" ");
+            day[i] = Integer.parseInt(s[0]);
+            pay[i] = Integer.parseInt(s[1]);
+        }
+
+        find(0, 0);
+
+        System.out.println(max);
+    }
+
+    public static void find( int totalPay , int today) {
+        if(today == n) {
+            max = Math.max(totalPay, max);
+            return; // 마지막 날
+        }
+        if (today + day[today] <= n)  find(totalPay + pay[today], today + day[today]); // 선택 한 경우
+        find(totalPay, today + 1); // 선택 안한 경우
+    }
+
+
+
+}
