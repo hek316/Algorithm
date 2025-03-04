@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+
+public class Main {
+
+    // 2 의 20 승으로 브루트포스 가능
+    static int n;
+
+    static int[][] arr;
+    static int min = Integer.MAX_VALUE;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+
+        arr = new int[n][n];
+
+
+        for (int i = 0; i < n; i++) {
+            String[] s = br.readLine().split(" ");
+            for (int j = 0; j < n; j++) {
+                arr[i][j] = Integer.parseInt(s[j]);
+            }
+        }
+
+        combi(0, 0, new boolean[n]);
+        System.out.println(min);
+    }
+
+    public static void combi(int cnt, int idx, boolean[] visited) {
+        if(cnt == n/2) {
+            // 합차이 구하기
+             min = Math.min(min, sum(visited));
+            return;
+        }
+
+        for (int i = idx; i < n; i++) {
+            visited[i] = true;
+            combi(cnt+1, i+1, visited);
+            visited[i] = false;
+        }
+    }
+
+    public static int sum(boolean[] visited){
+        int sum1 = 0;
+        int sum2 = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if(visited[i] && visited[j]) {
+                    sum1 += arr[i][j];
+                } else if(!visited[i] && !visited[j]) {
+                    sum2 += arr[i][j];
+                }
+            }
+        }
+        return Math.abs(sum1 - sum2);
+    }
+}
