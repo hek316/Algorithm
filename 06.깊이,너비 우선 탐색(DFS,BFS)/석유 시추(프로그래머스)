@@ -1,0 +1,66 @@
+import java.util.*;
+class Solution {
+    int[][] dx = {{-1, 0}, {+1, 0}, {0, -1} , {0, +1}};
+    int n = 0;
+    int m = 0;
+    HashMap<Integer, Integer> map = new HashMap<>();
+    public int solution(int[][] land) {
+        n = land.length;
+        m = land[0].length;
+        int[][] result = new int[n][m];
+        boolean[][] visit = new boolean[n][m];
+        int cnt = 1;
+        // 석유 시츄 덩어리별 갯수 구하기
+       
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<m; j++) {
+                if(land[i][j] == 1 && !visit[i][j]) {
+                    bfs(cnt++, land, visit, result, i, j);    
+                }
+            }
+         }
+
+        int max = 0;
+        for (int j=0; j<m; j++) {
+            HashSet<Integer> set = new HashSet<>();
+            for (int i=0; i<n; i++) {
+                if(result[i][j] == 0) continue;
+                set.add(result[i][j]); // 아래로 내려갈때 땅덩어리 구하기
+            }
+            int sum = 0;
+            for (int n : set) {
+                sum += map.get(n);
+            }
+            max = Math.max(max, sum);
+        }
+        
+        return max;
+    }
+    
+    // 석유 덩어리 나누기 및 인덱스 표시
+    public void bfs(int cnt, int[][] land, boolean[][] visit, int[][] result, int x, int y) {
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.add(new int[]{x, y});
+        visit[x][y] = true;
+        result[x][y] = cnt;
+        
+        int total = 0;
+        while(!queue.isEmpty()) {
+            int[] t = queue.poll();
+            total++;
+            for (int i=0; i<4; i++) {
+                int nx =  t[0] + dx[i][0];
+                int ny =  t[1] + dx[i][1];
+                if(nx >=0 && ny >=0 && nx<n && ny < m) {
+                    if(!visit[nx][ny] && land[nx][ny] == 1) {
+                        visit[nx][ny] = true;
+                        result[nx][ny] = cnt;  
+                        queue.add(new int[]{nx, ny});
+                    }
+                }
+            }
+        }
+
+        map.put(cnt, total);
+    }
+}
