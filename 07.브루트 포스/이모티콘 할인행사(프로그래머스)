@@ -1,0 +1,66 @@
+import java.util.*;
+class Solution {
+    // 1.가입자수 최대 / 2.판매액 최대
+    int maxSub = 0;
+    int maxPrice = 0;
+    HashMap<Integer, Integer> map = new HashMap<>();
+    public int[] solution(int[][] users, int[] emoticons) {
+        map.put(0, 10);
+        map.put(1, 20);
+        map.put(2, 30);
+        map.put(3, 40);
+        
+        // 사람별 구매비용 구하기
+        combi(0, emoticons.length, new int[emoticons.length], users, emoticons );
+        int[] answer = new int[]{maxSub, maxPrice};
+        return answer;
+    }
+    // 이모티콘 할인경우의 수 모두 구하기
+    public void combi(int idx, int m, int[] result, int[][] users, int[] emoticons){
+        if(m == idx) {
+            //사람별 구매비용 구하기
+            int plus = 0;
+            int total = 0;
+            for(int[] user : users){
+                int percent = user[0];
+                int price = user[1];
+                int puchase = getPrice(result, percent, price, emoticons);
+                if(puchase >= price) {
+                     // 구매비용이 기준 값 이상일 경우 구독
+                    plus++;
+                } else {
+                    total += puchase;
+                }
+            }
+
+            // 최종 가입자수 /판매액 최대 비교
+            if(maxSub < plus) {
+                maxSub = plus;
+                maxPrice = total;
+            } else if (maxSub == plus) {
+                if (maxPrice < total) {
+                    maxPrice = total;
+                }
+            }
+            return;
+        }
+        for (int i=0; i<4; i++) {
+            result[idx] = i;
+            combi(idx+1, m, result, users, emoticons);
+        }
+    }
+    
+    // 사람이 구매한 이모티콘 구매 비용 구하기
+    public int getPrice(int[] result, int percent, int price, int[] emoticons){
+        int sum = 0;
+        for (int i=0; i<result.length; i++) {
+            int emoPercent = map.get(result[i]);
+            if(percent <= emoPercent) {
+                // 이모티콘 할인율이 고객이 원하는 할인율보다 큰 경우
+                sum += emoticons[i]*((100 - emoPercent)/100.0);
+            }
+        }
+
+        return sum;
+    }
+}
