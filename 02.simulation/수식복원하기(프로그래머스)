@@ -1,0 +1,102 @@
+import java.util.*;
+class Solution {
+    // 진번 2~9 * 100 expressions 길이 -> 브루트 포스 가능
+    public String[] solution(String[] expressions) {
+        // expressions 쪼개기
+         // x 가 포함된 경우가 포함안된 경우 나누기
+        ArrayList<String> checkList = new ArrayList<>(); // x 포함
+        ArrayList<String> result = new ArrayList<>(); // x 미포함
+        
+        for (String expr : expressions) {
+            if(expr.contains("X")) {
+                result.add(expr);
+            } else {
+                checkList.add(expr);
+            }
+        }
+       
+        int max  = getMINRadix(expressions, 0);
+
+        // 가능한 max 진법을 구하기
+         // 포함 안된 경우에 식에 대입하여 불가능한 진법 제거하기
+        ArrayList<Integer> notaion = new ArrayList<>();
+        for (int i=max; i<=9; i++) {
+             if(valid(i,  checkList)) {
+                 notaion.add(i);
+             }
+        }
+
+        // 포함된 경우 가능한 진법중에 값 대입해서 ? 이거나 특정 값 구하기
+        getAnswer(notaion,  result);
+        
+        String[] answer = new String[result.size()];
+        for (int i=0; i<result.size(); i++) {
+            answer[i] = result.get(i);
+        }
+        
+        return answer;
+    }
+    
+    public void getAnswer(ArrayList<Integer> notaion, ArrayList<String> result) {
+        ArrayList<String> valid = new ArrayList<>();
+        HashSet<String> set = new HashSet<>();
+        for (int i=0; i<result.size(); i++) {
+            // 진법 검사
+            set.clear();
+            String value = "";
+            for (int base : notaion) {
+                int z =  calc(result.get(i), base);      
+                value = Integer.toString(z, base); // t 진법으로 변환된 수 리턴
+                set.add(value);
+            }
+             
+            String s1 = "";
+           if(set.size() == 1) {
+                 s1 =  result.get(i).replaceAll("X", value);
+            } else {
+                 s1 =  result.get(i).replaceAll("X", "?");
+            }
+            valid.add(s1);
+          
+        }
+        result.clear();
+        result.addAll(valid);
+    }
+    
+    public boolean valid(int radix, ArrayList<String> checkList) {
+            // checkList 의 수식이 가능한 진법 비교하기
+            for(String check : checkList) {
+                int result = calc(check, radix);
+                int expected =  Integer.parseInt(check.split(" ")[4], radix); 
+                if(expected != result) {
+                    return false;  
+                }
+            }
+        return true;
+    }
+    
+    public int calc(String epr , int radix) {
+        String[] s = epr.split(" "); 
+        int x =  Integer.parseInt(s[0], radix); // base -> 10 진법으로 변환
+        int y =  Integer.parseInt(s[2], radix); 
+        return s[1].equals("+") ?   x + y :  x - y;
+    }
+    
+    
+    public int getMINRadix(String[] expressions, int max) {
+        // 이루어진 수 중에 최대 값 구하기 -> 그 이하의 진수 불가능
+        for (String expr : expressions) {
+            String[] s = expr.split(" ");
+            for (int j=0; j<s.length; j++) {
+                for (char c : s[j].toCharArray()) {
+                    if(Character.isDigit(c)) {
+                        int num = c - '0';
+                        max = Math.max(max, num);
+                    }
+                }   
+            }
+        }
+        // 가능한 진법 max + 1 이후
+        return max + 1;
+    }
+}
