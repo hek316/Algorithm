@@ -1,0 +1,35 @@
+import java.util.*;
+class Solution {
+    static int N = 1_000_001;
+    // 정점, 막대 , 도넛, 8자를 구하는 그래프
+    int[] out = new int[N];
+    public int[] solution(int[][] edges) {
+        int[] in = new int[N];
+        for (int[] edge : edges) {
+            int a = edge[0];
+            int b = edge[1];
+            out[a]++;
+            in[b]++;
+        }
+        
+        int[] answer = new int[4];
+        getRoot(in, answer);
+        int root = answer[0];
+        answer[1] = out[root] - (answer[2] + answer[3]);
+        return answer;
+    }
+    
+    public void getRoot(int[] in, int[] answer) {
+        for (int i=1; i<1000001; i++) {
+            if(out[i] >= 2 && in[i] ==0) {
+                answer[0] = i;
+            } else if (out[i] >= 2 && in[i] !=0) {
+                answer[3]++; // 8 자
+                
+            }else if (out[i] == 0 && in[i] >=1) {
+                answer[2]++; // 막대
+                
+            }
+        }
+    }
+}
