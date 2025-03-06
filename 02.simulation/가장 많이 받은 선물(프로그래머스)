@@ -1,0 +1,46 @@
+import java.util.*;
+class Solution {
+    // 선물 지수 구하기
+    // 서로 주고 받은 경우 구하기
+    public int solution(String[] friends, String[] gifts) {
+        int n = friends.length;
+        int[][] giftMatrix = new int[n][n];
+        HashMap<String, Integer> map = new HashMap<>();
+        for (int i=0; i<n; i++) {
+            map.put(friends[i], i);
+        }
+        int[] count = new int[n];
+        // 서로 주고 받은 경우 구하기
+        for(String  gift : gifts) {
+            String[] s = gift.split(" ");
+            int a = map.get(s[0]);
+            int b = map.get(s[1]);
+            giftMatrix[a][b]++;
+            // 주는 경우 선물 지수 up
+            count[a]++;
+            count[b]--;
+        }
+        int max = 0;
+        for (int i=0; i<n; i++) {
+            // i 가 선물을 받는 경우
+            int cnt = 0;
+            for (int j = 0; j<n; j++) {
+                if(i == j) continue;
+                // 기록이 하나도 없거나 주고받은 수가 같다면
+                if(giftMatrix[i][j] == giftMatrix[j][i]) {
+                    if(count[i] > count[j]) {
+                        // 선물지수가 더 큰 사람이 선물 받음
+                        cnt++;
+                    } 
+                } else if (giftMatrix[i][j] > giftMatrix[j][i]) {
+                    // i 가 j 에게 더 많이 준 경우
+                    cnt++;
+                }
+            }
+            max = Math.max(cnt, max);
+        }
+
+        
+        return  max;
+    }
+}
