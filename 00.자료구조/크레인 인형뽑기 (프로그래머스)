@@ -1,0 +1,33 @@
+import java.util.*;
+class Solution {
+    // moves 명령대로 집게를 들어올리는 구현문제
+    Stack<Integer> result = new Stack<>();
+    public int solution(int[][] board, int[] moves) {
+        int maxR = board.length;
+      
+        result.push(-1);
+        // 쌓인 인형 꺼내서 터뜨리기
+        int answer = 0;
+        // moves 대로 꺼내어 넣기
+        for (int move : moves) {
+            // 1,5,3,5,1,2,1,4
+            int c= move-1;
+            for (int i= 0; i<maxR; i++) {
+                if(board[i][c] != 0) {
+                    if(board[i][c] == result.peek()) {
+                        answer+= 2;
+                        result.pop();
+                    } else {
+                        result.push(board[i][c]);          
+                    }
+                    board[i][c] = 0;
+                    break;
+                }
+            }
+        }
+        
+
+    
+        return answer;
+    }
+}
