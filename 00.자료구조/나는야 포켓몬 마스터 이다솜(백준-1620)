@@ -1,0 +1,36 @@
+import java.io.*;
+import java.util.*;
+
+class Main {
+    static HashMap<String, Integer> nameToNumber = new HashMap<>();
+    static int n;
+    static int m;
+    public static void main(String[] args) throws Exception {
+       BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+         n = Integer.parseInt(s[0]);
+         m = Integer.parseInt(s[1]);
+	String[] numberToName= new String[n+1];
+
+	for (int i=1; i<=n; i++) {
+		String tmp = br.readLine();
+		nameToNumber.put(tmp, i);
+		numberToName[i] = tmp;
+	}
+
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<m; i++) {
+            String tmp = br.readLine();
+            if(Character.isDigit(tmp.charAt(0))){
+                int n = Integer.parseInt(tmp);
+                 sb.append(numberToName[n]).append("\n");
+            } else {
+                 sb.append(nameToNumber.get(tmp)).append("\n");
+            }
+
+        }
+
+        System.out.println(sb);
+    }
+
+}
