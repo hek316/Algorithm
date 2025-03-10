@@ -1,0 +1,44 @@
+import java.util.*;
+class Solution {
+    public int solution(int[] queue1, int[] queue2) {
+        Queue<Integer>  q1 = new ArrayDeque<>();
+        Queue<Integer>  q2 = new ArrayDeque<>();
+        
+        long sum1 = 0;
+        long sum2 = 0;
+        
+        for (int q : queue1) {
+            sum1 +=q;
+            q1.add(q);
+        }
+        
+
+        for (int q : queue2) {
+            sum2 +=q;
+            q2.add(q);
+        }
+        int cnt = 0;
+        int maxOperations = queue1.length * 3; // 최대 이동 횟수 제한
+
+        while(sum1 != sum2) {
+            if(cnt > maxOperations) return -1;
+            if(sum1 == 0 || sum2 == 0) return -1;
+            if(sum1 > sum2) {
+                int tmp = q1.poll();
+                sum1 -= tmp;
+                sum2 += tmp;
+                q2.add(tmp);
+               
+            } else if(sum1< sum2) {
+                int tmp = q2.poll();
+                sum2 -= tmp;
+                sum1 += tmp;
+                q1.add(tmp);
+            } else {
+                break;
+            }
+             cnt++;
+        }
+        return cnt;
+    }
+}
