@@ -1,0 +1,76 @@
+import java.util.*;
+class Solution {
+    
+    // 출발지점에서 동일한 칸으로 이동하는 bfs 문제
+    // 레버를 당기고 출구로 가야함
+    // 만약 출구를 먼저가면 결국은 레버를 당기고 다시 출구로 가야함
+    // 출발지부터 레버까지의 최소길이
+    // 레버와 출구까지의 최소값 구하기
+    int maxRow;
+    int maxCol;
+    char[][] arr;
+    public int solution(String[] maps) {
+        maxRow = maps.length;
+        maxCol = maps[0].length();
+        arr = new char[maxRow][maxCol];
+     
+        
+        int startX = 0;
+        int startY = 0;
+        int reberX = 0;
+        int reberY = 0;
+        for (int i=0; i<maxRow; i++) {
+            for (int j=0; j<maxCol; j++) {
+                arr[i][j] = (char)(maps[i].charAt(j));
+                if(arr[i][j] == 'S') {
+                    startX = i;
+                    startY = j;
+                } else if (arr[i][j] == 'L') {
+                    reberX = i;
+                    reberY = j;
+                }
+            }
+        }
+
+        int reberDistance = bfs(startX, startY, 'L');
+        if( reberDistance == -1) {
+            return -1;
+        }
+        
+        int reberExit = bfs(reberX, reberY, 'E');
+        if( reberExit == -1) {
+            return -1;
+        }
+        return reberDistance + reberExit ;
+    }
+    
+    public int bfs(int startX, int startY, char end) {
+        int[][] result = new int[maxRow][maxCol];
+        int[][] dx =  {{0,1}, {0,-1}, {-1, 0}, {1, 0}};
+        boolean[][] visit = new boolean[maxRow][maxCol];
+        Queue<int[]> q = new ArrayDeque<>();
+        q.add(new int[]{startX, startY});
+        visit[startX][startY] = true;
+        // 출발지점부터, 목표지점까지 최소값
+         while (!q.isEmpty()) {
+            int[] t = q.poll();
+            int x = t[0];
+            int y = t[1];
+            for (int i=0; i<4; i++) {
+                int nx = x + dx[i][0];
+                int ny = y + dx[i][1];
+                if(nx >=0 && ny >=0 && nx < maxRow && ny < maxCol && !visit[nx][ny]) {
+                    if(arr[nx][ny] != 'X') {
+                        visit[nx][ny] = true;
+                        result[nx][ny] = result[x][y] + 1;
+                        if(end == arr[nx][ny]) {
+                            return result[nx][ny];
+                        }
+                        q.add(new int[]{nx, ny});
+                    } 
+                }
+            } 
+        }
+        return -1;
+    }
+}
