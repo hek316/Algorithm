@@ -1,0 +1,59 @@
+import java.util.*;
+class Solution {
+    class Node implements Comparable<Node>{
+        int take;
+        int req;
+        int num;
+        Node(int take, int req, int num) {
+            this.take = take;
+            this.req = req;
+            this.num = num;
+        }
+        
+        public int compareTo(Node o){
+             //  작업의 소요시간이 짧은 것, 작업의 요청 시각이 빠른 것, 작업의 번호가 작은 것 순
+            if(take != o.take) return Integer.compare(take, o.take);
+            if(req != o.req) return Integer.compare(req, o.req);
+            return  Integer.compare(num, o.num);
+        }
+        public String toString() {
+            return "take : " + take + " req : " + req + " num : " + num +" / ";
+        }
+    }
+    // 우선순위대로 대기 큐 정렬하기
+    // [[0, 3], [1, 9], [3, 5]]	8
+    public int solution(int[][] jobs) {
+        // 작업 요청시간 순으로 
+        Arrays.sort(jobs, (o1, o2) -> o1[0]- o2[0]);
+   
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        
+        // 작업의 번호, 작업의 요청 시각, 작업의 소요 시
+        // System.out.println("pq" + pq);
+        int curtime = jobs[0][0];
+        int idx = 0;
+        int sum = 0;
+        while(idx < jobs.length || !pq.isEmpty() ) {
+            // 현재 시간보다 적은 값 큐에 넣기
+            while (idx < jobs.length && jobs[idx][0] <= curtime) {
+                int req = jobs[idx][0];
+                int take =  jobs[idx][1];
+                pq.add(new Node(take, req, idx));
+                idx++;
+            }
+            if(pq.isEmpty()) {
+                // 다음 요청이 쉬었다 오는 경우
+                curtime = jobs[idx][0];
+                int req = jobs[idx][0];
+                int take =  jobs[idx][1];
+                pq.add(new Node(take, req, idx));
+                idx++;
+            }
+        
+            Node node = pq.poll();
+            curtime += node.take;   
+            sum += (curtime - node.req); 
+        }
+          return sum/jobs.length;
+    }
+}
