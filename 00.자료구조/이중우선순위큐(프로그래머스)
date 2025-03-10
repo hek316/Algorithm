@@ -1,0 +1,31 @@
+import java.util.*;
+class Solution {
+    public int[] solution(String[] operations) {
+        
+        // default 오름차순
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        PriorityQueue<Integer> desc_pq = new PriorityQueue<>(Collections.reverseOrder());
+        for (String op : operations) {
+            String[] s = op.split(" ");
+            if(s[0].equals("I")) {
+                pq.add(Integer.parseInt(s[1]));
+                desc_pq.add(Integer.parseInt(s[1]));
+            } else {
+                if(s[1].equals("1")){
+                    // 최대값 값 삭제
+                    Integer value = desc_pq.poll();
+                    pq.remove(value);
+                } else {
+                    Integer value = pq.poll();
+                    desc_pq.remove(value);
+                }
+            }
+        }
+        
+        if(pq.isEmpty()) {
+            return new int[]{0,0};
+        }
+        
+        return new int[]{desc_pq.peek(), pq.peek()};
+    }
+}
