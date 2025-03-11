@@ -1,0 +1,60 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+
+public class Main {
+
+    // 의상의 수 30 각각의 의상의 수
+    static int n;
+
+    public static void main(String[] args) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+        while (n-- > 0) {
+
+                String[] s = br.readLine().split(" ");
+
+                int n = Integer.parseInt(s[0]);
+                int k = Integer.parseInt(s[1]);
+                int[] arr = new int[n];
+
+                s = br.readLine().split(" ");
+                for (int i = 0; i < arr.length; i++) {
+                    arr[i] = Integer.parseInt(s[i]);
+                }
+
+                Queue<int[]> queue = new ArrayDeque<>();
+                PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+                for (int i = 0; i < arr.length; i++) {
+                    queue.add(new int[]{arr[i], i});
+                    pq.add(arr[i]);
+                }
+                sb.append(find(k, queue, pq)).append("\n");
+        }
+        System.out.println(sb);
+    }
+    public static int find(int k, Queue<int[]> queue, PriorityQueue<Integer> pq) {
+        int result = 0;
+        while(!pq.isEmpty()) {
+            Integer peek = pq.peek();
+            int[] poll = queue.poll();
+            if(peek == poll[0]) {
+                result++; // 인쇄
+                pq.poll(); // 다음 우선순위 셋팅
+                if(poll[1] == k) {
+                    break;
+                }
+            } else { // 우선 순위가 아닐 경우 다시 넣기
+                queue.add(poll);
+            }
+        }
+        return result;
+    }
+
+}
