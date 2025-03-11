@@ -1,0 +1,82 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.Queue;
+
+
+public class Main {
+
+    // 의상의 수 30 각각의 의상의 수
+    static int n;
+    static StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+
+        while (n-- > 0) {
+                boolean isReverse =  false;
+                String order = br.readLine();
+                int k = Integer.parseInt(br.readLine());
+                String t = br.readLine();
+                t = t.replaceAll("[\\[\\]]", "");
+                String[] s = t.split(",");
+                Deque<Integer> q = new ArrayDeque<>();
+                for (int i = 0; i < k; i++) {
+                    q.add(Integer.parseInt(s[i]));
+                }
+
+
+                if(find(order, q, isReverse)) {
+                    sb.append("[");
+                    int max = q.size()-1;
+                    for(int i= 0; i<max; i++) {
+                        sb.append(q.pop()).append(",");
+                    }
+                    if(!q.isEmpty()) {
+                        sb.append(q.pop());
+                    }
+                    sb.append("]").append("\n");
+                }
+
+        }
+        System.out.println(sb);
+    }
+
+
+    public static boolean find(String order, Deque<Integer> q, boolean isReverse) {
+            boolean result = true;
+            for(int i = 0; i < order.length(); i++) {
+                if(order.charAt(i) == 'R') {
+                    // 뒤집기
+                    isReverse = !isReverse;
+                } else {
+                    // 버리기
+                    if(q.isEmpty()) {
+                        sb.append("error").append('\n');
+                        return false;
+                    } else {
+                        if(isReverse) {
+                            q.removeLast();
+                        } else {
+                            q.poll();
+                        }
+
+                    }
+
+                }
+            }
+
+            Queue<Integer> q2 = new ArrayDeque<>();
+            if(isReverse) {
+                while(!q.isEmpty()) {
+                    q2.add(q.removeLast());
+                }
+            }
+            q.addAll(q2);
+            return result;
+    }
+}
