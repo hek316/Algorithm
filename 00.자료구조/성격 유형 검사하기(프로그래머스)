@@ -1,0 +1,35 @@
+import java.util.*;
+class Solution {
+    public String solution(String[] survey, int[] choices) {
+        String answer = "";
+        HashMap<Character, Integer> map = new HashMap<>();
+        find(map, survey, choices);
+        Character[][] str = {{'R', 'T'}, {'C', 'F'}, {'J', 'M'}, {'A', 'N'}};
+        // 지표별 점수 비교 후 유형 기입
+        for (Character[] s : str) {
+            if(map.getOrDefault(s[0], 0) >= map.getOrDefault(s[1], 0)){
+                answer += s[0];
+            } else {
+                answer += s[1];
+            }
+        }
+        return answer;
+    }
+    
+    public void find(HashMap<Character, Integer> map, String[] survey, int[] choices){
+        int[] score = {0, 3, 2, 1, 0, 1, 2, 3};
+        for (int i= 0; i< survey.length; i++) {
+            int scoreIdx = choices[i];
+            if(scoreIdx <= 4) {
+                Character key = survey[i].charAt(0);
+                int value = map.getOrDefault(key, 0) + score[scoreIdx];
+                 map.put(key, value);
+            } else {
+                Character key = survey[i].charAt(1);
+                int value = map.getOrDefault(key, 0) + score[scoreIdx];
+                map.put(key, value);
+            }
+           
+        }
+    }
+}
