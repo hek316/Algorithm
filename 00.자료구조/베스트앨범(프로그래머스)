@@ -1,0 +1,31 @@
+import java.util.*;
+class Solution {
+    public int[] solution(String[] genres, int[] plays) {
+        Map<String, Integer> genresToPlays = new HashMap<>();
+        Map<String, List<int[]>> genreSongs = new HashMap<>();
+        for (int i=0; i<genres.length; i++) {
+            genresToPlays.put(genres[i], genresToPlays.getOrDefault(genres[i], 0) + plays[i]);
+            genreSongs.putIfAbsent(genres[i], new ArrayList<>());
+            genreSongs.get(genres[i]).add(new  int[]{i, plays[i]});
+        }
+        ArrayList<String> list = new ArrayList<>(genresToPlays.keySet());
+        // 재배별 장르 순위 정하기
+        Collections.sort(list, (s1, s2) ->  genresToPlays.get(s2) - genresToPlays.get(s1));
+        
+        ArrayList<Integer> result = new ArrayList<>();
+        // 장르 순위별 꺼내기
+        for (int i=0; i < list.size(); i++) {
+            // 장르 내에서 많이 재생된 노래를 // 고유 번호가 낮은 노래를 먼저 
+            List<int[]>  songs  = genreSongs.get(list.get(i));
+            Collections.sort(songs, (o1, o2) -> o1[1] == o2[1] ? o1[0] - o2[0] : o2[1] - o1[1] );
+            for (int j=0; j< Math.min(2, songs.size()); j++) {
+                result.add(songs.get(j)[0]);
+            }
+        }
+        int[] answer = new int[result.size()];
+        for (int i=0; i<result.size(); i++) {
+            answer[i] = result.get(i);
+        }
+        return answer;
+    }
+}
