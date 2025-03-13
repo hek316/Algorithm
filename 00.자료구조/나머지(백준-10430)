@@ -1,0 +1,26 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+
+public class Main {
+
+ // 모듈러 연산의 분배법칙
+  public static void main(String[] args) throws IOException {
+
+        StringBuilder sb = new StringBuilder();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] s = br.readLine().split(" ");
+        int a = Integer.parseInt(s[0]);
+        int b = Integer.parseInt(s[1]);
+        int c = Integer.parseInt(s[2]);
+
+          sb.append((a + b)%c).append("\n");
+          sb.append((a%c + b%c)%c).append("\n");
+          sb.append((a*b)%c).append("\n");
+          sb.append(((a%c)*(b%c))%c);
+          System.out.println(sb);
+
+    }
+}
