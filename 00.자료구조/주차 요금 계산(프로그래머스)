@@ -1,0 +1,41 @@
+import java.util.*;
+class Solution {
+    public int[] solution(int[] fees, String[] records) {
+         TreeMap<String, Integer> map = new TreeMap<>();
+        
+        // 각 시간 계산
+        for (String record : records) {
+            String[] r = record.split(" ");
+            int time = r[2].equals("IN") ? -1 : 1;
+            time *=  toMinute(r[0]);
+            map.put(r[1], map.getOrDefault(r[1], 0) +time);
+        }
+        
+        // 차량번호가 낮은것 부터
+        int lastTime = toMinute("23:59");
+        // key 별 시간 총합 계산
+        int idx = 0;
+        int[] answer = new int[map.size()];
+        for (int time : map.values()) {
+            if(time < 1) time += lastTime; 
+             answer[idx++] = getFee(time, fees);
+        }
+        
+        return answer;
+    }
+    
+    private int getFee(int totalTime, int[] fees) {
+         // 요금계산 , 기본 시간(분) , 기본 요금(원), 단위 시간(분), 단위 요금(원)
+        int remain = totalTime - fees[0];
+        if(remain <= 0) {
+            return fees[1];
+        }
+        remain  = (remain%fees[2] == 0) ? remain/fees[2] : remain/fees[2] +1 ;
+        return fees[1] + remain*fees[3];
+    }
+    
+    private int toMinute(String time) {
+        String[] splitedTime = time.split(":");
+        return Integer.parseInt(splitedTime[0])*60 + Integer.parseInt(splitedTime[1]);
+    }
+}
