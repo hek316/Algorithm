@@ -1,0 +1,42 @@
+class Solution {
+    
+    int[] dx = {1, 0, 0, -1};
+    int[] dy = {0, -1, 1, 0};
+    char[] dir = {'d','l', 'r','u'};
+    String answer = "impossible";
+    int endR = 0;
+    int endC = 0;
+    public String solution(int n, int m, int x, int y, int r, int c, int k) {
+        endR = r;
+        endC = c;
+        int distance = Math.abs(x - r) + Math.abs(y - c); 
+        if(distance > k || (k - distance ) % 2 != 0) return answer;
+        dfs(x, y,  1,  n,  m,  "", k);
+        return answer;
+    }
+    
+    private boolean dfs(int curX, int curY, int cnt, int n, int m, String result,int k) {
+        // 목적지까지 남은 거리
+        int distance = Math.abs(curX - endR) + Math.abs(curY - endC);
+        // 갈수 있는 횟수 <  목적지까지 거리
+        if(k +1 - cnt < distance) return false;  
+        if(cnt == k+1) {
+           if(curX == endR && curY == endC) {
+                answer = result;
+                return true;
+           }
+            return false;
+        }
+        
+        for (int i=0; i<4; i++) {
+            int nx = curX + dx[i];
+            int ny = curY + dy[i];
+            if(nx >= 1 && ny >= 1 && nx <= n && ny <= m) {
+                if(dfs(nx, ny, cnt+1, n, m, result +  dir[i], k)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
