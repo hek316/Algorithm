@@ -1,0 +1,50 @@
+import java.util.*;
+class Solution {
+     // dfs 로 안되는 이유 - 경우의 수를 조합공식으로 계산할 수 있는데
+     // 격자가 조금만 커져도 수천만, 수십억개가 돼서 시간 초과가 남.
+
+    // DP 접근 -  최적 부분 구조  만족 -(i, j) 까지의 최소 합 = (i-1, j) 와
+    //(i, j-1)중 최소값 + 현재 칸 값
+    // 이미 계산한 값은 dp 테이블에 저장해 재활용 함(메모이제이션)
+
+    //i , j 번째 최소 합은 항상 같다. i, j 번째는 
+    // 최적 구조를 만족하기 때문에 구할때마다 정답이 같다.
+    // 따라서 정답을 한번 구했으면 어딘가에 메모해놓는다.
+    // 이런 메모를 memoization 이라 한다. - 캐시와 유사
+
+
+    // 시간 복잡도 O(m*n)
+    // 공간 복잡도 O(m*n)
+    public int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+
+        // dp 테이블 초기화 (각 값에 grid 값 복사)
+        int[][] dp = new int[m][n];
+        for (int i=0; i<m; i++) {
+            for (int j=0; j<n; j++) {
+                dp[i][j] = grid[i][j];
+            }
+        }
+
+        // 첫 행: 왼쪽에서만 올 수 있음
+        for (int j=1; j<n; j++) {
+            dp[0][j] += dp[0][j-1];
+        }
+
+        // 첫 열:위쪽에서만 올 수 있음
+        for (int i=1; i<m; i++) {
+            dp[i][0] += dp[i-1][0];
+        }
+    
+        // 나머지 칸: 위 or 왼쪽 중 최소 경로를 선택
+        for (int i=1; i<m; i++) {
+            for (int j=1; j<n; j++) {
+                dp[i][j] += Math.min(dp[i-1][j], dp[i][j-1]); 
+            }
+        }
+
+        // 도착점 - 최소 경로 합 반환
+        return dp[m-1][n-1];
+    }
+}
