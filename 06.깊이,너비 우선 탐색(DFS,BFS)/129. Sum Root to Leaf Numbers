@@ -1,0 +1,40 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ *  root -> leaf 경로를 따라 내려가는 문제라 dfs 가 자연스러움
+ *  각 경로에서 숫자를 누적하고 , leaf 에서 합을 반환
+ *  시간 복잡도 O(n)
+ *  공간 복잡도 O(h) -재귀 호출 스택의 최대 깊이= 트리의 높이
+ *
+ */
+class Solution {
+
+    public int sumNumbers(TreeNode root) {
+        // 재귀로 풀기 - 같은 구조 반복 
+        int sum =recursive(root, 0);
+        return sum;
+    }
+
+    private int recursive(TreeNode cur, int val) {
+        if(cur == null) return 0;
+        val = val * 10 + cur.val;
+        if (cur.left == null && cur.right == null ) {
+            return val;
+        }
+        
+    return recursive(cur.left,  val) + recursive(cur.right,  val);
+
+
+    }
+}
